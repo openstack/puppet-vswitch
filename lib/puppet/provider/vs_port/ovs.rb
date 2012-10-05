@@ -10,4 +10,8 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
     def create
         vsctl("add-port", @resource[:bridge], @resource[:interface])
     end
+
+    def destroy
+        vsctl("del-port", @resource[:bridge], @resource[:interface])
+    end
 end
