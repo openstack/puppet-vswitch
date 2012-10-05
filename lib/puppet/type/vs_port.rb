@@ -2,7 +2,7 @@ require "puppet"
 
 module Puppet
     Puppet::Type.newtype(:vs_port) do
-        @doc = "A Virtuak Switch"
+        @doc = "A Virtual Switch Port"
 
         ensurable
 
