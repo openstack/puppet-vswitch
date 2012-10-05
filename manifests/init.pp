@@ -1,4 +1,4 @@
-class openvswitch {
+class vswitch {
     package { ["openvswitch-switch", "openvswitch-datapath-dkms"]:
         ensure => present
     }

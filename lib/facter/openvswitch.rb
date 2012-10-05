@@ -11,9 +11,11 @@ require "set"
 
 module OpenVSwitch
     def self.exec(short, cmd)
-        bin = "/usr/bin/ovs-" + short + "ctl"
-        shell_cmd = bin + " " + cmd
-        result = Facter::Util::Resolution.exec(shell_cmd).split("\n")
+        shell_cmd = "/usr/bin/ovs-" + short + "ctl " + cmd
+        result = Facter::Util::Resolution.exec(shell_cmd)
+        if result
+            result = result.split("\n")
+        end
         return result
     end
 
@@ -59,10 +61,11 @@ if Facter.value(:openvswitch_module) == true
 
     bridges.each do |bridge|
         ports = OpenVSwitch.list_ports(bridge)
-
-        Facter.add("openvswitch_ports_#{bridge}") do
-            setcode do
-                ports.join(",")
+        if ports
+            Facter.add("openvswitch_ports_#{bridge}") do
+                setcode do
+                    ports.join(",")
+                end
             end
         end
     end
