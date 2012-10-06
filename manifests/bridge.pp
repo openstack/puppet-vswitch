@@ -1,7 +1,10 @@
 class vswitch::bridge (
-  $ensure
+  $name,
+  $external_ids = "",
+  $ensure = "present"
 ) {
-  vs_bridge { $br_name: 
-    ensure => $ensure
+  vs_bridge { $name: 
+    external_ids => $external_ids,
+    ensure       => $ensure
   }
 }

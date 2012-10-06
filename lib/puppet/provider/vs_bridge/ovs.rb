@@ -19,6 +19,7 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
 
     def _split(string, splitter="\n")
         return Hash[string.split(splitter).map{|i| i.split("=")}]
+    end
 
     def external_ids
         result = vsctl("br-get-external-id", @resource[:bridge])

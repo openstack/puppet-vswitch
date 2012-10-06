@@ -11,7 +11,7 @@ module Puppet
             desc "The bridge to configure"
         end
 
-        newparam(:external_ids) do
+        newproperty(:external_ids) do
             desc "External IDs for the bridge"
         end
     end
