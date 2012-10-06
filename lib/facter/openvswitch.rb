@@ -9,10 +9,12 @@ require "facter"
 require "kernel_modules"
 require "set"
 
+VSCTL = "/usr/bin/ovs-vsctl"
+OFCTL = "/usr/bin/ovs-ofctl"
+
 module OpenVSwitch
     def self.exec(short, cmd)
-        shell_cmd = "/usr/bin/ovs-" + short + "ctl " + cmd
-        result = Facter::Util::Resolution.exec(shell_cmd)
+        result = Facter::Util::Resolution.exec(bin + " " + cmd)
         if result
             result = result.split("\n")
         end
@@ -21,7 +23,7 @@ module OpenVSwitch
 
     # vSwitch
     def self.vsctl(cmd)
-        return exec("vs", cmd)
+        return exec(VSCTL, cmd)
     end
 
     def self.list_br
@@ -34,7 +36,7 @@ module OpenVSwitch
 
     # OpenFlow
     def self.ofctl(cmd)
-        return exec("of", cmd)
+        return exec(OFCTL, cmd)
     end
 
     def self.of_show(bridge="")
@@ -50,7 +52,7 @@ Facter.add("openvswitch_module") do
 end
 
 
-if Facter.value(:openvswitch_module) == true
+if Facter.value(:openvswitch_module) == true && File.exists?(VSCTL)
     bridges = OpenVSwitch.list_br
 
     Facter.add("openvswitch_bridges") do
