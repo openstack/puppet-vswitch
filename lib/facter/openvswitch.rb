@@ -13,7 +13,7 @@ VSCTL = "/usr/bin/ovs-vsctl"
 OFCTL = "/usr/bin/ovs-ofctl"
 
 module OpenVSwitch
-    def self.exec(short, cmd)
+    def self.exec(bin, cmd)
         result = Facter::Util::Resolution.exec(bin + " " + cmd)
         if result
             result = result.split("\n")
