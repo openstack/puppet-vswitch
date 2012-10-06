@@ -16,4 +16,19 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     def destroy
         vsctl("del-br", @resource[:name])
     end
+
+    def _split(string, splitter="\n")
+        return Hash[string.split(splitter).map{|i| i.split("=")}]
+
+    def external_ids
+        result = vsctl("br-get-external-id", @resource[:bridge])
+        return _split result
+    end
+
+    def external_ids=(value)
+        ids = _split value ","
+        ids.each_pair do |k,v|
+            vsctl("br-set-external-id", @resource[:name], k, v)
+        end
+    end
 end

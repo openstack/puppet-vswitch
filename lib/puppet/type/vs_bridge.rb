@@ -10,5 +10,9 @@ module Puppet
             isnamevar
             desc "The bridge to configure"
         end
+
+        newparam(:external_ids) do
+            desc "External IDs for the bridge"
+        end
     end
 end
