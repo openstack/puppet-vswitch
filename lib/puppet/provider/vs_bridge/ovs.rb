@@ -22,12 +22,12 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     end
 
     def external_ids
-        result = vsctl("br-get-external-id", @resource[:bridge])
+        result = vsctl("br-get-external-id", @resource[:name])
         return _split result
     end
 
     def external_ids=(value)
-        ids = _split value ","
+        ids = _split(value, ",")
         ids.each_pair do |k,v|
             vsctl("br-set-external-id", @resource[:name], k, v)
         end
