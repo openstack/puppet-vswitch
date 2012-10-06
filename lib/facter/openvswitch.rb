@@ -53,7 +53,7 @@ end
 
 
 if Facter.value(:openvswitch_module) == true && File.exists?(VSCTL)
-    bridges = OpenVSwitch.list_br
+    bridges = OpenVSwitch.list_br || []
 
     Facter.add("openvswitch_bridges") do
         setcode do
