@@ -12,6 +12,6 @@ class vswitch::ovs {
     ensure      => true,
     enable      => true,
     hasstatus   => true,
-    status      => "/etc/init.d/openvswitch-switch",
+    status      => "/etc/init.d/openvswitch-switch status",
   }
 }
