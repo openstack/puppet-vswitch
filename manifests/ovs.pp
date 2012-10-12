@@ -1,10 +1,16 @@
 class vswitch::ovs {
   case $::osfamily {
     Debian: {
-      package {["openvswitch-switch", "openvswitch-datapath-dkms"]: ensure => present}
+      package {["openvswitch-switch", "openvswitch-datapath-dkms"]:
+        ensure => present,
+        before => Service['openvswitch-switch'],
+      }
     }
     Ubuntu: {
-      package {["openvswitch-switch", "openvswitch-datapath-dkms"]: ensure => present}
+      package {["openvswitch-switch", "openvswitch-datapath-dkms"]:
+        ensure => present,
+        before => Service['openvswitch-switch'],
+      }
     }
   }
 
