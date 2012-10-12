@@ -14,6 +14,11 @@ module Puppet
     newparam(:bridge) do
       desc "What bridge to use"
     end
+
+    autorequire(:vs_bridge) do
+      [self[:bridge]]
+    end
+
   end
 end
 
