@@ -14,7 +14,7 @@ def get_modules
 end
 
 Facter.add("kernel_modules") do
-    confine :kernel => :linux
+    confine :exists => "/proc/modules"
     setcode do
         modules = get_modules
         modules.to_a.join(",")
