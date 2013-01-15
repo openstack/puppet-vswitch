@@ -1,10 +1,9 @@
-class vswitch::port (
-  $interface,
+define vswitch::port (
   $bridge,
   $ensure = present
 ) {
-  vs_port { $interface:
+  vs_port { $name:
     bridge   => $bridge,
     ensure   => $ensure
-  } <- Class['vswitch']
+  }
 }

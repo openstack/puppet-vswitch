@@ -20,4 +20,7 @@ class vswitch::ovs(
     hasstatus   => true,
     status      => "/etc/init.d/openvswitch-switch status",
   }
+
+  Service['openvswitch-switch'] -> Vs_port<||>
+  Service['openvswitch-switch'] -> Vs_bridge<||>
 }
