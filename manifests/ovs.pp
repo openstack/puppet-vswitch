@@ -6,12 +6,17 @@ class vswitch::ovs(
       # OVS doesn't build unless the kernel headers are present.
       $kernelheaders_pkg = "linux-headers-$::kernelrelease" 
       if ! defined(Package[$kernelheaders_pkg]) {
-        package { $kernelheaders_pkg: ensure => present }
+        package { $kernelheaders_pkg: ensure => $package_ensure }
       }
       package {["openvswitch-switch", "openvswitch-datapath-dkms"]:
         ensure  => $package_ensure,
-        require => Package[$kernelheaders_pkg],
         before  => Service['openvswitch-switch'],
+      }
+      exec { 'rebuild-ovsmod':
+        command => "/usr/sbin/dpkg-reconfigure openvswitch-datapath-dkms > /tmp/reconf-log",
+	creates => "/lib/modules/$::kernelrelease/updates/dkms/openvswitch_mod.ko",
+	require => [Package['openvswitch-datapath-dkms', $kernelheaders_pkg]],
+        before  => Package['openvswitch-switch'],
       }
     }
   }
