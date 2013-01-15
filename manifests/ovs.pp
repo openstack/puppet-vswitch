@@ -17,8 +17,9 @@ class vswitch::ovs(
   service {"openvswitch-switch":
     ensure      => true,
     enable      => true,
-    hasstatus   => true,
-    status      => "/etc/init.d/openvswitch-switch status",
+    hasstatus   => false, # the supplied command returns true even if it's not running
+    # Not perfect - should spot if either service is not running - but it'll do
+    status      => "/etc/init.d/openvswitch-switch status | fgrep 'is running'",
   }
 
   Service['openvswitch-switch'] -> Vs_port<||>
