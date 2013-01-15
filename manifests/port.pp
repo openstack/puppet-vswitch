@@ -6,5 +6,5 @@ class vswitch::port (
   vs_port { $interface:
     bridge   => $bridge,
     ensure   => $ensure
-  }
+  } <- Class['vswitch']
 }

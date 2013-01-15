@@ -19,6 +19,5 @@ class vswitch::ovs(
     enable      => true,
     hasstatus   => true,
     status      => "/etc/init.d/openvswitch-switch status",
-    before      => [Vs_port <||>, Vs_bridge <||>]
   }
 }
