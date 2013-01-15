@@ -3,12 +3,14 @@ class vswitch::ovs(
 ) {
   case $::osfamily {
     Debian: {
-      if ! defined(Package['linux-headers-3.2.0-23-generic']) {
-        package { 'linux-headers-3.2.0-23-generic': ensure => present }
+      # OVS doesn't build unless the kernel headers are present.
+      $kernelheaders_pkg = "linux-headers-$::kernelrelease" 
+      if ! defined(Package[$kernelheaders_pkg]) {
+        package { $kernelheaders_pkg: ensure => present }
       }
       package {["openvswitch-switch", "openvswitch-datapath-dkms"]:
         ensure  => $package_ensure,
-        require => Package['linux-headers-3.2.0-23-generic'],
+        require => Package[$kernelheaders_pkg],
         before  => Service['openvswitch-switch'],
       }
     }
