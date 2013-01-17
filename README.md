@@ -31,3 +31,5 @@ TODO:
 * OpenFlow Tables
 * More facts
 * Others that are not named here
+
+The CiscoSystems repository is based on the work at https://github.com/ekarlso/puppet-vswitch.
