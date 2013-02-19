@@ -13,10 +13,11 @@ class vswitch::ovs(
         before  => Service['openvswitch-switch'],
       }
       exec { 'rebuild-ovsmod':
-        command => "/usr/sbin/dpkg-reconfigure openvswitch-datapath-dkms > /tmp/reconf-log",
-	creates => "/lib/modules/$::kernelrelease/updates/dkms/openvswitch_mod.ko",
-	require => [Package['openvswitch-datapath-dkms', $kernelheaders_pkg]],
-        before  => Package['openvswitch-switch'],
+        command     => "/usr/sbin/dpkg-reconfigure openvswitch-datapath-dkms > /tmp/reconf-log",
+	creates     => "/lib/modules/$::kernelrelease/updates/dkms/openvswitch_mod.ko",
+	require     => [Package['openvswitch-datapath-dkms', $kernelheaders_pkg]],
+        before      => Package['openvswitch-switch'],
+        refreshonly => true
       }
     }
   }
