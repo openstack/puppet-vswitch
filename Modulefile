@@ -1,5 +1,5 @@
 name    'puppet-vswitch'
-version '0.1.0a'
+version '0.1.0'
 source  'https://github.com/CiscoSystems/puppet-vswitch'
 author  'Endre Karlson, Dan Bode, Ian Wells'
 license 'Apache License 2.0'
