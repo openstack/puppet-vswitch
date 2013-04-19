@@ -36,8 +36,7 @@ class vswitch::ovs(
     }
   }
 
-  package { 'openvswitch':
-    name    => $::vswitch::params::ovs_package_name,
+  package { $::vswitch::params::ovs_package_name:
     ensure  => $package_ensure,
     before  => Service['openvswitch'],
   }
