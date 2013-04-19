@@ -1,6 +1,9 @@
 class vswitch::ovs(
   $package_ensure = 'present'
 ) {
+
+  include 'vswitch::params'
+
   case $::osfamily {
     'Debian': {
       # OVS doesn't build unless the kernel headers are present.
@@ -34,7 +37,7 @@ class vswitch::ovs(
   }
 
   package { 'openvswitch':
-    name    => $vswitch::params::ovs_package_name,
+    name    => $::vswitch::params::ovs_package_name,
     ensure  => $package_ensure,
     before  => Service['openvswitch'],
   }
