@@ -1,7 +1,7 @@
 require "puppet"
 
 Puppet::Type.type(:vs_port).provide(:ovs) do
-  commands :vsctl => "/usr/bin/ovs-vsctl"
+  optional_commands :vsctl => "/usr/bin/ovs-vsctl"
 
   def exists?
     vsctl("list-ports", @resource[:bridge]).include? @resource[:interface]
