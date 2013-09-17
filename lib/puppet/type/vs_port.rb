@@ -15,6 +15,10 @@ module Puppet
       desc "What bridge to use"
     end
 
+    newparam(:keep_ip, :boolean => true) do
+      desc "Flag, if true then keep physical interface's IP address and assigned it to the bridge"
+    end
+    
     autorequire(:vs_bridge) do
       [self[:bridge]]
     end
