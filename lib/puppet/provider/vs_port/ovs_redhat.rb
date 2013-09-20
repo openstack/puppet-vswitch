@@ -91,12 +91,14 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
     else 
       raise RuntimeError, 'Undefined Boot protocol'
     end
-  
-    datapath_id = vsctl("get", "bridge #{@resource[:bridge]}", "datapath_id")
-    bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
  
-    if bridge_mac_address
-    end
+# This doesn't work: it seems the bridge is not actif yet!
+#    datapath_id = vsctl("get", "bridge #{@resource[:bridge]}", "datapath_id")
+#    bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
+# 
+#    if bridge_mac_address
+#      bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address}\"\n"
+# End This doesn't work
 
     bridge_file.close
   end
