@@ -41,14 +41,14 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
   end 
 
   def create_physical_interface_file
-    File.open(Base + @resource[:interface], 'w+') { |file|
-      file << "DEVICE=#{@resource[:interface]}\n"
-      file << "DEVICETYPE=ovs\n"
-      file << "TYPE=OVSPort\n"
-      file << "BOOTPROTO=none\n"
-      file << "OVS_BRIDGE=#{@resource[:bridge]}\n"
-      file << "ONBOOT=yes\n"
-    }
+    file = File.open(Base + @resource[:interface], 'w+')
+    file << "DEVICE=#{@resource[:interface]}\n"
+    file << "DEVICETYPE=ovs\n"
+    file << "TYPE=OVSPort\n"
+    file << "BOOTPROTO=none\n"
+    file << "OVS_BRIDGE=#{@resource[:bridge]}\n"
+    file << "ONBOOT=yes\n"
+    file.close
   end
 
   def search(file_name, value)

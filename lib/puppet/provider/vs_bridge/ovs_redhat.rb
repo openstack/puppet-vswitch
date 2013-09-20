@@ -34,13 +34,13 @@ Puppet::Type.type(:vs_bridge).provide(:ovs_redhat) do
    # datapath_id = vsctl("get bridge #{@resource[:name]}", "datapath_id")
    # bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
     
-    #bridge_file = File.open(Base + @resource[:name], 'w+')
-    #bridge_file << "DEVICE=#{@resource[:name]}\n"
-    #bridge_file << "TYPE=OVSBridge\n"
-    #bridge_file << "DEVICETYPE=ovs\n"
-    #bridge_file.close
+    bridge_file = File.open(Base + @resource[:name], 'w+')
+    bridge_file << "DEVICE=#{@resource[:name]}\n"
+    bridge_file << "TYPE=OVSBridge\n"
+    bridge_file << "DEVICETYPE=ovs\n"
+    bridge_file.close
 
-    system("cat \"DEVICE=#{@resource[:name]}\nTYPE=OVSBridge\nDEVICETYPE=ovs\n\" > #{Base + @resource[:name]}") 
+#    system("cat \"DEVICE=#{@resource[:name]}\nTYPE=OVSBridge\nDEVICETYPE=ovs\n\" > #{Base + @resource[:name]}") 
 
    #   if bridge_mac_address
    #     bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:name]} other-config:hwaddr=#{bridge_mac_address}\"\n"
