@@ -1,7 +1,5 @@
 require "puppet"
 
-Base="/etc/sysconfig/network-scripts/ifcfg-" 
-
 Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
   desc "Openvswitch port manipulation for RedHat family OSs"
 
@@ -60,9 +58,15 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
     }
   end
 
-  def update_bridge_file
+  def create_bridge_file
     bridge_file = File.open(Base + @resource[:bridge], 'w+')
     interface_file_name = Base + @resource[:interface]
+
+# Ultimately this will go to vs_bridge
+    bridge_file << "DEVICE=#{@resource[:name]}\n"
+    bridge_file << "TYPE=OVSBridge\n"
+    bridge_file << "DEVICETYPE=ovs\n"
+# End ultimately
 
     case search(interface_file_name, /bootproto=.*/i)
     when /dhcp/
@@ -88,6 +92,13 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
       raise RuntimeError, 'Undefined Boot protocol'
     end
   
+   # datapath_id = vsctl("get", "bridge #{@resource[:name]} datapath_id")
+   # bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
+ 
+   # if bridge_mac_address
+   #   bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:name]} other-config:hwaddr=#{bridge_mac_address}\"\n"
+   # end
+
     bridge_file.close
   end
 end
