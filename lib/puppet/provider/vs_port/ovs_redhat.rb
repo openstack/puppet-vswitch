@@ -63,7 +63,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
     interface_file_name = Base + @resource[:interface]
 
 # Ultimately this will go to vs_bridge
-    bridge_file << "DEVICE=#{@resource[:name]}\n"
+    bridge_file << "DEVICE=#{@resource[:bridge]}\n"
     bridge_file << "TYPE=OVSBridge\n"
     bridge_file << "DEVICETYPE=ovs\n"
 # End ultimately
