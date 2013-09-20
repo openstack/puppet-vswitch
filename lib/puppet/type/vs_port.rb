@@ -21,8 +21,6 @@ module Puppet
 
       defaultto false
     end
-    
-    end
 
     newparam(:sleep) do
       desc "Waiting time, in seconds (0 by default), for network to sync after activating port, used with keep_ip only"
