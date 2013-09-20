@@ -21,14 +21,14 @@ module Puppet
       defaultto false
     end
 
-    newparam(:sleep_time) do
+    newparam(:sleep) do
       desc "Waiting time, in seconds (0 by default), for network to sync after activating port, used with keep_ip only"
 
       defaultto '0'
       
       validate do |value|
-        if value.to_i != Fixnum || value.to_i < 0
-          raise ArgumentError, "sleep_time requires a positive integer"
+        if value.to_i.class != Fixnum || value.to_i < 0
+          raise ArgumentError, "sleep requires a positive integer"
         else
           super
         end

@@ -37,7 +37,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
       ifup #{@resource[:interface]};
       ifup #{@resource[:bridge]}"
     system(atomic_operation)
-    sleep(@resource[:sleep_time]) if @resource[:sleep_time]
+    sleep(@resource[:sleep]) if @resource[:sleep]
   end 
 
   def create_physical_interface_file
