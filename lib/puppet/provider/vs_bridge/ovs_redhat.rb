@@ -31,8 +31,9 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
   private
 
   def set_resiliency
-    bridge_mac_address = vsctl("get bridge #{@resource[:name]}", "other-config:hwaddr")
-
+    datapath_id = vsctl("get bridge #{@resource[:name]}", "datapath_id")
+    bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
+    
     File.open(Base + @resource[:bridge], 'w+') { |bridge_file| 
       bridge_file << "DEVICE=#{@resource[:bridge]}\n"
       bridge_file << "TYPE=OVSBridge\n"
