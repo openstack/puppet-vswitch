@@ -27,7 +27,7 @@ module Puppet
       defaultto '0'
       
       validate do |value|
-        if value.to_i != Integer || value.to_i < 0
+        if value.to_i != Fixnum || value.to_i < 0
           raise ArgumentError, "sleep_time requires a positive integer"
         else
           super
