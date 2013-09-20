@@ -42,7 +42,6 @@ Puppet::Type.type(:vs_bridge).provide(:ovs_redhat) do
    #   if bridge_mac_address
    #     bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:name]} other-config:hwaddr=#{bridge_mac_address}\"\n"
    #   end
-    }
   end  
 
   def _split(string, splitter=",")
