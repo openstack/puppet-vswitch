@@ -15,10 +15,13 @@ module Puppet
       desc "What bridge to use"
     end
 
-    newparam(:keep_ip, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+    # newparam(:keep_ip, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+    newparam(:keep_ip) do
       desc "True: keep physical interface's details and assign them to the bridge" 
 
       defaultto false
+    end
+    
     end
 
     newparam(:sleep) do

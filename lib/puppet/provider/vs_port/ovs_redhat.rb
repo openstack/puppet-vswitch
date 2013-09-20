@@ -16,7 +16,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
   end
 
   def create
-    if keep_ip?
+    if @resource[:keep_ip]
       update_bridge_file
       create_physical_interface_file
       activate_port
