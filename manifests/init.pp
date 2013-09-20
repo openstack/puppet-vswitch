@@ -1,12 +1,5 @@
 class vswitch (
-	case $::osfamily {
-    'Debian': {
-    	$provider = "ovs_redhat"
-    }
-    'Redhat': {
-    	$provider = "ovs"
-    }
-  }
+  $provider = $vswitch::params::provider
 ) {
   $cls = "vswitch::$provider"
   include $cls
