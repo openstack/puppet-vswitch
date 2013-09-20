@@ -15,8 +15,22 @@ module Puppet
       desc "What bridge to use"
     end
 
-    newparam(:keep_ip, :boolean => true) do
-      desc "Flag, if true then keep physical interface's IP address and assigned it to the bridge"
+    newparam(:keep_ip, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+      desc "True: keep physical interface's details and assign them to the bridge"
+    end
+
+    newparam(:sleep_time) do
+      desc "Waiting time, in seconds (0 by default), for network to sync after activating port, used with keep_ip only"
+
+      defaulto { '0'}
+      
+      validate do |value|
+        if value.to_i != Integer || value.to_i < 0
+          raise ArgumentError, "sleep_time requires a positive integer"
+        else
+          super
+        end
+      end
     end
     
     autorequire(:vs_bridge) do
