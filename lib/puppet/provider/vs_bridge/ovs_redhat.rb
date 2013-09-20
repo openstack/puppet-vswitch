@@ -2,7 +2,7 @@ require "puppet"
 
 Base="/etc/sysconfig/network-scripts/ifcfg-" 
 
-Puppet::Type.type(:vs_bridge).provide(:ovs) do
+Puppet::Type.type(:vs_bridge).provide(:ovs_redhat) do
   desc "Openvswitch bridge manipulation for RedHat family OSs"
 
   confine :osfamily => :redhat
