@@ -62,7 +62,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
     bridge_file = File.open(Base + @resource[:bridge], 'w+')
     interface_file_name = Base + @resource[:interface]
 
-# Ultimately this will go to vs_bridge
+# Ultimately this to go to vs_bridge
     bridge_file << "DEVICE=#{@resource[:bridge]}\n"
     bridge_file << "TYPE=OVSBridge\n"
     bridge_file << "DEVICETYPE=ovs\n"
@@ -92,12 +92,12 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
       raise RuntimeError, 'Undefined Boot protocol'
     end
   
-   # datapath_id = vsctl("get", "bridge #{@resource[:name]} datapath_id")
-   # bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
+    datapath_id = vsctl("get", "bridge #{@resource[:name]} datapath_id")
+    bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
  
-   # if bridge_mac_address
-   #   bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:name]} other-config:hwaddr=#{bridge_mac_address}\"\n"
-   # end
+    if bridge_mac_address
+      bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:name]} other-config:hwaddr=#{bridge_mac_address}\"\n"
+    end
 
     bridge_file.close
   end
