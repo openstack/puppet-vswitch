@@ -62,23 +62,23 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
 
   def update_bridge_file
     bridge_file = File.open(Base + @resource[:bridge], 'w+')
-    interface_file = File.open(Base + @resource[:interface])
+    interface_file_name = Base + @resource[:interface]
 
-    case search(interface_file, /bootproto=.*/i)
+    case search(interface_file_name, /bootproto=.*/i)
     when /dhcp/
        bridge_file << "OVSBOOTPROTO=dhcp\n"
        bridge_file << "OVSDHCPINTERFACES=#{@resource[:bridge]}\n"
     when /static/, /none/
       bridge_file << "OVSBOOTPROTO=static\n"  
 
-      ipaddr = search(interface_file, /ipaddr=.*/i)
+      ipaddr = search(interface_file_name, /ipaddr=.*/i)
       if ipaddr.class == String
         bridge_file << ipaddr + "\n"
       else
         raise RuntimeError, 'Undefined IP address'
       end
       
-      mask = search(interface_file, /(prefix|netmask)=.*/i)
+      mask = search(interface_file_name, /(prefix|netmask)=.*/i)
       if mask.class == String
         bridge_file << mask + "\n"
       else
@@ -87,7 +87,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
     else 
       raise RuntimeError, 'Undefined Boot protocol'
     end
-    interface_file.close
+  
     bridge_file.close
   end
 end
