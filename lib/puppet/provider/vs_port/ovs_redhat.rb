@@ -62,12 +62,12 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
     bridge_file = File.open(Base + @resource[:bridge], 'w+')
     interface_file_name = Base + @resource[:interface]
 
-# Ultimately this to go to vs_bridge
+    # Ultimately this to go to vs_bridge
     bridge_file << "DEVICE=#{@resource[:bridge]}\n"
     bridge_file << "TYPE=OVSBridge\n"
     bridge_file << "DEVICETYPE=ovs\n"
-    bridge_file << "ONBOOT=yes"
-# End ultimately
+    bridge_file << "ONBOOT=yes\n"
+    # End ultimately
 
     case search(interface_file_name, /bootproto=.*/i)
     when /dhcp/
@@ -90,7 +90,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
         raise RuntimeError, 'Undefined netmask or prefix'
       end
     else 
-      raise RuntimeError, 'Undefined Boot protocol'
+      raise RuntimeError, 'Undefined boot protocol'
     end
  
     datapath_id = vsctl("get", "bridge", @resource[:bridge], 'datapath_id')
