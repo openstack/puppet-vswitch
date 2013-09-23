@@ -66,12 +66,13 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
     bridge_file << "DEVICE=#{@resource[:bridge]}\n"
     bridge_file << "TYPE=OVSBridge\n"
     bridge_file << "DEVICETYPE=ovs\n"
+    bridge_file << "ONBOOT=yes"
 # End ultimately
 
     case search(interface_file_name, /bootproto=.*/i)
     when /dhcp/
        bridge_file << "OVSBOOTPROTO=dhcp\n"
-       bridge_file << "OVSDHCPINTERFACES=#{@resource[:bridge]}\n"
+       bridge_file << "OVSDHCPINTERFACES=#{@resource[:interface]}\n"
     when /static/, /none/
       bridge_file << "OVSBOOTPROTO=static\n"  
 
@@ -92,13 +93,12 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
       raise RuntimeError, 'Undefined Boot protocol'
     end
  
-# This doesn't work: it seems the bridge is not actif yet!
-#    datapath_id = vsctl("get", "bridge #{@resource[:bridge]}", "datapath_id")
-#    bridge_mac_address = datapath_id[-12..-1].scan(/.{1,2}/).join(':') if datapath_id
-# 
-#    if bridge_mac_address
-#      bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address}\"\n"
-# End This doesn't work
+    datapath_id = vsctl("get", "bridge", @resource[:bridge], datapath_id)
+    bridge_mac_address = datapath_id[-14..-3].scan(/.{1,2}/).join(':') if datapath_id
+ 
+    if bridge_mac_address
+      bridge_file << "OVS_EXTRA=\"set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address}\"\n"
+    end
 
     bridge_file.close
   end
