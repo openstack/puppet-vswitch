@@ -93,7 +93,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat) do
       raise RuntimeError, 'Undefined Boot protocol'
     end
  
-    datapath_id = vsctl("get", "bridge", @resource[:bridge], datapath_id)
+    datapath_id = vsctl("get", "bridge", @resource[:bridge], 'datapath_id')
     bridge_mac_address = datapath_id[-14..-3].scan(/.{1,2}/).join(':') if datapath_id
  
     if bridge_mac_address
