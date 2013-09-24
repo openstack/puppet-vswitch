@@ -1,5 +1,5 @@
 class vswitch (
-  $provider = "ovs"
+  $provider = $vswitch::params::provider
 ) {
   $cls = "vswitch::$provider"
   include $cls
