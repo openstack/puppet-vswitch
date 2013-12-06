@@ -1,35 +1,34 @@
-Puppet module providing things for vSwitches. At the moment OVS is the only
-one I've added but please feel free to pull request this!
+# puppet-vswitch
+A Puppet module providing things for vSwitches. At the moment OVS is the only
+one I've added but please feel free to contribute new providers through
+Stackforge. It's based upon types and providers so we can support more then just
+OVS or one vSwitch type.
 
-It's based upon types & providers so we can support more then just OVS or one
-vSwitch type.
+The current layout is:
 
-Current layout is:
-bridges - A "Bridge" is basically the thing you plug ports / interfaces into.
-ports - A Port is a interface you plug into the bridge (switch).
+* bridges - A "Bridge" is basically the thing you plug ports / interfaces into.
+* ports - A Port is a interface you plug into the bridge (switch).
 
-USAGE:
-Place this directory at:
-<your module directory of choice>/vswitch
+## USAGE:
+To create a new bridge, use the `vs_bridge` type:
 
-Then in your manifest you can either use the things as parameterized classes:
-class {"vswitch::bridge":
-    name => "br-ex"
+```
+vs_bridge { 'br-ex':
+  ensure => present,
 }
-class {"vswitch::port": 
-    interface => "eth0",
-    bridge    => "br-ex"
+```
+
+You can then attach a device to the bridge with a virtual port:
+```
+vs_port { 'eth2':
+  ensure => present,
+  bridge => 'br-ex',
 }
+```
 
-Or you can use them as "Providers":
-vs_bridge {"br-ex":}
-vs_port {"eth0": bridge => "br-ex"}
-
-TODO:
+## TODO:
 * OpenFlow controller settings
 * OpenFlow Settings
 * OpenFlow Tables
 * More facts
 * Others that are not named here
-
-The CiscoSystems repository is based on the work at https://github.com/ekarlso/puppet-vswitch.
