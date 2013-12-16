@@ -19,23 +19,12 @@ Puppet::Type.type(:vs_bridge).provide(:ovs_redhat) do
 
   def create
     vsctl("add-br", @resource[:name])
-    set_resiliency
     ip("link", "set", @resource[:name], "up")
     external_ids = @resource[:external_ids] if @resource[:external_ids]
   end
 
   def destroy
     vsctl("del-br", @resource[:name])
-  end
-
-  private
-
-  def set_resiliency
-
-  end  
-
-  def _split(string, splitter=",")
-    return Hash[string.split(splitter).map{|i| i.split("=")}]
   end
 
   def external_ids
@@ -52,5 +41,11 @@ Puppet::Type.type(:vs_bridge).provide(:ovs_redhat) do
         vsctl("br-set-external-id", @resource[:name], k, v)
       end
     end
+  end
+
+  private
+
+  def _split(string, splitter=",")
+    return Hash[string.split(splitter).map{|i| i.split("=")}]
   end
 end
