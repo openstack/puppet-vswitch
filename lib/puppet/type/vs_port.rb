@@ -30,8 +30,6 @@ module Puppet
       validate do |value|
         if value.to_i.class != Fixnum || value.to_i < 0
           raise ArgumentError, "sleep requires a positive integer"
-        else
-          super
         end
       end
     end
