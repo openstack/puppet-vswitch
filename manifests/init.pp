@@ -26,7 +26,6 @@
 #
 class vswitch (
   $provider = $vswitch::params::provider
-) {
-  $cls = "vswitch::${provider}"
-  include $cls
+) inherits vswitch::params {
+  class {"vswitch::${provider}": }
 }
