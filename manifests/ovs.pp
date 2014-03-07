@@ -13,13 +13,21 @@ class vswitch::ovs(
       if ! defined(Package[$kernelheaders_pkg]) {
         package { $kernelheaders_pkg: ensure => $package_ensure }
       }
+      case $::operatingsystem {
+        'ubuntu': {
+          $ovs_status = '/sbin/status openvswitch-switch | fgrep "start/running"'
+        }
+        default: {
+          $ovs_status = '/etc/init.d/openvswitch-switch status | fgrep "is running"'
+        }
+      }
       service {'openvswitch':
         ensure      => true,
         enable      => true,
         name        => $::vswitch::params::ovs_service_name,
         hasstatus   => false, # the supplied command returns true even if it's not running
         # Not perfect - should spot if either service is not running - but it'll do
-        status      => '/etc/init.d/openvswitch-switch status | fgrep "is running"',
+        status      => $ovs_status
       }
       exec { 'rebuild-ovsmod':
         command     => '/usr/sbin/dpkg-reconfigure openvswitch-datapath-dkms > /tmp/reconf-log',
