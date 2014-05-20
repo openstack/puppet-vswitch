@@ -13,7 +13,7 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
   def create
     vsctl("add-br", @resource[:name])
     ip("link", "set", @resource[:name], "up")
-    external_ids = @resource[:external_ids] if@resource[:external_ids]
+    external_ids = @resource[:external_ids] if @resource[:external_ids]
   end
 
   def destroy
