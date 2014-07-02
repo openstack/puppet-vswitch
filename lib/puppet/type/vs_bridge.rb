@@ -22,7 +22,7 @@ Puppet::Type.newtype(:vs_bridge) do
       if !value.is_a?(String)
         raise ArgumentError, "Invalid external_ids #{value}. Requires a String, not a #{value.class}"
       end
-      if value !~ /^(?>[a-zA-Z]\w*=\w*){1}(?>[,][a-zA-Z]\w*=\w*)*$/
+      if value !~ /^(?>[a-zA-Z]\S*=\S*){1}(?>[,][a-zA-Z]\S*=\S*)*$/
         raise ArgumentError, "Invalid external_ids #{value}. Must a list of key1=value2,key2=value2"
       end
     end
