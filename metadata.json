@@ -1,0 +1,38 @@
+{
+  "name": "stackforge-vswitch",
+  "version": "1.0.0",
+  "source": "https://github.com/stackforge/puppet-vswitch",
+  "author": "Endre Karlson, Dan Bode and StackForge Contributors",
+  "license": "Apache License 2.0",
+  "source": "git://github.com/stackforge/puppet-vswitch.git",
+  "project_page": "https://launchpad.net/puppet-vswitch",
+  "issues_url": "https://bugs.launchpad.net/puppet-vswitch",
+  "summary": "A module for providing things (ports, bridges) to vSwitches (OVS)",
+  "operatingsystem_support": [
+    {
+      "operatingsystem":"Fedora",
+      "operatingsystemrelease": [ "20" ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [ "6", "7" ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [ "6", "7" ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [ "6", "7" ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [ "12.04", "14.04" ]
+    }
+  ],
+  "requirements": [
+    { "name": "pe","version_requirement": "3.x" },
+    { "name": "puppet","version_requirement": "3.x" }
+  ],
+  "dependencies": []
+}
