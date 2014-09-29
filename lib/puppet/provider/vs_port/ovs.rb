@@ -6,6 +6,7 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
   desc 'Openvswitch port manipulation'
 
   has_feature :bonding
+  has_feature :vlan
 
   commands :vsctl => 'ovs-vsctl'
 
@@ -29,6 +30,12 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
                           :bond_mode,
                           :lacp,
                           :lacp_time,
+                         ]
+    end
+    if self.vlan?
+      sync_properties += [:vlan_mode,
+                          :vlan_tag,
+                          :vlan_trunks,
                          ]
     end
     for prop_name in sync_properties
@@ -78,6 +85,30 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
 
   def lacp_time=(value)
     set_port_column('other_config:lacp-time', value)
+  end
+
+  def vlan_mode
+    get_port_column('vlan_mode')
+  end
+
+  def vlan_mode=(value)
+    set_port_column('vlan_mode', value)
+  end
+
+  def vlan_tag
+    get_port_column('tag')
+  end
+
+  def vlan_tag=(value)
+    set_port_column('tag', value)
+  end
+
+  def vlan_trunks
+    get_port_column('trunks').scan(/\d+/)
+  end
+
+  def vlan_trunks=(value)
+    set_port_column('trunks', value.join(' '))
   end
 
   private
