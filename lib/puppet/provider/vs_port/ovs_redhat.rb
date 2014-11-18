@@ -39,6 +39,9 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat, :parent => :ovs) do
       end
 
       port = IFCFG::Port.new(@resource[:interface], @resource[:bridge])
+      if vlan?
+        port.set('VLAN' => 'yes')
+      end
       port.save(BASE + @resource[:interface])
 
       bridge = IFCFG::Bridge.new(@resource[:bridge], template)
@@ -115,6 +118,17 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat, :parent => :ovs) do
         items.merge!(m[1] => m[2])
       end
     end
+    items.delete('VLAN') if items.has_key?('VLAN')
     items
+  end
+
+  def vlan?
+    if File.read('/proc/net/vlan/config') =~ /#{@resource[:interface]}/
+      return true
+    else
+      return false
+    end
+  rescue Errno::ENOENT
+    return false
   end
 end
