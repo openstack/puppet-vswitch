@@ -1,4 +1,8 @@
-# puppet-vswitch
+VSwitch
+=======
+
+1.0.0 - 2014.2.0 - Juno
+
 A Puppet module providing things for vSwitches. At the moment OVS is the only
 one I've added but please feel free to contribute new providers through
 Stackforge. It's based upon types and providers so we can support more then just
