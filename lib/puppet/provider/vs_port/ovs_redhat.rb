@@ -34,7 +34,7 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat, :parent => :ovs) do
       if link?
         extras = dynamic_default if dynamic?
         if File.exist?(BASE + @resource[:interface])
-          template = from_str(File.read(BASE + @resource[:interface]))
+          template = cleared(from_str(File.read(BASE + @resource[:interface])))
         end
       end
 
@@ -42,6 +42,13 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat, :parent => :ovs) do
       if vlan?
         port.set('VLAN' => 'yes')
       end
+
+      if bonding?
+        port.set('BONDING_MASTER' => 'yes')
+        config = from_str(File.read(BASE + @resource[:interface]))
+        port.set('BONDING_OPTS' => config['BONDING_OPTS']) if config.has_key?('BONDING_OPTS')
+      end
+
       port.save(BASE + @resource[:interface])
 
       bridge = IFCFG::Bridge.new(@resource[:bridge], template)
@@ -76,6 +83,17 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat, :parent => :ovs) do
   end
 
   private
+
+  def bonding?
+    # To do: replace with iproute2 commands
+    if File.exists?("/proc/net/bonding/#{@resource[:interface]}")
+      return true
+    else
+      return false
+    end
+  rescue Errno::ENOENT
+    return false
+  end
 
   def dynamic?
     device = ''
@@ -114,12 +132,22 @@ Puppet::Type.type(:vs_port).provide(:ovs_redhat, :parent => :ovs) do
   def from_str(data)
     items = {}
     data.each_line do |line|
-      if m = line.match(/^(.*)=(.*)$/)
+      if m = line.match(/^([A-Za-z_]*)=(.*)$/)
         items.merge!(m[1] => m[2])
       end
     end
-    items.delete('VLAN') if items.has_key?('VLAN')
     items
+  end
+
+  def cleared(data)
+    data.each do |key, value|
+      case key
+      when /vlan/i
+        data.delete(key)
+      when /bonding/i
+        data.delete(key)
+      end
+    end
   end
 
   def vlan?
