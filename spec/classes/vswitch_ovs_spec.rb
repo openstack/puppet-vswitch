@@ -10,13 +10,13 @@ describe 'vswitch::ovs' do
 
     it 'should contain the correct package and service' do
 
-      should contain_service('openvswitch').with(
+      is_expected.to contain_service('openvswitch').with(
         :ensure => true,
         :enable => true,
         :name   => 'openvswitch'
       )
 
-      should contain_package('openvswitch').with(
+      is_expected.to contain_package('openvswitch').with(
         :name   => 'openvswitch',
         :ensure => 'present',
         :before => 'Service[openvswitch]'
