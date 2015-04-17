@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "source": "https://github.com/stackforge/puppet-vswitch",
   "author": "Endre Karlson, Dan Bode and StackForge Contributors",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "source": "git://github.com/stackforge/puppet-vswitch.git",
   "project_page": "https://launchpad.net/puppet-vswitch",
   "issues_url": "https://bugs.launchpad.net/puppet-vswitch",
