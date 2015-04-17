@@ -5,6 +5,7 @@ group :development, :test do
   gem 'rspec-puppet', '~> 2.0.0', :require => false
 
   gem 'metadata-json-lint'
+  gem 'puppet-lint-param-docs'
   gem 'puppet-lint-absolute_classname-check'
   gem 'puppet-lint-absolute_template_path'
   gem 'puppet-lint-trailing_newline-check'

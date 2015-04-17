@@ -1,5 +1,9 @@
 # vswitch: open-vswitch
 #
+# [*package_ensure*]
+#   (Optional) State of the openvswitch package
+#   Defaults to 'present'.
+#
 class vswitch::ovs(
   $package_ensure = 'present'
 ) {
