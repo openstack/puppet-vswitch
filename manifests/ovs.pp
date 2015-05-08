@@ -33,12 +33,20 @@ class vswitch::ovs(
         # Not perfect - should spot if either service is not running - but it'll do
         status    => $ovs_status,
       }
+
+      $major_version = regsubst($::ovs_version, '^(\d+).*', '\1')
+      if $major_version == '1' {
+        $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch_mod.ko"
+      } else {
+        $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch.ko"
+      }
+
+
       exec { 'rebuild-ovsmod':
         command     => '/usr/sbin/dpkg-reconfigure openvswitch-datapath-dkms > /tmp/reconf-log',
-        creates     => "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch_mod.ko",
+        creates     => $kernel_mod_file,
         require     => [Package['openvswitch-datapath-dkms', $kernelheaders_pkg]],
         before      => Package['openvswitch-switch'],
-        refreshonly => true,
       }
     }
     'Redhat': {
