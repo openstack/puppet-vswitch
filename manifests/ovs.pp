@@ -22,7 +22,7 @@ class vswitch::ovs(
           $ovs_status = '/sbin/status openvswitch-switch | fgrep "start/running"'
         }
         default: {
-          $ovs_status = '/etc/init.d/openvswitch-switch status | fgrep "is running"'
+          $ovs_status = '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi'
         }
       }
       service { 'openvswitch':
@@ -30,7 +30,6 @@ class vswitch::ovs(
         enable    => true,
         name      => $::vswitch::params::ovs_service_name,
         hasstatus => false, # the supplied command returns true even if it's not running
-        # Not perfect - should spot if either service is not running - but it'll do
         status    => $ovs_status,
       }
 
