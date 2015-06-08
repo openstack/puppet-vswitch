@@ -1,4 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetx', 'redhat', 'ifcfg.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '.','ovs.rb'))
 
 BASE = '/etc/sysconfig/network-scripts/ifcfg-'
 
@@ -10,7 +11,11 @@ DEFAULT = {
   'NM_CONTROLLED' => 'no',
   'NOZEROCONF'    => 'yes' }
 
-Puppet::Type.type(:vs_port).provide(:ovs_redhat, :parent => :ovs) do
+Puppet::Type.type(:vs_port).provide(
+  :ovs_redhat,
+  :parent => Puppet::Type.type(:vs_port).provider(:ovs)
+) do
+
   desc 'Openvswitch port manipulation for RedHat OSes family'
 
   confine    :osfamily => :redhat
