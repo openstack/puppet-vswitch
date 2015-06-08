@@ -27,6 +27,8 @@ RSpec.configure do |c|
 
       # install library modules from the forge
       on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes => 0 }
+      on host, puppet('module','install','stahnma-epel'), { :acceptable_exit_codes => 0 }
+      shell('git clone https://git.openstack.org/stackforge/puppet-openstack_extras /etc/puppet/modules/openstack_extras')
 
       # Install the module being tested
       puppet_module_install(:source => proj_root, :module_name => 'vswitch')
