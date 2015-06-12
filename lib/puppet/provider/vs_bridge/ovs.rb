@@ -1,8 +1,13 @@
 require 'puppet'
 
 Puppet::Type.type(:vs_bridge).provide(:ovs) do
-  commands :vsctl => 'ovs-vsctl'
-  commands :ip    => 'ip'
+  commands :vsctl     => 'ovs-vsctl'
+  if Facter.value(:operatingsystem) == 'FreeBSD'
+    Puppet.debug('FreeBSD detected')
+    commands :ifconfig  => 'ifconfig' 
+  else 
+    commands :ip          => 'ip'
+  end
 
   def exists?
     vsctl("br-exists", @resource[:name])
@@ -12,12 +17,21 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
 
   def create
     vsctl('add-br', @resource[:name])
-    ip('link', 'set', @resource[:name], 'up')
+    if Facter.value(:operatingsystem) == 'FreeBSD'
+      vsctl('set','bridge',@resource[:name],'datapath_type=netdev')
+      ifconfig(@resource[:name],'up')
+    else 
+      ip('link', 'set', @resource[:name], 'up')
+    end
     external_ids = @resource[:external_ids] if @resource[:external_ids]
   end
 
   def destroy
-    ip('link', 'set', @resource[:name], 'down')
+    if Facter.value(:operatingsystem) == 'FreeBSD'
+      ifconfig(@resource[:name],'up')
+    else
+      ip('link', 'set', @resource[:name], 'down')
+    end
     vsctl('del-br', @resource[:name])
   end
 
