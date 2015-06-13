@@ -71,6 +71,24 @@ class vswitch::ovs(
         name   => $::vswitch::params::ovs_service_name,
       }
     }
+    'FreeBSD': {
+      Package {
+        provider => 'pkgng',
+      }
+      service { 'ovsdb-server':
+        ensure => true,
+        enable => true,
+        name   => $::vswitch::params::ovsdb_service_name,
+        status => $::vswitch::params::ovsdb_status,
+      }
+      ~>
+      service { 'openvswitch':
+        ensure => true,
+        enable => true,
+        name   => $::vswitch::params::ovs_service_name,
+        status => $::vswitch::params::ovs_status,
+      }
+    }
     default: {
       fail( "${::osfamily} not yet supported by puppet-vswitch")
     }
