@@ -1,10 +1,9 @@
 {
   "name": "stackforge-vswitch",
-  "version": "1.0.0",
-  "source": "https://github.com/stackforge/puppet-vswitch",
+  "version": "1.1.0",
   "author": "Endre Karlson, Dan Bode and StackForge Contributors",
   "license": "Apache-2.0",
-  "source": "git://github.com/stackforge/puppet-vswitch.git",
+  "source": "git://github.com/openstack/puppet-vswitch.git",
   "project_page": "https://launchpad.net/puppet-vswitch",
   "issues_url": "https://bugs.launchpad.net/puppet-vswitch",
   "summary": "A module for providing things (ports, bridges) to vSwitches (OVS)",
