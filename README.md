@@ -1,7 +1,7 @@
 VSwitch
 =======
 
-1.0.0 - 2014.2.0 - Juno
+1.1.0 - 2014.2 - Juno
 
 A Puppet module providing things for vSwitches. At the moment OVS is the only
 one I've added but please feel free to contribute new providers through
