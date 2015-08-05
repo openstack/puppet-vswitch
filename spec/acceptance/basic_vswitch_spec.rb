@@ -11,7 +11,20 @@ describe 'basic vswitch' do
       case $::osfamily {
         'RedHat': {
           class { '::openstack_extras::repo::redhat::redhat':
-            release => 'kilo',
+            manage_rdo => false,
+            repo_hash => {
+              # we need kilo repo to be installed for dependencies
+              'rdo-kilo' => {
+                'baseurl' => 'https://repos.fedorapeople.org/repos/openstack/openstack-kilo/el7/',
+                'descr'   => 'RDO kilo',
+                'gpgcheck' => 'no',
+              },
+              'rdo-liberty' => {
+                'baseurl'  => 'http://trunk.rdoproject.org/centos7/current/',
+                'descr'    => 'RDO trunk',
+                'gpgcheck' => 'no',
+              },
+            },
           }
         }
       }
