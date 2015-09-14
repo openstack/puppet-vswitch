@@ -43,7 +43,10 @@ describe 'basic vswitch' do
     end
 
     describe command('ovs-vsctl show') do
-      its(:stdout) { should match /br-beaker/ }
+      describe '#stdout' do
+        subject { super().stdout }
+        it { is_expected.to match /br-beaker/ }
+      end
     end
   end
 end
