@@ -1,7 +1,7 @@
 VSwitch
 =======
 
-2.0.0 - 2015.1 - Kilo
+2.1.0 - 2015.1 - Kilo
 
 A Puppet module providing things for vSwitches. At the moment OVS is the only
 one I've added but please feel free to contribute new providers through
