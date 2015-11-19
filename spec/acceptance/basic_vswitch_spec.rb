@@ -6,15 +6,8 @@ describe 'basic vswitch' do
 
     it 'should work with no errors' do
       pp= <<-EOS
-      Exec { logoutput => 'on_failure' }
-
-      case $::osfamily {
-        'RedHat': {
-          class { '::openstack_extras::repo::redhat::redhat':
-            release => 'liberty',
-          }
-        }
-      }
+      include ::openstack_integration
+      include ::openstack_integration::repos
 
       include ::vswitch::ovs
 
