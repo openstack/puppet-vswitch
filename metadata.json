@@ -1,6 +1,6 @@
 {
   "name": "openstack-vswitch",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "author": "Endre Karlson, Dan Bode and OpenStack Contributors",
   "license": "Apache-2.0",
   "source": "git://github.com/openstack/puppet-vswitch.git",
@@ -27,6 +27,10 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [ "12.04", "14.04" ]
+    },
+    {
+      "operatingsystem":"FreeBSD",
+      "operatingsystemrelease": [ "10.0", "11.0" ]
     }
   ],
   "requirements": [
