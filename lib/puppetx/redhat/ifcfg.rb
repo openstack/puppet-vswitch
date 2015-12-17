@@ -16,6 +16,7 @@ module IFCFG
       @ifcfg = {}
       set(seed)
       set_key('DEVICE', @name)
+      set_key('NAME', @name)
       set_key('DEVICETYPE', 'ovs')
       replace_key('BOOTPROTO', 'OVSBOOTPROTO') if self.class == IFCFG::Bridge
     end
