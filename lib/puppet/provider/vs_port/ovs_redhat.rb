@@ -1,22 +1,23 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetx', 'redhat', 'ifcfg.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__), '.','ovs.rb'))
 
-BASE = '/etc/sysconfig/network-scripts/ifcfg-'
-
-# When not seedling from interface file
-DEFAULT = {
-  'ONBOOT'        => 'yes',
-  'BOOTPROTO'     => 'dhcp',
-  'PEERDNS'       => 'no',
-  'NM_CONTROLLED' => 'no',
-  'NOZEROCONF'    => 'yes' }
-
 Puppet::Type.type(:vs_port).provide(
   :ovs_redhat,
   :parent => Puppet::Type.type(:vs_port).provider(:ovs)
 ) do
 
   desc 'Openvswitch port manipulation for RedHat OSes family'
+
+  self::BASE = '/etc/sysconfig/network-scripts/ifcfg-'
+
+  # When not seedling from interface file
+  self::DEFAULT = {
+    'ONBOOT'        => 'yes',
+    'BOOTPROTO'     => 'dhcp',
+    'PEERDNS'       => 'no',
+    'NM_CONTROLLED' => 'no',
+    'NOZEROCONF'    => 'yes'
+  }
 
   confine    :osfamily => :redhat
   defaultfor :osfamily => :redhat
