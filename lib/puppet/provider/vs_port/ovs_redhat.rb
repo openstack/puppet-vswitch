@@ -8,10 +8,10 @@ Puppet::Type.type(:vs_port).provide(
 
   desc 'Openvswitch port manipulation for RedHat OSes family'
 
-  self::BASE = '/etc/sysconfig/network-scripts/ifcfg-'
+  BASE ||= '/etc/sysconfig/network-scripts/ifcfg-'
 
   # When not seedling from interface file
-  self::DEFAULT = {
+  DEFAULT ||= {
     'ONBOOT'        => 'yes',
     'BOOTPROTO'     => 'dhcp',
     'PEERDNS'       => 'no',
