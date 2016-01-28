@@ -82,6 +82,76 @@ Puppet::Type.newtype(:vs_port) do
     newvalues(:fast, :slow, "")
   end
 
+  newproperty(:vlan_mode, :required_features => :vlan) do
+    desc "VLAN mode for this port.
+
+      Possible values are 'access', 'native-tagged', 'native-untagged' or
+      'trunk'. By default no mode is set (vlan_mode='')."
+
+    defaultto ""
+
+    newvalues(:access, :"native-tagged", :"native-untagged", :trunk, "")
+  end
+
+  newproperty(:vlan_tag, :required_features => :vlan) do
+    desc "VLAN id for this port.
+
+      For an access port this is the ports implicit VLAN id, for a for a
+      'native_tagged' of 'native_untagged' port it's the ports native VLAN.
+      By default no VLAN id is assigned (vlan_tag='')."
+
+    defaultto ""
+
+    munge do |value|
+      case value
+      when ""
+        ""
+      when String
+        value.to_i
+      else
+        value
+      end
+    end
+
+    validate do |value|
+      if value.to_s != "" and (value.to_s !~ /^\d+$/ or value.to_i < 1 or value.to_i > 4094)
+        raise ArgumentError, "'%s' is not a valid VLAN id. VLAN ids must be a number between 1 and 4094." % value
+      end
+    end
+  end
+
+  newproperty(:vlan_trunks, :array_matching => :all, :required_features => :vlan) do
+    desc "Allowed VLAN ids on this port.
+
+      This parameter is only meaningful for no access ports. Ports in native-tagged or
+      native-untagged mode allways allow their native VLAN id.
+
+      VLAN ids may be specified as a list of integers. Defaults to []."
+
+    defaultto []
+
+    validate do |value|
+      begin
+        value = Integer(value)
+      rescue ArgumentError
+        raise ArgumentError, "VLAN ids must be integers and '#{value}' can't be converted to an Integer"
+      end
+      if value < 1 or value > 4094
+        raise ArgumentError, "'#{value}' is not a valid VLAN id. VLAN ids must be a number between 1 and 4094."
+      end
+    end
+
+    # order of VLAN ids is not important
+    def insync?(is)
+      is.sort == should.sort
+    end
+
+    # avoid different formatting for 'is' value than for 'should'
+    def is_to_s(value)
+      value.join(" ")
+    end
+  end
+
   autorequire(:vs_bridge) do
     self[:bridge] if self[:bridge]
   end
