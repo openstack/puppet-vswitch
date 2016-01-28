@@ -27,6 +27,15 @@ Puppet::Type.type(:vs_port).provide(
   commands :ifup   => 'ifup'
   commands :vsctl  => 'ovs-vsctl'
 
+  def initialize(value={})
+    super(value)
+    # Set interface property although it's not really
+    # supported on this provider. This ensures that all
+    # methodes inherited from the ovs provider work as
+    # expected.
+    @resource[:interface] = @resource[:port]
+  end
+
   def create
     unless vsctl('list-ports',
       @resource[:bridge]).include? @resource[:interface]
