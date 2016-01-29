@@ -61,8 +61,16 @@ class vswitch::ovs(
         name      => $::vswitch::params::ovs_service_name,
         hasstatus => false, # the supplied command returns true even if it's not running
         # Not perfect - should spot if either service is not running - but it'll do
-        status    => $ovs_status
+        status    => $ovs_status,
       }
+
+      $major_version = regsubst($::ovs_version, '^(\d+).*', '\1')
+      if $major_version == '1' {
+        $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch_mod.ko"
+      } else {
+        $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch.ko"
+      }
+
     }
     'Redhat': {
       service { 'openvswitch':

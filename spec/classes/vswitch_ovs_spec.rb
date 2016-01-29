@@ -96,7 +96,9 @@ describe 'vswitch::ovs' do
     let :params do default_params end
 
     let :facts do
-      {:osfamily => 'Redhat'}
+      {:osfamily => 'Redhat',
+       :ovs_version     => '1.4.2',
+      }
     end
 
     let :platform_params do redhat_platform_params end
@@ -113,7 +115,9 @@ describe 'vswitch::ovs' do
     end
 
     let :facts do
-      {:osfamily => 'Redhat'}
+      {:osfamily => 'Redhat',
+       :ovs_version     => '1.4.2',
+      }
     end
     let :platform_params do redhat_platform_params end
 
@@ -127,6 +131,7 @@ describe 'vswitch::ovs' do
     let :facts do
       {:osfamily        => 'Debian',
        :operatingsystem => 'Debian',
+       :ovs_version     => '1.4.2',
       }
     end
     let :platform_params do debian_platform_params end
@@ -145,6 +150,7 @@ describe 'vswitch::ovs' do
     let :facts do
       {:osfamily        => 'Debian',
        :operatingsystem => 'Debian',
+       :ovs_version     => '1.4.2',
       }
     end
     let :platform_params do debian_platform_params end
@@ -159,6 +165,7 @@ describe 'vswitch::ovs' do
     let :facts do
       {:osfamily        => 'Debian',
        :operatingsystem => 'ubuntu',
+       :ovs_version     => '1.4.2',
       }
     end
     let :platform_params do ubuntu_platform_params end
@@ -177,6 +184,7 @@ describe 'vswitch::ovs' do
     let :facts do
       {:osfamily        => 'Debian',
        :operatingsystem => 'ubuntu',
+       :ovs_version     => '1.4.2',
       }
     end
     let :platform_params do ubuntu_platform_params end
@@ -191,6 +199,7 @@ describe 'vswitch::ovs' do
     let :facts do
       {:osfamily        => 'FreeBSD',
        :operatingsystem => 'FreeBSD',
+       :ovs_version     => '1.4.2',
       }
     end
     let :platform_params do freebsd_platform_params end
@@ -218,6 +227,7 @@ describe 'vswitch::ovs' do
     let :facts do
       {:osfamily        => 'FreeBSD',
        :operatingsystem => 'FreeBSD',
+       :ovs_version     => '1.4.2',
       }
     end
     let :platform_params do freebsd_platform_params end
