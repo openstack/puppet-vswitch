@@ -64,11 +64,13 @@ class vswitch::ovs(
         status    => $ovs_status,
       }
 
-      $major_version = regsubst($::ovs_version, '^(\d+).*', '\1')
-      if $major_version == '1' {
-        $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch_mod.ko"
-      } else {
-        $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch.ko"
+      if $::ovs_version {
+        $major_version = regsubst($::ovs_version, '^(\d+).*', '\1')
+        if $major_version == '1' {
+          $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch_mod.ko"
+        } else {
+          $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch.ko"
+        }
       }
 
     }
