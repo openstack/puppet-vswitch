@@ -1,9 +1,10 @@
 require 'puppet'
 
-UUID_RE = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/
 
 Puppet::Type.type(:vs_port).provide(:ovs) do
   desc 'Openvswitch port manipulation'
+
+  UUID_RE ||= /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/
 
   has_feature :bonding
   has_feature :vlan
