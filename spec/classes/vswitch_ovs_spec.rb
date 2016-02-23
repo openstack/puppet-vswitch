@@ -21,7 +21,7 @@ describe 'vswitch::ovs' do
     :ovs_service_name      => 'openvswitch-switch',
     :provider              => 'ovs',
     :service_hasstatus     => false,
-    :service_status        => '/etc/init.d/openvswitch-switch status | fgrep "is running"',
+    :service_status        => '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi',
   }
   end
 
