@@ -38,7 +38,7 @@ Puppet::Type.type(:vs_port).provide(
 
   def create
     unless vsctl('list-ports',
-      @resource[:bridge]).include? @resource[:interface]
+      @resource[:bridge]).include? @resource[:port]
       super
     end
 
@@ -48,31 +48,31 @@ Puppet::Type.type(:vs_port).provide(
 
       if link?
         extras = dynamic_default if dynamic?
-        if File.exist?(BASE + @resource[:interface])
-          template = cleared(from_str(File.read(BASE + @resource[:interface])))
+        if File.exist?(BASE + @resource[:port])
+          template = cleared(from_str(File.read(BASE + @resource[:port])))
         end
       end
 
-      port = IFCFG::Port.new(@resource[:interface], @resource[:bridge])
+      port = IFCFG::Port.new(@resource[:port], @resource[:bridge])
       if vlan?
         port.set('VLAN' => 'yes')
       end
 
       if bonding?
         port.set('BONDING_MASTER' => 'yes')
-        config = from_str(File.read(BASE + @resource[:interface]))
+        config = from_str(File.read(BASE + @resource[:port]))
         port.set('BONDING_OPTS' => config['BONDING_OPTS']) if config.has_key?('BONDING_OPTS')
       end
 
-      port.save(BASE + @resource[:interface])
+      port.save(BASE + @resource[:port])
 
       bridge = IFCFG::Bridge.new(@resource[:bridge], template)
       bridge.set(extras) if extras
       bridge.save(BASE + @resource[:bridge])
 
       ifdown(@resource[:bridge])
-      ifdown(@resource[:interface])
-      ifup(@resource[:interface])
+      ifdown(@resource[:port])
+      ifup(@resource[:port])
       ifup(@resource[:bridge])
     end
   end
@@ -80,7 +80,7 @@ Puppet::Type.type(:vs_port).provide(
   def exists?
     if interface_physical?
       super &&
-      IFCFG::OVS.exists?(@resource[:interface]) &&
+      IFCFG::OVS.exists?(@resource[:port]) &&
       IFCFG::OVS.exists?(@resource[:bridge])
     else
       super
@@ -90,8 +90,8 @@ Puppet::Type.type(:vs_port).provide(
   def destroy
     if interface_physical?
       ifdown(@resource[:bridge])
-      ifdown(@resource[:interface])
-      IFCFG::OVS.remove(@resource[:interface])
+      ifdown(@resource[:port])
+      IFCFG::OVS.remove(@resource[:port])
       IFCFG::OVS.remove(@resource[:bridge])
     end
     super
@@ -101,7 +101,7 @@ Puppet::Type.type(:vs_port).provide(
 
   def bonding?
     # To do: replace with iproute2 commands
-    if File.exists?("/proc/net/bonding/#{@resource[:interface]}")
+    if File.exists?("/proc/net/bonding/#{@resource[:port]}")
       return true
     else
       return false
@@ -112,12 +112,12 @@ Puppet::Type.type(:vs_port).provide(
 
   def dynamic?
     device = ''
-    device = ip('addr', 'show', @resource[:interface])
+    device = ip('addr', 'show', @resource[:port])
     return device =~ /dynamic/ ? true : false
   end
 
   def link?
-    if File.read("/sys/class/net/#{@resource[:interface]}/operstate") =~ /up/
+    if File.read("/sys/class/net/#{@resource[:port]}/operstate") =~ /up/
       return true
     else
       return false
@@ -127,9 +127,9 @@ Puppet::Type.type(:vs_port).provide(
   end
 
   def dynamic_default
-    list = { 'OVSDHCPINTERFACES' => @resource[:interface] }
+    list = { 'OVSDHCPINTERFACES' => @resource[:port] }
     # Persistent MAC address taken from interface
-    bridge_mac_address = File.read("/sys/class/net/#{@resource[:interface]}/address").chomp
+    bridge_mac_address = File.read("/sys/class/net/#{@resource[:port]}/address").chomp
     if bridge_mac_address != ''
       list.merge!({ 'OVS_EXTRA' =>
         "\"set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address}\"" })
@@ -140,7 +140,7 @@ Puppet::Type.type(:vs_port).provide(
   def interface_physical?
     # OVS ports don't have entries in /sys/class/net
     # Alias interfaces (ethX:Y) must use ethX entries
-    interface = @resource[:interface].sub(/:\d/, '')
+    interface = @resource[:port].sub(/:\d/, '')
     ! Dir["/sys/class/net/#{interface}"].empty?
   end
 
@@ -166,7 +166,7 @@ Puppet::Type.type(:vs_port).provide(
   end
 
   def vlan?
-    if File.read('/proc/net/vlan/config') =~ /#{@resource[:interface]}/
+    if File.read('/proc/net/vlan/config') =~ /#{@resource[:port]}/
       return true
     else
       return false
