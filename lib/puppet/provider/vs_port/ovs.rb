@@ -26,14 +26,14 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
     # allows this provider to be used as a base class for providers not
     # supporting all properties.
     sync_properties = []
-    if bonding?
+    if @resource.provider.class.feature?(:bonding)
       sync_properties += [:interface,
                           :bond_mode,
                           :lacp,
                           :lacp_time,
                          ]
     end
-    if vlan?
+    if @resource.provider.class.feature?(:vlan)
       sync_properties += [:vlan_mode,
                           :vlan_tag,
                           :vlan_trunks,
