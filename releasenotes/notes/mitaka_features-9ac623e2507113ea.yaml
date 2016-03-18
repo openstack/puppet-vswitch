@@ -1,0 +1,4 @@
+---
+features:
+  - Add VLAN related parameters.
+  - Suppport for bonded interfaces.

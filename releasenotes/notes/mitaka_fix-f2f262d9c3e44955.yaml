@@ -1,0 +1,8 @@
+---
+fixes:
+  - Remove duplicate loading of constants.
+  - Fix kernel module filename for OVS versions.
+  - Make sure the status command returns failure if either the ovsdb-server
+    or ovs-vswitchd are stopped.
+  - Set NAME as well as DEVICE in ifcfg, to work with modern NetworkManager
+    in RHEL systems.
