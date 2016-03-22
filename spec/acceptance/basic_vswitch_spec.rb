@@ -14,6 +14,11 @@ describe 'basic vswitch' do
       vs_bridge { 'br-beaker':
         ensure => present,
       }
+
+      vs_config { 'external_ids:ovn-remote':
+        ensure => present,
+        value => 'tcp:127.0.0.1:2300',
+      }
       EOS
 
 
@@ -26,6 +31,13 @@ describe 'basic vswitch' do
       describe '#stdout' do
         subject { super().stdout }
         it { is_expected.to match /br-beaker/ }
+      end
+    end
+
+    describe command('ovs-vsctl get Open_vSwitch . external_ids:ovn-remote') do
+      describe '#stdout' do
+        subject { super().stdout }
+        it { is_expected.to match /\"tcp:127.0.0.1:2300\"/ }
       end
     end
   end
