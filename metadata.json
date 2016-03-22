@@ -31,6 +31,10 @@
     {
       "operatingsystem":"FreeBSD",
       "operatingsystemrelease": [ "10.0", "11.0" ]
+    },
+    {
+      "operatingsystem":"Solaris",
+      "operatingsystemrelease": [ "11.3", "12.0" ]
     }
   ],
   "requirements": [

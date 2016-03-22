@@ -47,6 +47,18 @@ describe 'vswitch::ovs' do
   }
   end
 
+  let :solaris_platform_params do {
+    :ovs_package_name      => 'service/network/openvswitch',
+    :ovs_service_name      => 'application/openvswitch/vswitch-server:default',
+    :ovsdb_service_name    => 'application/openvswitch/ovsdb-server:default',
+    :provider              => 'ovs',
+    :service_hasstatus     => nil,
+    :ovsdb_hasstatus       => nil,
+    :service_status        => '/usr/bin/svcs -H -o state application/openvswitch/vswitch-server:default | grep online',
+    :ovsdb_status          => '/usr/bin/svcs -H -o state application/openvswitch/ovsdb-server:default | grep online',
+  }
+  end
+
   shared_examples_for 'vswitch ovs' do
     it 'contains params' do
         is_expected.to contain_class('vswitch::params')
@@ -247,6 +259,59 @@ describe 'vswitch::ovs' do
 
     it 'ovs-vswitchd requires ovsdb-server' do
       is_expected.to contain_service(platform_params[:ovsdb_service_name]).that_notifies("Service[#{platform_params[:ovs_package_name]}]")
+    end
+  end
+
+  context 'on Solaris with default parameters' do
+    let :params do default_params end
+
+    let :facts do
+      {:osfamily        => 'Solaris',
+       :operatingsystem => 'Solaris',
+       :ovs_version     => '2.3.1',
+      }
+    end
+    let :platform_params do solaris_platform_params end
+
+    it_configures 'vswitch ovs'
+    it_configures 'do not install dkms'
+
+    it 'configures ovsdb service' do
+        is_expected.to contain_service('ovsdb-server').with(
+          :ensure    => true,
+          :enable    => true,
+          :name      => platform_params[:ovsdb_service_name],
+          :hasstatus => platform_params[:ovsdb_hasstatus],
+          :status    => platform_params[:ovsdb_status],
+        )
+    end
+  end
+
+  context 'on Solaris with parameters' do
+    let :params do {
+      :package_ensure => 'latest',
+    }
+    end
+
+    let :facts do
+      {:osfamily        => 'Solaris',
+       :operatingsystem => 'Solaris',
+       :ovs_version     => '2.3.1',
+      }
+    end
+    let :platform_params do solaris_platform_params end
+
+    it_configures 'vswitch ovs'
+    it_configures 'do not install dkms'
+
+    it 'configures ovsdb service' do
+        is_expected.to contain_service('ovsdb-server').with(
+          :ensure    => true,
+          :enable    => true,
+          :name      => platform_params[:ovsdb_service_name],
+          :hasstatus => platform_params[:ovsdb_hasstatus],
+          :status    => platform_params[:ovsdb_status],
+        )
     end
   end
 
