@@ -4,6 +4,8 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
   commands :vsctl     => 'ovs-vsctl'
   if Facter.value(:operatingsystem) == 'FreeBSD'
     commands :ifconfig  => 'ifconfig'
+  elsif Facter.value(:operatingsystem) == 'Solaris'
+    commands :ipadm  => '/usr/sbin/ipadm'
   else
     commands :ip  => 'ip'
   end
@@ -19,6 +21,8 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     if Facter.value(:operatingsystem) == 'FreeBSD'
       vsctl('set','bridge',@resource[:name],'datapath_type=netdev')
       ifconfig(@resource[:name],'up')
+    elsif Facter.value(:operatingsystem) == 'Solaris'
+      ipadm('create-ip', @resource[:name])
     else
       ip('link', 'set', @resource[:name], 'up')
     end

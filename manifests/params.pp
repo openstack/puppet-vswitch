@@ -23,6 +23,13 @@ class vswitch::params {
       $ovs_status            = "/usr/sbin/service ${ovs_service_name} onestatus"
       $ovsdb_status          = "/usr/sbin/service ${ovsdb_service_name} onestatus"
     }
+    'Solaris': {
+      $ovs_package_name      = 'service/network/openvswitch'
+      $ovs_service_name      = 'application/openvswitch/vswitch-server:default'
+      $ovsdb_service_name    = 'application/openvswitch/ovsdb-server:default'
+      $ovs_status            = "/usr/bin/svcs -H -o state ${ovs_service_name} | grep online"
+      $ovsdb_status          = "/usr/bin/svcs -H -o state ${ovsdb_service_name} | grep online"
+    }
     default: {
       fail " Osfamily ${::osfamily} not supported yet"
     }
