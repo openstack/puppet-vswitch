@@ -1,3 +1,8 @@
+## 4.0.0 and beyond
+
+From 4.0.0 release and beyond, release notes are published on
+[docs.openstack.org](http://docs.openstack.org/releasenotes/puppet-vswitch/).
+
 ##2015-11-25 - 3.0.0
 ###Summary
 

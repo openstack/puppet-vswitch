@@ -1,7 +1,7 @@
 VSwitch
 =======
 
-3.0.0 - 2015.2 - Liberty
+4.0.0 - 2016.1 - Mitaka
 
 A Puppet module providing things for vSwitches. At the moment OVS is the only
 one I've added but please feel free to contribute new providers through
