@@ -1,0 +1,5 @@
+---
+deprecations:
+  - Do not deploy openvswitch-datapath-dkms by default. In recent releases of
+    Ubuntu, openvswitch-datapath-dkms packaging is not needed anymore, so we set dkms_ensure
+    to False by default from now.

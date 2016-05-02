@@ -4,7 +4,6 @@ describe 'vswitch::ovs' do
 
   let :default_params do {
     :package_ensure => 'present',
-    :dkms_ensure    => true,
   }
   end
 
@@ -149,13 +148,13 @@ describe 'vswitch::ovs' do
     let :platform_params do debian_platform_params end
 
     it_configures 'vswitch ovs'
-    it_configures 'install dkms'
+    it_configures 'do not install dkms'
   end
 
   context 'on Debian with parameters' do
     let :params do {
       :package_ensure => 'latest',
-      :dkms_ensure    => false,
+      :dkms_ensure    => true,
     }
     end
 
@@ -168,7 +167,7 @@ describe 'vswitch::ovs' do
     let :platform_params do debian_platform_params end
 
     it_configures 'vswitch ovs'
-    it_configures 'do not install dkms'
+    it_configures 'install dkms'
   end
 
   context 'on Ubuntu with default parameters' do
@@ -183,13 +182,13 @@ describe 'vswitch::ovs' do
     let :platform_params do ubuntu_platform_params end
 
     it_configures 'vswitch ovs'
-    it_configures 'install dkms'
+    it_configures 'do not install dkms'
   end
 
   context 'on Ubuntu with parameters' do
     let :params do {
       :package_ensure => 'latest',
-      :dkms_ensure    => false,
+      :dkms_ensure    => true,
     }
     end
 
@@ -202,7 +201,7 @@ describe 'vswitch::ovs' do
     let :platform_params do ubuntu_platform_params end
 
     it_configures 'vswitch ovs'
-    it_configures 'do not install dkms'
+    it_configures 'install dkms'
   end
 
   context 'on FreeBSD with default parameters' do

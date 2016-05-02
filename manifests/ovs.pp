@@ -17,11 +17,11 @@
 #   is not available anymore for openvswitch.
 #   For RedHat this parameter is ignored.
 #   If you like turn off dkms on Debian/Ubuntu set to
-#   false. defaults to true.
+#   false. defaults to false.
 
 class vswitch::ovs(
   $package_ensure = 'present',
-  $dkms_ensure    = true,
+  $dkms_ensure    = false,
 ) {
 
   include ::vswitch::params
