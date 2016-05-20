@@ -1,3 +1,16 @@
+##2016-05-20 - 3.1.0
+
+###Summary
+
+This is a bugfix release in the Liberty series.
+
+####Bugfixes
+
+- Add missing dev keyword to ip link command
+- Fix vs_port usage in Red Hat distros
+- Remove duplicate loading of constants
+
+
 ##2015-11-25 - 3.0.0
 ###Summary
 
