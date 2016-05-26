@@ -107,8 +107,8 @@ describe 'vswitch::ovs' do
     let :params do default_params end
 
     let :facts do
-      {:osfamily => 'Redhat',
-       :ovs_version     => '1.4.2',
+      {:osfamily    => 'Redhat',
+       :ovs_version => '1.4.2',
       }
     end
 
@@ -126,8 +126,8 @@ describe 'vswitch::ovs' do
     end
 
     let :facts do
-      {:osfamily => 'Redhat',
-       :ovs_version     => '1.4.2',
+      {:osfamily    => 'Redhat',
+       :ovs_version => '1.4.2',
       }
     end
     let :platform_params do redhat_platform_params end
@@ -174,9 +174,10 @@ describe 'vswitch::ovs' do
     let :params do default_params end
 
     let :facts do
-      {:osfamily        => 'Debian',
-       :operatingsystem => 'ubuntu',
-       :ovs_version     => '1.4.2',
+      {:osfamily                  => 'Debian',
+       :operatingsystem           => 'Ubuntu',
+       :operatingsystemmajrelease => '14',
+       :ovs_version               => '1.4.2',
       }
     end
     let :platform_params do ubuntu_platform_params end
@@ -193,9 +194,10 @@ describe 'vswitch::ovs' do
     end
 
     let :facts do
-      {:osfamily        => 'Debian',
-       :operatingsystem => 'ubuntu',
-       :ovs_version     => '1.4.2',
+      {:osfamily                  => 'Debian',
+       :operatingsystem           => 'Ubuntu',
+       :operatingsystemmajrelease => '14',
+       :ovs_version               => '1.4.2',
       }
     end
     let :platform_params do ubuntu_platform_params end
