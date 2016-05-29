@@ -47,29 +47,6 @@ class vswitch::ovs(
         }
       }
 
-      case $::operatingsystem {
-        'Ubuntu': {
-          # ubuntu 16.04 doesn't have upstart
-          # this workaround should be removed when https://bugs.launchpad.net/ubuntu/+source/openvswitch/+bug/1585201
-          # will be resolved
-          if versioncmp($::operatingsystemmajrelease, '16') >= 0 {
-            $ovs_status = '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi'
-          } else {
-            $ovs_status = '/sbin/status openvswitch-switch | fgrep "start/running"'
-          }
-        }
-        default: {
-          $ovs_status = '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi'
-        }
-      }
-      service { 'openvswitch':
-        ensure    => true,
-        enable    => true,
-        name      => $::vswitch::params::ovs_service_name,
-        hasstatus => false, # the supplied command returns true even if it's not running
-        status    => $ovs_status,
-      }
-
       if $::ovs_version {
         $major_version = regsubst($::ovs_version, '^(\d+).*', '\1')
         if $major_version == '1' {
@@ -80,49 +57,33 @@ class vswitch::ovs(
       }
 
     }
-    'Redhat': {
-      service { 'openvswitch':
-        ensure => true,
-        enable => true,
-        name   => $::vswitch::params::ovs_service_name,
-      }
-    }
     'FreeBSD': {
       Package {
         provider => 'pkgng',
       }
-      service { 'ovsdb-server':
-        ensure => true,
-        enable => true,
-        name   => $::vswitch::params::ovsdb_service_name,
-        status => $::vswitch::params::ovsdb_status,
-      }
-      ~>
-      service { 'openvswitch':
-        ensure => true,
-        enable => true,
-        name   => $::vswitch::params::ovs_service_name,
-        status => $::vswitch::params::ovs_status,
-      }
-    }
-    'Solaris': {
-      service { 'ovsdb-server':
-        ensure => true,
-        enable => true,
-        name   => $::vswitch::params::ovsdb_service_name,
-        status => $::vswitch::params::ovsdb_status,
-      }
-      ~>
-      service { 'openvswitch':
-        ensure => true,
-        enable => true,
-        name   => $::vswitch::params::ovs_service_name,
-        status => $::vswitch::params::ovs_status,
-      }
     }
     default: {
-      fail( "${::osfamily} not yet supported by puppet-vswitch")
+      # to appease the lint gods.
     }
+  }
+
+  service { 'openvswitch':
+    ensure    => true,
+    enable    => true,
+    name      => $::vswitch::params::ovs_service_name,
+    status    => $::vswitch::params::ovs_status,
+    hasstatus => $::vswitch::params::ovs_service_hasstatus
+  }
+
+  if $::vswitch::params::ovsdb_service_name {
+    service { 'ovsdb-server':
+      ensure => true,
+      enable => true,
+      name   => $::vswitch::params::ovsdb_service_name,
+      status => $::vswitch::params::ovsdb_status,
+    }
+
+    Service['ovsdb-server'] ~> Service['openvswitch']
   }
 
   package { $::vswitch::params::ovs_package_name:

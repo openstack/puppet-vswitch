@@ -1,0 +1,4 @@
+---
+fixes:
+  - Updates to service options for ovs when running under Debian jessie to
+    not restart ovs on each puppet run.
