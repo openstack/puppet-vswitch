@@ -1,6 +1,7 @@
 # vswitch params
 #
 class vswitch::params {
+  include ::openstacklib::defaults
   case $::osfamily {
     'Redhat': {
       $ovs_package_name      = 'openvswitch'
