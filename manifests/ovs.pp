@@ -128,6 +128,7 @@ class vswitch::ovs(
   package { $::vswitch::params::ovs_package_name:
     ensure => $package_ensure,
     before => Service['openvswitch'],
+    tag    => 'openvswitch',
   }
 
   Service['openvswitch'] -> Vs_port<||>

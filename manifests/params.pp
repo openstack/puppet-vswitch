@@ -2,15 +2,24 @@
 #
 class vswitch::params {
   include ::openstacklib::defaults
+
+  if versioncmp($::puppetversion, '4.0.0') < 0 and versioncmp($::puppetversion, '3.6.1') >= 0 {
+    Package<| tag == 'openvswitch' |> {
+      allow_virtual => true,
+    }
+  }
+
   case $::osfamily {
     'Redhat': {
       $ovs_package_name      = 'openvswitch'
+      $ovs_dpdk_package_name = 'openvswitch-dpdk'
       $ovs_dkms_package_name = undef
       $ovs_service_name      = 'openvswitch'
       $provider              = 'ovs_redhat'
     }
     'Debian': {
       $ovs_package_name      = 'openvswitch-switch'
+      $ovs_dpdk_package_name = 'openvswitch-switch-dpdk'
       $ovs_dkms_package_name = 'openvswitch-datapath-dkms'
       $ovs_service_name      = 'openvswitch-switch'
       $provider              = 'ovs'
