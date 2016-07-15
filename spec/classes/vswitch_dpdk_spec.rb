@@ -5,15 +5,7 @@ describe 'vswitch::dpdk' do
   let :default_params do {
     :package_ensure   => 'present',
     :core_list        => '1,2',
-    :memory_channels  => '2'
-  }
-  end
-
-  let :socket_mem_params do {
-    :package_ensure   => 'present',
-    :core_list        => '1,2',
     :memory_channels  => '2',
-    :socket_mem       => '1024'
   }
   end
 
@@ -47,7 +39,6 @@ describe 'vswitch::dpdk' do
         :before   => 'Service[openvswitch]',
       )
     end
-
   end
 
   shared_examples_for 'vswitch dpdk mandatory params' do
@@ -55,20 +46,39 @@ describe 'vswitch::dpdk' do
       is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
         :path   => '/etc/sysconfig/openvswitch',
         :match  => '^DPDK_OPTIONS.*',
-        :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2 "',
+        :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2  "',
         :before => 'Service[openvswitch]',
       )
     end
   end
 
-  shared_examples_for 'vswitch dpdk socket_mem param' do
-    it 'configures dpdk options for ovs' do
-      is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
-        :path   => '/etc/sysconfig/openvswitch',
-        :match  => '^DPDK_OPTIONS.*',
-        :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2 --socket-mem 1024"',
-        :before => 'Service[openvswitch]',
-      )
+  shared_examples_for 'vswitch dpdk additional params' do
+    context 'when passing socket mem' do
+      before :each do
+        params.merge!(:socket_mem => '1024')
+      end
+      it 'configures dpdk options with socket memory' do
+        is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
+          :path   => '/etc/sysconfig/openvswitch',
+          :match  => '^DPDK_OPTIONS.*',
+          :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2 --socket-mem 1024 "',
+          :before => 'Service[openvswitch]',
+        )
+      end
+    end
+
+    context 'when providing valid driver type facts' do
+      before :each do
+        params.merge!(:driver_type => 'test')
+      end
+      it 'configures dpdk options with pci address for driver test' do
+        is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
+          :path   => '/etc/sysconfig/openvswitch',
+          :match  => '^DPDK_OPTIONS.*',
+          :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2  -w 0000:00:05.0 -w 0000:00:05.1"',
+          :before => 'Service[openvswitch]',
+        )
+      end
     end
   end
 
@@ -89,19 +99,20 @@ describe 'vswitch::dpdk' do
   end
 
   context 'on redhat with additonal parameters' do
-    let :params do socket_mem_params end
+    let :params do default_params end
 
     let :facts do
       OSDefaults.get_facts({
         :osfamily    => 'Redhat',
         :ovs_version => '1.4.2',
+        :pci_address_driver_test => '0000:00:05.0,0000:00:05.1'
       })
     end
 
     let :platform_params do redhat_platform_params end
 
     it_configures 'vswitch dpdk'
-    it_configures 'vswitch dpdk socket_mem param'
+    it_configures 'vswitch dpdk additional params'
   end
 
 end

@@ -1,0 +1,3 @@
+---
+features:
+  - DPDK puppet class is added to configure DPDK with ovs.
