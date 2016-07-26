@@ -35,6 +35,8 @@ class vswitch::dpdk (
 
   include ::vswitch::params
 
+  kmod::load { 'vfio-pci': }
+
   package { $::vswitch::params::ovs_dpdk_package_name:
     ensure => $package_ensure,
     before => Service['openvswitch'],

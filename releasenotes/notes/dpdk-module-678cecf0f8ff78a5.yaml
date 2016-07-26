@@ -1,0 +1,3 @@
+---
+features:
+  - DPDK driver kernel module is loaded persistently.

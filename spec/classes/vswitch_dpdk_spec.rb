@@ -82,6 +82,13 @@ describe 'vswitch::dpdk' do
     end
   end
 
+  shared_examples_for 'vswitch dpdk for modprobe' do
+    it 'should have dpdk driver modules file' do
+      is_expected.to contain_kmod__load('vfio-pci')
+    end
+  end
+
+
   context 'on redhat with only mandatory parameters' do
     let :params do default_params end
 
@@ -113,6 +120,7 @@ describe 'vswitch::dpdk' do
 
     it_configures 'vswitch dpdk'
     it_configures 'vswitch dpdk additional params'
+    it_configures 'vswitch dpdk for modprobe'
   end
 
 end
