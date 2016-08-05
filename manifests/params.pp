@@ -12,7 +12,9 @@ class vswitch::params {
   case $::osfamily {
     'Redhat': {
       $ovs_package_name      = 'openvswitch'
-      $ovs_dpdk_package_name = 'openvswitch-dpdk'
+      # OVS2.5 in Red Hat family is unified package which will support plain
+      # OVS and also DPDK (if enabled at runtime).
+      $ovs_dpdk_package_name = 'openvswitch'
       $ovs_dkms_package_name = undef
       $ovs_service_name      = 'openvswitch'
       $provider              = 'ovs_redhat'

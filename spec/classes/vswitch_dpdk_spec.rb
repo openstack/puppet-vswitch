@@ -10,7 +10,7 @@ describe 'vswitch::dpdk' do
   end
 
   let :redhat_platform_params do {
-    :ovs_dpdk_package_name => 'openvswitch-dpdk',
+    :ovs_dpdk_package_name => 'openvswitch',
     :ovs_service_name      => 'openvswitch',
     :provider              => 'ovs_redhat',
   }
