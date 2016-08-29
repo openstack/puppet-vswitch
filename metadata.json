@@ -42,6 +42,6 @@
     { "name": "puppet","version_requirement": "3.x" }
   ],
   "dependencies": [
-    { "name": "camptocamp/puppet-kmod" }
+    { "name": "camptocamp/kmod" }
   ]
 }
