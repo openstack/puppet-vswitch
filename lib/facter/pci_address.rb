@@ -8,7 +8,7 @@ drivers_lines.each do |line|
     pci_embed = line[0]
     driver = line[-1]
     bus = pci_embed[0] + pci_embed[1]
-    dev = ((pci_embed[2].to_i(16) << 1) + (pci_embed[3].to_i(16) >> 3)).to_s(16).upcase
+    dev = ((pci_embed[2].to_i(16) << 1) + (pci_embed[3].to_i(16) >> 3)).to_s(16).rjust(2,"0").upcase
     fun = (pci_embed[3].to_i(16) & 7).to_s(16).upcase
     pci = "0000:" + bus + ":" + dev + "." + fun
     if not drivers.has_key?(driver)
