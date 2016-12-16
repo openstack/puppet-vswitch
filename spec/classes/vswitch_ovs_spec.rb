@@ -264,13 +264,18 @@ describe 'vswitch::ovs' do
               :service_hasstatus     => true,
             }
           elsif facts[:operatingsystem] == 'Ubuntu'
+            if Puppet::Util::Package.versioncmp(facts[:operatingsystemmajrelease], '16') >= 0
+              status_cmd = '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi'
+            else
+              status_cmd = '/sbin/status openvswitch-switch | fgrep "start/running"'
+            end
             {
               :ovs_package_name      => 'openvswitch-switch',
               :ovs_dkms_package_name => 'openvswitch-datapath-dkms',
               :ovs_service_name      => 'openvswitch-switch',
               :provider              => 'ovs',
               :service_hasstatus     => false,
-              :service_status        => '/sbin/status openvswitch-switch | fgrep "start/running"',
+              :service_status        => status_cmd
             }
           end
         when 'RedHat'
