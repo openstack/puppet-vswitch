@@ -93,6 +93,7 @@ class vswitch::dpdk (
   case $::osfamily {
     'Redhat': {
       file_line { '/etc/sysconfig/openvswitch':
+        notify  => Service['openvswitch'],
         path    => '/etc/sysconfig/openvswitch',
         match   => '^DPDK_OPTIONS.*',
         line    => $options,
