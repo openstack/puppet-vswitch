@@ -1,6 +1,6 @@
 {
   "name": "openstack-vswitch",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "author": "Endre Karlson, Dan Bode and OpenStack Contributors",
   "license": "Apache-2.0",
   "source": "git://github.com/openstack/puppet-vswitch.git",
