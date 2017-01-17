@@ -152,6 +152,17 @@ Puppet::Type.newtype(:vs_port) do
     end
   end
 
+  newparam(:fail_mode) do
+    desc "Set fail mode for this port.
+
+      Possible values are 'standalone' or 'secure'.
+      By default standalone is used."
+
+    defaultto "standalone"
+
+    newvalues(:"standalone", :"secure")
+  end
+
   autorequire(:vs_bridge) do
     self[:bridge] if self[:bridge]
   end
