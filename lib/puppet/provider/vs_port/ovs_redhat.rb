@@ -44,7 +44,7 @@ Puppet::Type.type(:vs_port).provide(
 
     if interface_physical?
       template = DEFAULT
-      extras   = nil
+      extras = { 'OVS_EXTRA' => "\"set bridge #{@resource[:bridge]} fail_mode=#{@resource[:fail_mode]}\"" }
 
       if link?
         extras = dynamic_default if dynamic?
@@ -132,7 +132,7 @@ Puppet::Type.type(:vs_port).provide(
     bridge_mac_address = File.read("/sys/class/net/#{@resource[:port]}/address").chomp
     if bridge_mac_address != ''
       list.merge!({ 'OVS_EXTRA' =>
-        "\"set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address}\"" })
+        "\"set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address} fail_mode=#{@resource[:fail_mode]}\"" })
     end
     list
   end
