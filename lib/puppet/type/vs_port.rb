@@ -44,6 +44,20 @@ Puppet::Type.newtype(:vs_port) do
     end
   end
 
+  newproperty(:interface_type, :required_features => :interface_type) do
+    desc "The type of network interface connected to this port.
+
+      Supported types are 'system', 'internal' and 'tap'. Currently the
+      interface configuration required for tunnel ports is not supported.
+
+      Currently all interfaces on a port are set to the same type. Bonding
+      configurations with different types on the same port are not supported."
+
+    defaultto :system
+
+    newvalues(:system, :internal, :tap)
+  end
+
   newproperty(:bond_mode, :required_features => :bonding) do
     desc "Interface bonding mode for this port.
 

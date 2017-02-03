@@ -8,6 +8,7 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
 
   has_feature :bonding
   has_feature :vlan
+  has_feature :interface_type
 
   commands :vsctl => 'ovs-vsctl'
 
@@ -39,6 +40,10 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
                           :vlan_trunks,
                          ]
     end
+    if @resource.provider.class.feature?(:interface_type)
+      sync_properties += [:interface_type,
+                         ]
+    end
     for prop_name in sync_properties
       property = @resource.property(prop_name)
       property.sync unless property.safe_insync?(property.retrieve)
@@ -62,6 +67,17 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
     ifaces = (1..new.length).map { |i| "@#{i}" } + keep_uids
     args += ['set', 'Port', @resource[:port], "interfaces=#{ifaces.join(',')}"]
     vsctl(*args)
+  end
+
+  def interface_type
+    types = get_port_interface_column('type').uniq
+    types != nil ? types.join(' ') : :system
+  end
+
+  def interface_type=(value)
+    @resource.property(:interface).retrieve.each do |iface|
+      vsctl('set', 'Interface', iface, "type=#{value}")
+    end
   end
 
   def bond_mode
