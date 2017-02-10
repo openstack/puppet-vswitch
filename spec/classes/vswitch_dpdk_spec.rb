@@ -4,7 +4,6 @@ describe 'vswitch::dpdk' do
 
   let :default_params do {
     :package_ensure   => 'present',
-    :memory_channels  => '2',
   }
   end
 
@@ -21,15 +20,7 @@ describe 'vswitch::dpdk' do
 
   shared_examples_for 'vswitch::dpdk on RedHat' do
     let(:params) { default_params }
-    context 'should raise error when not passing host_core_list' do
-      it_raises 'a Puppet::Error', /host_core_list must be set for ovs agent when DPDK is enabled/
-    end
-
-    context 'basic parameters' do
-      before :each do
-        params.merge!(:host_core_list => '1,2')
-      end
-
+    context 'shall  write DPDK_OPTIONS as well as ovsdb params' do
       it 'include the class' do
         is_expected.to contain_class('vswitch::dpdk')
       end
@@ -43,8 +34,6 @@ describe 'vswitch::dpdk' do
           :ensure     => true,
           :enable     => true,
           :name       => platform_params[:ovs_service_name],
-          :hasstatus  => platform_params[:service_hasstatus],
-          :status     => platform_params[:service_status],
         )
       end
 
@@ -59,36 +48,106 @@ describe 'vswitch::dpdk' do
       it 'should have dpdk driver modules file' do
         is_expected.to contain_kmod__load('vfio-pci')
       end
+      it 'configures dpdk options with socket memory' do
+        is_expected.to contain_file_line('/etc/sysconfig/openvswitch')
 
-      it 'configures dpdk options for ovs' do
-        is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
-          :path   => '/etc/sysconfig/openvswitch',
-          :match  => '^DPDK_OPTIONS.*',
-          :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2  "',
-          :before => 'Service[openvswitch]',
+        is_expected.to contain_vs_config('other_config:dpdk-init').with(
+          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
+          :value  => nil, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
+          :value => nil, :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
+          :value => nil, :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-extra').with(
+          :value => nil, :wait => false, :skip_if_version => "2.5",
         )
       end
     end
-    context 'when passing socket mem' do
+
+    context 'when passing all empty params' do
       before :each do
-        params.merge!(:host_core_list => '1,2')
-        params.merge!(:socket_mem => '1024')
+        params.merge!(:host_core_list  => '')
+        params.merge!(:socket_mem      => '')
+        params.merge!(:memory_channels => '' )
+        params.merge!(:pmd_core_list => '')
       end
-      it 'configures dpdk options with socket memory' do
+      it 'configures dpdk options' do
+        is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
+          :path   => '/etc/sysconfig/openvswitch',
+          :match  => '^DPDK_OPTIONS.*',
+          :before => 'Service[openvswitch]',
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-init').with(
+          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
+          :value  => nil, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
+          :value => '', :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
+          :value => nil, :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-extra').with(
+          :value => nil, :wait => false, :skip_if_version => "2.5",
+        )
+
+      end
+    end
+
+
+    context 'when passing all params' do
+      before :each do
+        params.merge!(:host_core_list  => '1,2')
+        params.merge!(:socket_mem      => '1024')
+        params.merge!(:memory_channels => 2)
+        params.merge!(:pmd_core_list => '22,23,24,25,66,67,68,69')
+      end
+      it 'configures dpdk options' do
         is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
           :path   => '/etc/sysconfig/openvswitch',
           :match  => '^DPDK_OPTIONS.*',
           :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2 --socket-mem 1024 "',
           :before => 'Service[openvswitch]',
         )
+        is_expected.to contain_vs_config('other_config:dpdk-init').with(
+          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
+          :value  => '3c0000000003c00000', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
+          :value => '1024', :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
+          :value => '6', :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-extra').with(
+          :value => '-n 2', :wait => false, :skip_if_version => "2.5",
+        )
       end
     end
 
     context 'when providing valid driver type facts' do
+      let :facts do
+        OSDefaults.get_facts({
+          :osfamily                => 'Redhat',
+          :operatingsystem         => 'RedHat',
+          :ovs_version             => '2.5.1',
+          :pci_address_driver_test => '0000:00:05.0,0000:00:05.1'
+        })
+      end
+
       before :each do
-        params.merge!(:host_core_list => '1,2')
-        params.merge!(:driver_type => 'test')
-        facts.merge!({ :pci_address_driver_test => '0000:00:05.0,0000:00:05.1' })
+        params.merge!(:host_core_list  => '1,2')
+        params.merge!(:driver_type     => 'test')
+        params.merge!(:memory_channels => 2)
       end
       it 'configures dpdk options with pci address for driver test' do
         is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
@@ -97,37 +156,19 @@ describe 'vswitch::dpdk' do
           :line   => 'DPDK_OPTIONS = "-l 1,2 -n 2  -w 0000:00:05.0 -w 0000:00:05.1"',
           :before => 'Service[openvswitch]',
         )
-      end
-    end
+        is_expected.to contain_vs_config('other_config:dpdk-init').with(
+          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
+          :value  => nil, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
+          :value => nil, :wait => false, :skip_if_version => "2.5",
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
+          :value => '6', :wait => false, :skip_if_version => "2.5",
+        )
 
-    context 'when passing pmd core list with comma seperator for ovs' do
-      before :each do
-        params.merge!(:host_core_list => '1,2')
-        params.merge!(:pmd_core_list => '22,23,24,25,66,67,68,69')
-      end
-      it 'configures pmd core mask for ovs' do
-        is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
-          :value  => '3c0000000003c00000',
-        )
-      end
-    end
-    context 'when passing pmd core list with range for ovs' do
-      before :each do
-        params.merge!(:host_core_list => '1,2')
-        params.merge!(:pmd_core_list => '22-25,66,67,68,69')
-      end
-      it 'configures pmd core mask for ovs' do
-        is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
-          :value  => '3c0000000003c00000',
-        )
-      end
-    end
-    context 'when not passing pmd core list for ovs' do
-      before :each do
-        params.merge!(:host_core_list => '1,2')
-      end
-      it 'should not configure pmd core mask for ovs' do
-        is_expected.to_not contain_vs_config('other_config:pmd-cpu-mask')
       end
     end
   end
@@ -137,9 +178,8 @@ describe 'vswitch::dpdk' do
   }).each do |os,facts|
     context "on #{os}" do
       let (:facts) do
-        facts.merge!(OSDefaults.get_facts({ :ovs_version => '1.4.2' }))
+        facts.merge!(OSDefaults.get_facts({ :ovs_version => '2.6.1' }))
       end
-
       let (:platform_params) do
         case facts[:osfamily]
         when 'Debian'
@@ -151,10 +191,10 @@ describe 'vswitch::dpdk' do
             :ovs_dpdk_package_name => 'openvswitch',
             :ovs_service_name      => 'openvswitch',
             :provider              => 'ovs_redhat',
+            :ovsdb_service_name    => 'ovsdb-server',
           }
         end
       end
-
       it_behaves_like "vswitch::dpdk on #{facts[:osfamily]}"
     end
   end
