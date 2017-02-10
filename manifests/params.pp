@@ -17,6 +17,8 @@ class vswitch::params {
       $ovs_dpdk_package_name = 'openvswitch'
       $ovs_dkms_package_name = undef
       $ovs_service_name      = 'openvswitch'
+      $ovs_service_hasstatus = undef
+      $ovs_status            = undef
       $provider              = 'ovs_redhat'
     }
     'Debian': {

@@ -13,6 +13,36 @@ describe Puppet::Type.type(:vs_config) do
     end.to_not raise_error
   end
 
+  it "wait property should accept boolean values" do
+    expect do
+      described_class.new({:name => "foo", :value => "[2, 1, 3, 0]", :ensure => :present, :wait => true})
+    end.to_not raise_error
+  end
+
+  it "wait property should throw error for non boolean values" do
+    expect do
+      described_class.new({:name => "foo", :value => "123", :ensure => :present, :wait => "abc"})
+    end.to raise_error(Puppet::Error)
+  end
+
+  it "skip_if_version param should accept string values of format \d+.\d+" do
+    expect do
+      described_class.new({:name => "foo", :value => "[2, 1, 3, 0]", :ensure => :present, :skip_if_version => '2.5'})
+    end.to_not raise_error
+    expect do
+      described_class.new({:name => "foo", :value => "[2, 1, 3, 0]", :ensure => :present, :skip_if_version => 'a2.5'})
+    end.to raise_error(Puppet::Error)
+    expect do
+      described_class.new({:name => "foo", :value => "[2, 1, 3, 0]", :ensure => :present, :skip_if_version => '2.5a'})
+    end.to raise_error(Puppet::Error)
+  end
+
+  it "skip_if_version param should not accept non string values" do
+    expect do
+      described_class.new({:name => "foo", :value => "[2, 1, 3, 0]", :ensure => :present, :skip_if_version => 2.5})
+    end.to raise_error(Puppet::Error)
+  end
+
   it "should have a :value parameter" do
     expect(described_class.attrtype(:value)).to eq(:property)
   end

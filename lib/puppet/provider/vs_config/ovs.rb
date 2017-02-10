@@ -4,8 +4,6 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
 
   commands :vsctl => 'ovs-vsctl'
 
-  mk_resource_methods
-
   def self.munge_array_value(value)
     "[#{value[1..-2].split(',').map(&:strip).sort.join(",")}]"
   end
@@ -81,7 +79,12 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
   end
 
   def exists?
-    @property_hash[:ensure] == :present
+    # if skip_if_version matches ovs_version(), then skip the configuration by faking exists
+    if @resource[:skip_if_version].eql? ovs_version()
+      return true
+    else
+      @property_hash[:ensure] == :present
+    end
   end
 
   def destroy
@@ -94,14 +97,39 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
   end
 
   def _set
-    vsctl("set", "Open_vSwitch", ".", "#{@resource[:name]}=#{@resource[:value]}")
+    if @resource[:wait] == :false
+      vsctl("--no-wait", "set", "Open_vSwitch", ".", "#{@resource[:name]}=#{@resource[:value]}")
+    else
+      vsctl("set", "Open_vSwitch", ".", "#{@resource[:name]}=#{@resource[:value]}")
+    end
   end
 
   def create
-    _set
+    if @resource[:value].nil? or @resource[:value].empty?
+      destroy
+    else
+      _set
+    end
+  end
+
+  def value
+    # if skip_if_version matches ovs_version(), then skip the configuration by returning the same value
+    if @resource[:skip_if_version].eql? ovs_version()
+      @resource[:value]
+    else
+      @property_hash[:value]
+    end
+  end
+
+  def ovs_version
+    vsctl("--version")[/.*ovs-vsctl\s+\(Open\s+vSwitch\)\s+(\d+\.\d+)/][/(\d+\.\d+)/].chomp()
   end
 
   def value=(value)
-    _set
+    if  @resource[:value].nil? or @resource[:value].empty?
+      destroy
+    else
+      _set
+    end
   end
 end

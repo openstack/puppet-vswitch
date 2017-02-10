@@ -1,0 +1,9 @@
+upgrade:
+  - Support for OVS-DPDK is being extended for OvS 2.6 while retaining the
+    backward compatibility with OvS 2.5. In OvS 2.5 the DPDK parameters are
+    written as DPDK_OPTIONS to a sysconfig file, while in OvS 2.6 the DPDK
+    parameters are configured as ovsdb entries
+  - Parameter 'memory_channels' is required for OvS 2.5, while in OvS 2.6 its
+    optional
+  - parameter 'driver_type' is required only for OvS 2.5. Shall be deprecated
+    when OvS 2.5 support is discontinued
