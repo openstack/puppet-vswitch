@@ -12,7 +12,7 @@ describe 'vswitch::dpdk' do
     let(:params) { default_params }
     context 'basic parameters' do
       before :each do
-        params.merge!(:core_list => '1,2')
+        params.merge!(:host_core_list => '1,2')
       end
 
       it_raises 'a Puppet::Error', /Debian not yet supported for dpdk/
@@ -21,13 +21,13 @@ describe 'vswitch::dpdk' do
 
   shared_examples_for 'vswitch::dpdk on RedHat' do
     let(:params) { default_params }
-    context 'should raise error when not passing either host_core_list or core_list' do
+    context 'should raise error when not passing host_core_list' do
       it_raises 'a Puppet::Error', /host_core_list must be set for ovs agent when DPDK is enabled/
     end
 
     context 'basic parameters' do
       before :each do
-        params.merge!(:core_list => '1,2')
+        params.merge!(:host_core_list => '1,2')
       end
 
       it 'include the class' do
@@ -69,36 +69,9 @@ describe 'vswitch::dpdk' do
         )
       end
     end
-    context 'when passing host core list' do
-      before :each do
-        params.merge!(:host_core_list => '3,4')
-      end
-      it 'configures dpdk options with host core list' do
-        is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
-          :path   => '/etc/sysconfig/openvswitch',
-          :match  => '^DPDK_OPTIONS.*',
-          :line   => 'DPDK_OPTIONS = "-l 3,4 -n 2  "',
-          :before => 'Service[openvswitch]',
-        )
-      end
-    end
-    context 'when not passing host core list' do
-      before :each do
-        params.merge!(:core_list => '5,6')
-      end
-      it 'configures dpdk options with core list' do
-        is_expected.to contain_file_line('/etc/sysconfig/openvswitch').with(
-          :path   => '/etc/sysconfig/openvswitch',
-          :match  => '^DPDK_OPTIONS.*',
-          :line   => 'DPDK_OPTIONS = "-l 5,6 -n 2  "',
-          :before => 'Service[openvswitch]',
-        )
-      end
-    end
-
     context 'when passing socket mem' do
       before :each do
-        params.merge!(:core_list => '1,2')
+        params.merge!(:host_core_list => '1,2')
         params.merge!(:socket_mem => '1024')
       end
       it 'configures dpdk options with socket memory' do
@@ -113,7 +86,7 @@ describe 'vswitch::dpdk' do
 
     context 'when providing valid driver type facts' do
       before :each do
-        params.merge!(:core_list => '1,2')
+        params.merge!(:host_core_list => '1,2')
         params.merge!(:driver_type => 'test')
         facts.merge!({ :pci_address_driver_test => '0000:00:05.0,0000:00:05.1' })
       end

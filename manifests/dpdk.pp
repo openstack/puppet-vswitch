@@ -30,15 +30,6 @@
 #   For example, to allocate memory of 1GB for socket 1 and no allocation for socket 0, the value should be "0,1024"
 #   Defaults to undef.
 #
-# DEPRECATED PARAMETERS
-#
-# [*core_list*]
-#   (optional) Deprecated.
-#   The list of cores to be used by the DPDK Poll Mode Driver
-#   The core_list is a string with format as <c1>[-c2][,c3[-c4],...] where c1, c2, etc are core indexes between 0 and 128
-#   For example, to configure 3 cores the value should be "0-2"
-#   Defaults to undef.
-#
 class vswitch::dpdk (
   $memory_channels,
   $driver_type        = 'vfio-pci',
@@ -46,8 +37,6 @@ class vswitch::dpdk (
   $package_ensure     = 'present',
   $pmd_core_list      = undef,
   $socket_mem         = undef,
-  # DEPRECATED PARAMETERS
-  $core_list          = undef,
 ) {
 
   include ::vswitch::params
@@ -71,17 +60,10 @@ class vswitch::dpdk (
       $white_list = inline_template('-w <%= @pci_list.gsub(",", " -w ") %>')
     }
   }
-  if $host_core_list {
-    $core_list_string = $host_core_list
-  }
-  elsif $core_list {
-    warning('core_list is deprecated, will be used when host_core_list is not defined and will be removed in a future release.')
-    $core_list_string = $core_list
-  }
-  else {
+  if !$host_core_list {
     fail('host_core_list must be set for ovs agent when DPDK is enabled')
   }
-  $options = "DPDK_OPTIONS = \"-l ${core_list_string} -n ${memory_channels} ${socket_string} ${white_list}\""
+  $options = "DPDK_OPTIONS = \"-l ${host_core_list} -n ${memory_channels} ${socket_string} ${white_list}\""
   if $pmd_core_list {
     $pmd_core_list_updated = inline_template('<%= @pmd_core_list.split(",").map{|c| c.include?("-")?(c.split("-").map(&:to_i)[0]..c.split("-").map(&:to_i)[1]).to_a.join(","):c}.join(",") %>')
     $pmd_core_mask = inline_template('<%= @pmd_core_list_updated.split(",").map{|c| 1<<c.to_i}.inject(0,:|).to_s(16)  %>')
