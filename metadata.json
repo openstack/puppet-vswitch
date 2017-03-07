@@ -1,45 +1,51 @@
 {
   "name": "openstack-vswitch",
-  "version": "6.3.0",
+  "version": "7.0.0-dev",
   "author": "Endre Karlson, Dan Bode and OpenStack Contributors",
   "license": "Apache-2.0",
   "source": "git://github.com/openstack/puppet-vswitch.git",
   "project_page": "https://launchpad.net/puppet-vswitch",
   "issues_url": "https://bugs.launchpad.net/puppet-vswitch",
   "summary": "A module for providing things (ports, bridges) to vSwitches (OVS)",
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "4.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": "4.x"
+    }
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Fedora",
       "operatingsystemrelease": [
-        "20"
+        "24"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "6",
-        "7"
+        "8"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "12.04",
-        "14.04"
+        "16.04"
       ]
     },
     {
@@ -55,16 +61,6 @@
         "11.3",
         "12.0"
       ]
-    }
-  ],
-  "requirements": [
-    {
-      "name": "pe",
-      "version_requirement": "3.x"
-    },
-    {
-      "name": "puppet",
-      "version_requirement": "3.x"
     }
   ],
   "dependencies": [
