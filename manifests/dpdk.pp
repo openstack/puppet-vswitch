@@ -87,22 +87,8 @@ class vswitch::dpdk (
     before  => Service['openvswitch'],
   }
 
-  if $pmd_core_list and !empty($pmd_core_list){
-    $pmd_core_list_updated = inline_template('<%= @pmd_core_list.split(",").map{|c| c.include?("-")?(c.split("-").map(&:to_i)[0]..c.split("-").map(&:to_i)[1]).to_a.join(","):c}.join(",") %>')
-    $pmd_core_mask = inline_template('<%= @pmd_core_list_updated.split(",").map{|c| 1<<c.to_i}.inject(0,:|).to_s(16)  %>')
-  }
-  else {
-    $pmd_core_mask = undef
-  }
-
-
-  if $host_core_list and !empty($host_core_list) {
-    $host_core_list_updated = inline_template('<%= @host_core_list.split(",").map{|c| c.include?("-")?(c.split("-").map(&:to_i)[0]..c.split("-").map(&:to_i)[1]).to_a.join(","):c}.join(",") %>')
-    $dpdk_lcore_mask = inline_template('<%= @host_core_list_updated.split(",").map{|c| 1<<c.to_i}.inject(0,:|).to_s(16)  %>')
-  }
-  else {
-    $dpdk_lcore_mask = undef
-  }
+  $pmd_core_mask = range_to_mask($pmd_core_list)
+  $dpdk_lcore_mask = range_to_mask($host_core_list)
 
   if $memory_channels and !empty($memory_channels) {
     $memory_channels_conf = "-n ${memory_channels}"
@@ -131,6 +117,4 @@ class vswitch::dpdk (
   }
 
   create_resources ('vs_config', $dpdk_configs, $dpdk_dependencies)
-
 }
-
