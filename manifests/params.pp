@@ -45,6 +45,7 @@ class vswitch::params {
             $ovs_status            = '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi' # lint:ignore:140chars
           } else {
             $ovs_service_hasstatus = true
+            $ovs_status            = undef
           }
         }
         default: {
