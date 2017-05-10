@@ -60,7 +60,10 @@ class vswitch::dpdk (
   # DPDK_OPTIONS is no longer used in ovs 2.6, since it was a distribution
   # specific hack to the ovs-ctl scripts. Instead dpdk information is
   # pulled from the ovsdb.
-  if $socket_mem {
+  if $socket_mem and !empty($socket_mem) {
+    unless $socket_mem =~ /^(\d+\,?)+$/ {
+      fail( 'socket_mem is in incorrect format')
+    }
     $socket_string = "--socket-mem ${socket_mem}"
   }
   else {

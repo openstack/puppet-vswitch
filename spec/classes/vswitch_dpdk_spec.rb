@@ -101,7 +101,6 @@ describe 'vswitch::dpdk' do
       end
     end
 
-
     context 'when passing all params' do
       before :each do
         params.merge!(:host_core_list  => '1,2')
@@ -132,6 +131,13 @@ describe 'vswitch::dpdk' do
           :value => '-n 2', :wait => false, :skip_if_version => "2.5",
         )
       end
+    end
+
+    context 'when passing invalid socket_mem' do
+      before :each do
+        params.merge!(:socket_mem      => "'1024'")
+      end
+      it { is_expected.to raise_error(Puppet::Error, /socket_mem is in incorrect format/) }
     end
 
     context 'when providing valid driver type facts' do
