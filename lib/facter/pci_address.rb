@@ -1,6 +1,10 @@
 require 'facter'
-drivers_details=Facter::Util::Resolution.exec("cat /proc/bus/pci/devices")
-drivers_lines=drivers_details.split("\n")
+if File.file?("/proc/bus/pci/devices")
+  drivers_details=File.read("/proc/bus/pci/devices")
+  drivers_lines=drivers_details.split("\n")
+else
+  drivers_lines=Array.new
+end
 drivers=Hash.new
 drivers_lines.each do |line|
   line = line.gsub(/^\s+|\s+$/m, '').split(" ")
