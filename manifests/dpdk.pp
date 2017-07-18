@@ -99,7 +99,6 @@ class vswitch::dpdk (
 
   $dpdk_configs = {
     'other_config:dpdk-extra'      => { value => $memory_channels_conf, skip_if_version => '2.5'},
-    'other_config:dpdk-init'       => { value => 'true', skip_if_version => '2.5'},
     'other_config:dpdk-socket-mem' => { value => $socket_mem, skip_if_version => '2.5'},
     'other_config:dpdk-lcore-mask' => { value => $dpdk_lcore_mask, skip_if_version => '2.5'},
     'other_config:pmd-cpu-mask'    => { value => $pmd_core_mask},
@@ -108,6 +107,14 @@ class vswitch::dpdk (
   $dpdk_dependencies = {
     wait    => false,
     require => Service['openvswitch'],
+    notify  => Vs_config['other_config:dpdk-init'],
+  }
+
+  vs_config { 'other_config:dpdk-init':
+    value           => 'true',
+    skip_if_version => '2.5',
+    require         => Service['openvswitch'],
+    wait            => true,
   }
 
   service { 'openvswitch':

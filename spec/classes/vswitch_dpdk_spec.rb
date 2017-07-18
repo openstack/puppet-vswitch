@@ -52,7 +52,7 @@ describe 'vswitch::dpdk' do
         is_expected.to contain_file_line('/etc/sysconfig/openvswitch')
 
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+          :value  => 'true', :wait => true, :skip_if_version => "2.5",
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
           :value  => nil, :wait => false,
@@ -83,7 +83,7 @@ describe 'vswitch::dpdk' do
           :before => 'Service[openvswitch]',
         )
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+          :value  => 'true', :wait => true, :skip_if_version => "2.5",
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
           :value  => nil, :wait => false,
@@ -116,7 +116,7 @@ describe 'vswitch::dpdk' do
           :before => 'Service[openvswitch]',
         )
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+          :value  => 'true', :wait => true, :skip_if_version => "2.5",
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
           :value  => '3c0000000003c00000', :wait => false,
@@ -163,7 +163,7 @@ describe 'vswitch::dpdk' do
           :before => 'Service[openvswitch]',
         )
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => 'true', :wait => false, :skip_if_version => "2.5",
+          :value  => 'true', :wait => true, :skip_if_version => "2.5",
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
           :value  => nil, :wait => false,
