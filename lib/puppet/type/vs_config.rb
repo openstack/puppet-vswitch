@@ -32,7 +32,7 @@ Puppet::Type.newtype(:vs_config) do
   end
 
   newproperty(:value) do
-    desc 'Configuration value for the paramter'
+    desc 'Configuration value for the parameter'
 
     validate do |value|
       if !value.is_a?(String)
