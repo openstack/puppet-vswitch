@@ -18,10 +18,17 @@
 #   For RedHat this parameter is ignored.
 #   If you like turn off dkms on Debian/Ubuntu set to
 #   false. defaults to false.
+#
+# [*enable_hw_offload*]
+#   (optional) Configure OVS to use
+#   Hardware Offload. This feature is
+#   supported from ovs 2.8.0.
+#   Defaults to False.
 
 class vswitch::ovs(
-  $package_ensure = 'present',
-  $dkms_ensure    = false,
+  $package_ensure    = 'present',
+  $dkms_ensure       = false,
+  $enable_hw_offload = false,
 ) {
 
   include ::vswitch::params
@@ -64,6 +71,14 @@ class vswitch::ovs(
     }
     default: {
       # to appease the lint gods.
+    }
+  }
+
+  if $enable_hw_offload {
+    vs_config { 'other_config:hw-offload':
+      value  => 'true',
+      notify => Service['openvswitch'],
+      wait   => true,
     }
   }
 
