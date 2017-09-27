@@ -1,0 +1,4 @@
+---
+features:
+  - Added the configuration option to enable ovs hardware offload.
+    This feature is support with ovs 2.8.0.
