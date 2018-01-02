@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Adds new custom type for configuring SSL (keys and certificates) within
+    vswitch.  Includes single provider for Open vSwitch.
