@@ -21,6 +21,11 @@ The current layout is:
 * ports - A Port is a interface you plug into the bridge (switch).
 * configs - Configuration settings, if any
 
+Release Notes
+=============
+
+ https://docs.openstack.org/releasenotes/puppet-tacker
+
 ## USAGE:
 To create a new bridge, use the `vs_bridge` type:
 
