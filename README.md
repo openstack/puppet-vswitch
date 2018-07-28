@@ -21,8 +21,20 @@ The current layout is:
 * ports - A Port is a interface you plug into the bridge (switch).
 * configs - Configuration settings, if any
 
+Development
+-----------
+
+Developer documentation for the entire puppet-openstack project.
+
+* https://docs.openstack.org/puppet-openstack-guide/latest/
+
+Contributors
+------------
+
+* https://github.com/openstack/puppet-vswitch/graphs/contributors
+
 Release Notes
-=============
+-------------
 
 * https://docs.openstack.org/releasenotes/puppet-vswitch
 
