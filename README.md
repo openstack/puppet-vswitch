@@ -24,12 +24,12 @@ The current layout is:
 Release Notes
 =============
 
- https://docs.openstack.org/releasenotes/puppet-tacker
+* https://docs.openstack.org/releasenotes/puppet-vswitch
 
 Repository
 -------------
 
-* https://git.openstack.org/cgit/openstack/puppet-tacker
+* https://git.openstack.org/cgit/openstack/puppet-vswitch
 
 ## USAGE:
 To create a new bridge, use the `vs_bridge` type:
