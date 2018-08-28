@@ -39,6 +39,9 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
     configs = []
     open_vs.each do |line|
       key, value = line.split(' : ').map(&:strip)
+      if value.nil?
+        next
+      end
       parsed_value = parse_column_value(value)
       if parsed_value[:type] == "hash"
         parsed_value[:value].each do |k, v|
