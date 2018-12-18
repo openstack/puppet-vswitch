@@ -76,7 +76,7 @@ class vswitch::ovs(
 
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
-      value  => 'true',
+      value  => true,
       notify => Service['openvswitch'],
       wait   => true,
     }

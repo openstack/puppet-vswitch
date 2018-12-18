@@ -83,7 +83,7 @@ class vswitch::dpdk (
   }
 
   vs_config { 'other_config:dpdk-init':
-    value   => 'true',
+    value   => true,
     require => Service['openvswitch'],
     wait    => true,
   }
