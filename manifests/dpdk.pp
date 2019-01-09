@@ -82,11 +82,13 @@ class vswitch::dpdk (
     notify  => Vs_config['other_config:dpdk-init'],
   }
 
+  # lint:ignore:quoted_booleans
   vs_config { 'other_config:dpdk-init':
-    value   => true,
+    value   => 'true',
     require => Service['openvswitch'],
     wait    => true,
   }
+  # lint:endignore
 
   service { 'openvswitch':
     ensure => true,

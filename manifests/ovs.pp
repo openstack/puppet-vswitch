@@ -74,13 +74,15 @@ class vswitch::ovs(
     }
   }
 
+  # lint:ignore:quoted_booleans
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
-      value  => true,
+      value  => 'true',
       notify => Service['openvswitch'],
       wait   => true,
     }
   }
+  # lint:endignore
 
   service { 'openvswitch':
     ensure    => true,
