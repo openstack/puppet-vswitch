@@ -6,6 +6,7 @@ describe 'vswitch::ovs' do
     :package_ensure => 'present',
     :dkms_ensure => false,
     :enable_hw_offload => false,
+    :disable_emc => false,
   }
   end
 
@@ -48,6 +49,11 @@ describe 'vswitch::ovs' do
       it 'configures hw-offload option to false' do
           is_expected.to_not contain_vs_config('other_config:hw-offload')
       end
+
+      it 'configures disable_emc option to false' do
+          is_expected.to_not contain_vs_config('other_config:emc-insert-inv-prob')
+      end
+
       it 'configures service' do
         is_expected.to contain_service('openvswitch').with(
           :ensure    => true,
@@ -73,6 +79,7 @@ describe 'vswitch::ovs' do
           :package_ensure => 'latest',
           :dkms_ensure    => false,
           :enable_hw_offload => true,
+          :disable_emc => true,
         }
       end
       it 'installs correct package' do
@@ -85,6 +92,11 @@ describe 'vswitch::ovs' do
       it 'configures hw-offload option' do
           is_expected.to contain_vs_config('other_config:hw-offload').with(
             :value  => 'true', :notify => 'Service[openvswitch]', :wait => true,
+          )
+      end
+      it 'configures disable_emc option' do
+          is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
+            :value  => '0', :notify => 'Service[openvswitch]', :wait => false,
           )
       end
     end

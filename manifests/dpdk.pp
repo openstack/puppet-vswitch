@@ -34,6 +34,9 @@
 #   socket 1 and no allocation for socket 0, the value should be "0,1024"
 #   Defaults to undef.
 #
+# [*disable_emc*]
+#   (optional) Configure OVS to disable EMC.
+#
 class vswitch::dpdk (
   $memory_channels    = undef,
   $driver_type        = 'vfio-pci',
@@ -41,6 +44,7 @@ class vswitch::dpdk (
   $package_ensure     = 'present',
   $pmd_core_list      = undef,
   $socket_mem         = undef,
+  $disable_emc        = false,
 ) {
 
   include ::vswitch::params
@@ -108,6 +112,14 @@ class vswitch::dpdk (
     wait    => false,
     require => Service['openvswitch'],
     notify  => Vs_config['other_config:dpdk-init'],
+  }
+
+  if $disable_emc {
+    vs_config { 'other_config:emc-insert-inv-prob':
+      value  => '0',
+      notify => Service['openvswitch'],
+      wait   => false,
+    }
   }
 
   vs_config { 'other_config:dpdk-init':
