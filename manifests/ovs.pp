@@ -24,11 +24,15 @@
 #   Hardware Offload. This feature is
 #   supported from ovs 2.8.0.
 #   Defaults to False.
+#
+# [*disable_emc*]
+#   (optional) Configure OVS to disable EMC.
 
 class vswitch::ovs(
   $package_ensure    = 'present',
   $dkms_ensure       = false,
   $enable_hw_offload = false,
+  $disable_emc       = false,
 ) {
 
   include ::vswitch::params
@@ -83,6 +87,14 @@ class vswitch::ovs(
     }
   }
   # lint:endignore
+
+  if $disable_emc {
+    vs_config { 'other_config:emc-insert-inv-prob':
+      value  => '0',
+      notify => Service['openvswitch'],
+      wait   => false,
+    }
+  }
 
   service { 'openvswitch':
     ensure    => true,
