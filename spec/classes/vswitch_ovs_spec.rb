@@ -145,6 +145,11 @@ describe 'vswitch::ovs' do
 
     let :facts do
       OSDefaults.get_facts({
+        :os              => {
+          :family  => 'FreeBSD',
+          :name    => 'FreeBSD',
+          :release => { :major => '12' }
+        },
         :osfamily        => 'FreeBSD',
         :operatingsystem => 'FreeBSD',
         :ovs_version     => '1.4.2',
@@ -174,6 +179,11 @@ describe 'vswitch::ovs' do
 
     let :facts do
       OSDefaults.get_facts({
+        :os              => {
+          :family  => 'FreeBSD',
+          :name    => 'FreeBSD',
+          :release => { :major => '12' }
+        },
         :osfamily        => 'FreeBSD',
         :operatingsystem => 'FreeBSD',
         :ovs_version     => '1.4.2',
@@ -204,6 +214,11 @@ describe 'vswitch::ovs' do
 
     let :facts do
       OSDefaults.get_facts({
+        :os              => {
+          :family  => 'Solaris',
+          :name    => 'Solaris',
+          :release => { :major => '11' }
+        },
         :osfamily        => 'Solaris',
         :operatingsystem => 'Solaris',
         :ovs_version     => '2.3.1',
@@ -233,6 +248,11 @@ describe 'vswitch::ovs' do
 
     let :facts do
       OSDefaults.get_facts({
+        :os              => {
+          :family  => 'Solaris',
+          :name    => 'Solaris',
+          :release => { :major => '11' }
+        },
         :osfamily        => 'Solaris',
         :operatingsystem => 'Solaris',
         :ovs_version     => '2.3.1',
