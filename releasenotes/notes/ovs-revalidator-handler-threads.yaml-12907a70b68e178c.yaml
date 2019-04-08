@@ -1,0 +1,3 @@
+---
+features:
+  - Introduced two new parameters revalidator_cores and handler_cores to set values of n-revalidator-threads and n-handler-threads on openvswitch.
