@@ -37,6 +37,12 @@
 # [*disable_emc*]
 #   (optional) Configure OVS to disable EMC.
 #
+# [*revalidator_cores*]
+#   (Optional) Number of cores to be used for OVS Revalidator threads.
+#
+# [*handler_cores*]
+#   (Optional) Number of cores to be used for OVS handler threads.
+#
 class vswitch::dpdk (
   $memory_channels    = undef,
   $driver_type        = 'vfio-pci',
@@ -45,6 +51,8 @@ class vswitch::dpdk (
   $pmd_core_list      = undef,
   $socket_mem         = undef,
   $disable_emc        = false,
+  $revalidator_cores  = undef,
+  $handler_cores      = undef,
 ) {
 
   include ::vswitch::params
@@ -93,7 +101,6 @@ class vswitch::dpdk (
 
   $pmd_core_mask = range_to_mask($pmd_core_list)
   $dpdk_lcore_mask = range_to_mask($host_core_list)
-
   if $memory_channels and !empty($memory_channels) {
     $memory_channels_conf = "-n ${memory_channels}"
   }
@@ -102,10 +109,12 @@ class vswitch::dpdk (
   }
 
   $dpdk_configs = {
-    'other_config:dpdk-extra'      => { value => $memory_channels_conf, skip_if_version => '2.5'},
-    'other_config:dpdk-socket-mem' => { value => $socket_mem, skip_if_version => '2.5'},
-    'other_config:dpdk-lcore-mask' => { value => $dpdk_lcore_mask, skip_if_version => '2.5'},
-    'other_config:pmd-cpu-mask'    => { value => $pmd_core_mask},
+    'other_config:dpdk-extra'            => { value => $memory_channels_conf, skip_if_version => '2.5'},
+    'other_config:dpdk-socket-mem'       => { value => $socket_mem, skip_if_version => '2.5'},
+    'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask, skip_if_version => '2.5'},
+    'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask},
+    'other_config:n-revalidator-threads' => { value => $revalidator_cores},
+    'other_config:n-handler-threads'     => { value => $handler_cores},
   }
 
   $dpdk_dependencies = {
