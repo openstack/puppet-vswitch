@@ -6,7 +6,21 @@ Team and repository tags
 <!-- Change things from this point on -->
 
 VSwitch
-=======
+====
+
+#### Table of Contents
+
+1. [Overview - What is the AODH module?](#overview)
+2. [Development - Guide for contributing to the module](#development)
+3. [Contributors - Those with commits](#contributors)
+4. [Release Notes - Release notes for the project](#release-notes)
+5. [Repository - The project source code repository](#repository)
+6. [Usage - The usage of the module](#usage)
+7. [Beaker-Rspec - Beaker-rspec tests for the project](#beaker-rpsec)
+8. [Setup - The basics of getting started with AODH](#setup)
+
+Overview
+--------
 
 4.0.0 - 2016.1 - Mitaka
 
@@ -43,7 +57,8 @@ Repository
 
 * https://git.openstack.org/cgit/openstack/puppet-vswitch
 
-## USAGE:
+Usage
+-------------
 To create a new bridge, use the `vs_bridge` type:
 
 ```
@@ -92,7 +107,8 @@ vs_config { 'array_key':
 }
 ```
 
-## Beaker-Rspec
+Beaker-Rspec
+-------------
 
 This module has beaker-rspec tests
 
@@ -103,7 +119,8 @@ bundle install
 bundle exec rspec spec/acceptance
 ```
 
-## TODO:
+TODO:
+-------------
 * OpenFlow controller settings
 * OpenFlow Settings
 * OpenFlow Tables
