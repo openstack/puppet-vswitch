@@ -2,7 +2,8 @@
     "author": "Endre Karlson, Dan Bode and OpenStack Contributors",
     "dependencies": [
         {
-            "name": "camptocamp/kmod"
+            "name": "camptocamp/kmod",
+            "version_requirement": ">= 0.0.1"
         }
     ],
     "issues_url": "https://bugs.launchpad.net/puppet-vswitch",
