@@ -6,10 +6,10 @@ describe 'basic vswitch' do
 
     it 'should work with no errors' do
       pp= <<-EOS
-      include ::openstack_integration
-      include ::openstack_integration::repos
+      include openstack_integration
+      include openstack_integration::repos
 
-      include ::vswitch::ovs
+      include vswitch::ovs
 
       vs_bridge { 'br-beaker':
         ensure => present,

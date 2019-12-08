@@ -58,7 +58,7 @@ class vswitch::dpdk (
   $driver_type           = 'vfio-pci',
 ) {
 
-  include ::vswitch::params
+  include vswitch::params
   kmod::load { 'vfio-pci': }
 
   if $::osfamily != 'Redhat' {

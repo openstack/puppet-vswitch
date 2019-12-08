@@ -35,7 +35,7 @@ class vswitch::ovs(
   $disable_emc       = false,
 ) {
 
-  include ::vswitch::params
+  include vswitch::params
 
   case $::osfamily {
     'Debian': {
