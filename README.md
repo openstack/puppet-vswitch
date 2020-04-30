@@ -16,7 +16,7 @@ VSwitch
 4. [Release Notes - Release notes for the project](#release-notes)
 5. [Repository - The project source code repository](#repository)
 6. [Usage - The usage of the module](#usage)
-7. [Beaker-Rspec - Beaker-rspec tests for the project](#beaker-rpsec)
+7. [Beaker-Rspec - Beaker-rspec tests for the project](#beaker-rspec)
 8. [TODO - What to do next](#todo)
 
 Overview
