@@ -11,7 +11,7 @@ describe 'basic vswitch' do
 
       include vswitch::ovs
 
-      vs_bridge { 'br-beaker':
+      vs_bridge { 'br-ci':
         ensure => present,
       }
 
@@ -27,17 +27,15 @@ describe 'basic vswitch' do
       apply_manifest(pp, :catch_changes => true)
     end
 
-    describe command('ovs-vsctl show') do
-      describe '#stdout' do
-        subject { super().stdout }
-        it { is_expected.to match /br-beaker/ }
+    it 'should have br-ci bridge' do
+      command('ovs-vsctl show') do |r|
+        expect(r.stdout).to match(/br-ci/)
       end
     end
 
-    describe command('ovs-vsctl get Open_vSwitch . external_ids:ovn-remote') do
-      describe '#stdout' do
-        subject { super().stdout }
-        it { is_expected.to match /\"tcp:127.0.0.1:2300\"/ }
+    it 'should get remote addr' do
+      command('ovs-vsctl get Open_vSwitch . external_ids:ovn-remote') do |r|
+        expect(r.stdout).to match(/\"tcp:127.0.0.1:2300\"/)
       end
     end
   end

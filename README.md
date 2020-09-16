@@ -16,8 +16,7 @@ VSwitch
 4. [Release Notes - Release notes for the project](#release-notes)
 5. [Repository - The project source code repository](#repository)
 6. [Usage - The usage of the module](#usage)
-7. [Beaker-Rspec - Beaker-rspec tests for the project](#beaker-rspec)
-8. [TODO - What to do next](#todo)
+7. [TODO - What to do next](#todo)
 
 Overview
 --------
@@ -105,18 +104,6 @@ vs_config { 'array_key':
   ensure => present,
   value => '[2, 1, 6, 4]'
 }
-```
-
-Beaker-Rspec
--------------
-
-This module has beaker-rspec tests
-
-To run:
-
-```shell
-bundle install
-bundle exec rspec spec/acceptance
 ```
 
 TODO:
