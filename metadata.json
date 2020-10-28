@@ -62,7 +62,7 @@
             "version_requirement": ">= 6.0.0 < 7.0.0"
         }
     ],
-    "source": "git://github.com/openstack/puppet-vswitch.git",
+    "source": "https://opendev.org/openstack/puppet-vswitch.git",
     "summary": "A module for providing things (ports, bridges) to vSwitches (OVS)",
     "version": "14.0.0"
 }
