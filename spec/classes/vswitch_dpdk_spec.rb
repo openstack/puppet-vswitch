@@ -46,6 +46,7 @@ describe 'vswitch::dpdk' do
           :value => nil, :wait => false,
         )
         is_expected.to_not contain_vs_config('other_config:emc-insert-inv-prob')
+        is_expected.to_not contain_vs_config('other_config:vlan-limit')
 
       end
     end
@@ -57,6 +58,7 @@ describe 'vswitch::dpdk' do
         params.merge!(:memory_channels => 2)
         params.merge!(:pmd_core_list => '22,23,24,25,66,67,68,69')
         params.merge!(:disable_emc => true)
+        params.merge!(:vlan_limit => 2)
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
@@ -76,6 +78,9 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
           :value  => '0', :notify => 'Service[openvswitch]', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:vlan-limit').with(
+          :value  => '2', :wait => true,
         )
       end
     end
