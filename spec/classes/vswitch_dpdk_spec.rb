@@ -27,6 +27,7 @@ describe 'vswitch::dpdk' do
         params.merge!(:socket_mem      => '')
         params.merge!(:memory_channels => '' )
         params.merge!(:pmd_core_list => '')
+        params.merge!(:enable_hw_offload => false)
         params.merge!(:disable_emc => false)
       end
       it 'configures dpdk options' do
@@ -45,6 +46,7 @@ describe 'vswitch::dpdk' do
         is_expected.to contain_vs_config('other_config:dpdk-extra').with(
           :value => nil, :wait => false,
         )
+        is_expected.to_not contain_vs_config('other_config:hw-offload')
         is_expected.to_not contain_vs_config('other_config:emc-insert-inv-prob')
         is_expected.to_not contain_vs_config('other_config:vlan-limit')
 
@@ -57,6 +59,7 @@ describe 'vswitch::dpdk' do
         params.merge!(:socket_mem      => '1024')
         params.merge!(:memory_channels => 2)
         params.merge!(:pmd_core_list => '22,23,24,25,66,67,68,69')
+        params.merge!(:enable_hw_offload => true)
         params.merge!(:disable_emc => true)
         params.merge!(:vlan_limit => 2)
       end
@@ -75,6 +78,9 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to contain_vs_config('other_config:dpdk-extra').with(
           :value => '-n 2', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:hw-offload').with(
+          :value  => 'true', :notify => 'Service[openvswitch]', :wait => true,
         )
         is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
           :value  => '0', :notify => 'Service[openvswitch]', :wait => false,

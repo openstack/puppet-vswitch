@@ -29,6 +29,12 @@
 #   socket 1 and no allocation for socket 0, the value should be "0,1024"
 #   Defaults to undef.
 #
+# [*enable_hw_offload*]
+#   (optional) Configure OVS to use
+#   Hardware Offload. This feature is
+#   supported from ovs 2.8.0.
+#   Defaults to false.
+#
 # [*disable_emc*]
 #   (optional) Configure OVS to disable EMC.
 #   Defaults to false
@@ -56,6 +62,7 @@ class vswitch::dpdk (
   $package_ensure        = 'present',
   $pmd_core_list         = undef,
   $socket_mem            = undef,
+  $enable_hw_offload     = false,
   $disable_emc           = false,
   $vlan_limit            = $::os_service_default,
   $revalidator_cores     = undef,
@@ -100,6 +107,16 @@ class vswitch::dpdk (
     require => Service['openvswitch'],
     notify  => Vs_config['other_config:dpdk-init'],
   }
+
+  # lint:ignore:quoted_booleans
+  if $enable_hw_offload {
+    vs_config { 'other_config:hw-offload':
+      value  => 'true',
+      notify => Service['openvswitch'],
+      wait   => true,
+    }
+  }
+  # lint:endignore
 
   if $disable_emc {
     vs_config { 'other_config:emc-insert-inv-prob':
