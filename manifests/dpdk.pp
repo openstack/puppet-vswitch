@@ -31,6 +31,11 @@
 #
 # [*disable_emc*]
 #   (optional) Configure OVS to disable EMC.
+#   Defaults to false
+#
+# [*vlan_limit*]
+#   (optional) Number of vlan layers allowed.
+#   Default to $::os_service_default
 #
 # [*revalidator_cores*]
 #   (Optional) Number of cores to be used for OVS Revalidator threads.
@@ -52,6 +57,7 @@ class vswitch::dpdk (
   $pmd_core_list         = undef,
   $socket_mem            = undef,
   $disable_emc           = false,
+  $vlan_limit            = $::os_service_default,
   $revalidator_cores     = undef,
   $handler_cores         = undef,
   # DEPRECATED PARAMETERS
@@ -100,6 +106,13 @@ class vswitch::dpdk (
       value  => '0',
       notify => Service['openvswitch'],
       wait   => false,
+    }
+  }
+
+  if ! is_service_default($vlan_limit) {
+    vs_config { 'other_config:vlan-limit':
+      value => "${vlan_limit}",
+      wait  => true,
     }
   }
 

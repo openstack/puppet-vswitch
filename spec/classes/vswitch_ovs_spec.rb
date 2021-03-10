@@ -3,10 +3,10 @@ require 'spec_helper'
 describe 'vswitch::ovs' do
 
   let :default_params do {
-    :package_ensure => 'present',
-    :dkms_ensure => false,
+    :package_ensure    => 'present',
+    :dkms_ensure       => false,
     :enable_hw_offload => false,
-    :disable_emc => false,
+    :disable_emc       => false,
   }
   end
 
@@ -54,6 +54,10 @@ describe 'vswitch::ovs' do
           is_expected.to_not contain_vs_config('other_config:emc-insert-inv-prob')
       end
 
+      it 'does not set vlan-limit option' do
+          is_expected.to_not contain_vs_config('other_config:vlan-limit')
+      end
+
       it 'configures service' do
         is_expected.to contain_service('openvswitch').with(
           :ensure    => true,
@@ -76,10 +80,11 @@ describe 'vswitch::ovs' do
     context 'custom parameters' do
       let :params do
         {
-          :package_ensure => 'latest',
-          :dkms_ensure    => false,
+          :package_ensure    => 'latest',
+          :dkms_ensure       => false,
           :enable_hw_offload => true,
-          :disable_emc => true,
+          :disable_emc       => true,
+          :vlan_limit        => 2,
         }
       end
       it 'installs correct package' do
@@ -99,6 +104,12 @@ describe 'vswitch::ovs' do
             :value  => '0', :notify => 'Service[openvswitch]', :wait => false,
           )
       end
+      it 'configures vlan-limit option' do
+          is_expected.to contain_vs_config('other_config:vlan-limit').with(
+            :value  => '2', :wait => true,
+          )
+      end
+
     end
   end
 

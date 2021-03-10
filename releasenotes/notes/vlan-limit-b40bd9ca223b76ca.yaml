@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    The following two parameters have been added.
+
+    - ``vswitch::ovs::vlan_limit``
+    - ``vswitch::dpdk::vlan_limit``
