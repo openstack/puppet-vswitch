@@ -23,16 +23,22 @@
 #   (optional) Configure OVS to use
 #   Hardware Offload. This feature is
 #   supported from ovs 2.8.0.
-#   Defaults to False.
+#   Defaults to false.
 #
 # [*disable_emc*]
 #   (optional) Configure OVS to disable EMC.
-
+#   Defaults to false.
+#
+# [*vlan_limit*]
+#   (optional) Number of vlan layers allowed.
+#   Default to $::os_service_default
+#
 class vswitch::ovs(
   $package_ensure    = 'present',
   $dkms_ensure       = false,
   $enable_hw_offload = false,
   $disable_emc       = false,
+  $vlan_limit        = $::os_service_default,
 ) {
 
   include vswitch::params
@@ -93,6 +99,13 @@ class vswitch::ovs(
       value  => '0',
       notify => Service['openvswitch'],
       wait   => false,
+    }
+  }
+
+  if ! is_service_default($vlan_limit) {
+    vs_config { 'other_config:vlan-limit':
+      value => "${vlan_limit}",
+      wait  => true,
     }
   }
 
