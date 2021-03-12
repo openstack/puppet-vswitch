@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    The following two parameters have been added. These two parameters support
+    arbitary vswitch configurations using hashes.
+
+    - ``vswitch::ovs::vs_config``
+    - ``vswitch::dpdk::vs_config``
