@@ -64,5 +64,5 @@
     ],
     "source": "https://opendev.org/openstack/puppet-vswitch.git",
     "summary": "A module for providing things (ports, bridges) to vSwitches (OVS)",
-    "version": "14.2.0"
+    "version": "14.3.0"
 }
