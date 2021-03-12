@@ -101,7 +101,7 @@ describe 'vswitch::ovs' do
       end
       it 'configures disable_emc option' do
           is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
-            :value  => '0', :notify => 'Service[openvswitch]', :wait => false,
+            :value  => '0', :wait => false,
           )
       end
       it 'configures vlan-limit option' do
