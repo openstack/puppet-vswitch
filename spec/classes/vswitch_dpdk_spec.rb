@@ -83,7 +83,7 @@ describe 'vswitch::dpdk' do
           :value  => 'true', :notify => 'Service[openvswitch]', :wait => true,
         )
         is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
-          :value  => '0', :notify => 'Service[openvswitch]', :wait => false,
+          :value  => '0', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:vlan-limit').with(
           :value  => '2', :wait => true,

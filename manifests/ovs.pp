@@ -96,9 +96,8 @@ class vswitch::ovs(
 
   if $disable_emc {
     vs_config { 'other_config:emc-insert-inv-prob':
-      value  => '0',
-      notify => Service['openvswitch'],
-      wait   => false,
+      value => '0',
+      wait  => false,
     }
   }
 
