@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The new ``vsiwtch::dpdk::enable_hw_offload`` parameter has been added. This
+    parameter can be used to enable or disable hardware offload when dpdk is
+    used.
