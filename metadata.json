@@ -4,6 +4,10 @@
         {
             "name": "camptocamp/kmod",
             "version_requirement": ">= 0.0.1"
+        },
+        {
+            "name": "openstack/openstacklib",
+            "version_requirement": ">=18.4.0 <19.0.0"
         }
     ],
     "issues_url": "https://bugs.launchpad.net/puppet-vswitch",
