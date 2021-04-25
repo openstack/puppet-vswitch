@@ -43,20 +43,6 @@
             "operatingsystemrelease": [
                 "20.04"
             ]
-        },
-        {
-            "operatingsystem": "FreeBSD",
-            "operatingsystemrelease": [
-                "10.0",
-                "11.0"
-            ]
-        },
-        {
-            "operatingsystem": "Solaris",
-            "operatingsystemrelease": [
-                "11.3",
-                "12.0"
-            ]
         }
     ],
     "project_page": "https://launchpad.net/puppet-vswitch",

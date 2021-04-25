@@ -45,7 +45,6 @@ class vswitch::ovs(
 
   case $::osfamily {
     'Debian': {
-
       if $dkms_ensure {
         package { $::vswitch::params::ovs_dkms_package_name:
           ensure  => $package_ensure,
@@ -73,11 +72,6 @@ class vswitch::ovs(
         }
       }
 
-    }
-    'FreeBSD': {
-      Package {
-        provider => 'pkgng',
-      }
     }
     default: {
       # to appease the lint gods.
