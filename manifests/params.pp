@@ -25,15 +25,8 @@ class vswitch::params {
       $provider              = 'ovs'
       case $::operatingsystem {
         'ubuntu': {
-          # ubuntu 16.04 doesn't have upstart
-          # this workaround should be removed when https://bugs.launchpad.net/ubuntu/+source/openvswitch/+bug/1585201
-          # will be resolved
-          if versioncmp($::operatingsystemmajrelease, '16') >= 0 {
-            $ovs_status = '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi'
-          } else {
-            $ovs_status = '/sbin/status openvswitch-switch | fgrep "start/running"'
-          }
-          $ovs_service_hasstatus = false
+          $ovs_service_hasstatus = true
+          $ovs_status            = undef
         }
         'debian': {
           if ($::lsbdistcodename == 'wheezy') {
