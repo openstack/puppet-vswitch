@@ -49,6 +49,13 @@
 # [*handler_cores*]
 #   (Optional) Number of cores to be used for OVS handler threads.
 #
+# [*vs_config*]
+#   (optional) allow configuration of arbitary vsiwtch configurations.
+#   The value is an hash of vs_config resources. Example:
+#   { 'other_config:foo' => { value => 'baa' } }
+#   NOTE: that the configuration MUST NOT be already handled by this module
+#   or Puppet catalog compilation will fail with duplicate resources.
+#
 # DEPRECATED PARAMETERS
 #
 # [*driver_type*]
@@ -67,11 +74,13 @@ class vswitch::dpdk (
   $vlan_limit            = $::os_service_default,
   $revalidator_cores     = undef,
   $handler_cores         = undef,
+  $vs_config             = {},
   # DEPRECATED PARAMETERS
   $driver_type           = 'vfio-pci',
 ) {
 
   include vswitch::params
+  validate_legacy(Hash, 'validate_hash', $vs_config)
   kmod::load { 'vfio-pci': }
 
   if $::osfamily != 'Redhat' {
@@ -146,5 +155,7 @@ class vswitch::dpdk (
     name   => $::vswitch::params::ovs_service_name,
   }
 
-  create_resources ('vs_config', $dpdk_configs, $dpdk_dependencies)
+  create_resources('vs_config', $dpdk_configs, $dpdk_dependencies)
+  create_resources('vs_config', $vs_config)
+
 }

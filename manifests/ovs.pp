@@ -33,15 +33,24 @@
 #   (optional) Number of vlan layers allowed.
 #   Default to $::os_service_default
 #
+# [*vs_config*]
+#   (optional) allow configuration of arbitary vsiwtch configurations.
+#   The value is an hash of vs_config resources. Example:
+#   { 'other_config:foo' => { value => 'baa' } }
+#   NOTE: that the configuration MUST NOT be already handled by this module
+#   or Puppet catalog compilation will fail with duplicate resources.
+#
 class vswitch::ovs(
   $package_ensure    = 'present',
   $dkms_ensure       = false,
   $enable_hw_offload = false,
   $disable_emc       = false,
   $vlan_limit        = $::os_service_default,
+  $vs_config         = {},
 ) {
 
   include vswitch::params
+  validate_legacy(Hash, 'validate_hash', $vs_config)
 
   case $::osfamily {
     'Debian': {
@@ -101,6 +110,8 @@ class vswitch::ovs(
       wait  => true,
     }
   }
+
+  create_resources('vs_config', $vs_config)
 
   service { 'openvswitch':
     ensure    => true,
