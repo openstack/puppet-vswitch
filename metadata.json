@@ -7,7 +7,7 @@
         },
         {
             "name": "openstack/openstacklib",
-            "version_requirement": ">=18.4.0 <19.0.0"
+            "version_requirement": ">=19.0.0 <20.0.0"
         }
     ],
     "issues_url": "https://bugs.launchpad.net/puppet-vswitch",
@@ -54,5 +54,5 @@
     ],
     "source": "https://opendev.org/openstack/puppet-vswitch.git",
     "summary": "A module for providing things (ports, bridges) to vSwitches (OVS)",
-    "version": "14.4.0"
+    "version": "15.0.0"
 }
