@@ -19,12 +19,6 @@
     "name": "openstack-vswitch",
     "operatingsystem_support": [
         {
-            "operatingsystem": "Fedora",
-            "operatingsystemrelease": [
-                "24"
-            ]
-        },
-        {
             "operatingsystem": "RedHat",
             "operatingsystemrelease": [
                 "8"
