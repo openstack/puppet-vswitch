@@ -140,4 +140,5 @@ class vswitch::ovs(
 
   Service['openvswitch'] -> Vs_port<||>
   Service['openvswitch'] -> Vs_bridge<||>
+  Service['openvswitch'] -> Vs_config<||>
 }

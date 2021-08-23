@@ -155,6 +155,8 @@ class vswitch::dpdk (
     name   => $::vswitch::params::ovs_service_name,
   }
 
+  Service['openvswitch'] -> Vs_config<||>
+
   create_resources('vs_config', $dpdk_configs, $dpdk_dependencies)
   create_resources('vs_config', $vs_config)
 
