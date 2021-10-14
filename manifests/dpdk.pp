@@ -120,9 +120,9 @@ class vswitch::dpdk (
   # lint:ignore:quoted_booleans
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
-      value  => 'true',
-      notify => Service['openvswitch'],
-      wait   => true,
+      value   => 'true',
+      restart => true,
+      wait    => true,
     }
   }
   # lint:endignore
@@ -153,6 +153,14 @@ class vswitch::dpdk (
     ensure => true,
     enable => true,
     name   => $::vswitch::params::ovs_service_name,
+  }
+
+  # NOTE(tkajinam): This resource is defined to restart the openvswitch services
+  # when any vs_config resource with restart => true is enabled.
+  exec { 'restart openvswitch':
+    path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
+    command     => "systemctl -q restart ${::vswitch::params::ovs_service_name}.service",
+    refreshonly => true,
   }
 
   Service['openvswitch'] -> Vs_config<||>
