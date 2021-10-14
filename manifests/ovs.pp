@@ -90,9 +90,9 @@ class vswitch::ovs(
   # lint:ignore:quoted_booleans
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
-      value  => 'true',
-      notify => Service['openvswitch'],
-      wait   => true,
+      value   => 'true',
+      restart => true,
+      wait    => true,
     }
   }
   # lint:endignore
@@ -130,6 +130,14 @@ class vswitch::ovs(
     }
 
     Service['ovsdb-server'] ~> Service['openvswitch']
+  }
+
+  # NOTE(tkajinam): This resource is defined to restart the openvswitch service
+  # when any vs_config resource with restart => true is enabled.
+  exec { 'restart openvswitch':
+    path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
+    command     => "systemctl -q restart ${::vswitch::params::ovs_service_name}.service",
+    refreshonly => true,
   }
 
   package { $::vswitch::params::ovs_package_name:

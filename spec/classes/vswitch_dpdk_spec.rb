@@ -80,7 +80,7 @@ describe 'vswitch::dpdk' do
           :value => '-n 2', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:hw-offload').with(
-          :value  => 'true', :notify => 'Service[openvswitch]', :wait => true,
+          :value  => 'true', :restart => true, :wait => true,
         )
         is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
           :value  => '0', :wait => false,

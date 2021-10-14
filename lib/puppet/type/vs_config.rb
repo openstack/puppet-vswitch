@@ -31,6 +31,21 @@ Puppet::Type.newtype(:vs_config) do
     defaultto :true
   end
 
+  newparam(:restart) do
+    desc 'Should the openvswitch service be restarted'
+
+    newvalues(:true, :false)
+    defaultto :false
+  end
+
+  autorequire(:service) do
+    ['openvswitch']
+  end
+
+  autonotify(:service) do
+    ['restart openvswitch'] if self[:restart]
+  end
+
   newproperty(:value) do
     desc 'Configuration value for the parameter'
 
