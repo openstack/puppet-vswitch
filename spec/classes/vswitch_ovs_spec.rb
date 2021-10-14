@@ -96,7 +96,7 @@ describe 'vswitch::ovs' do
       end
       it 'configures hw-offload option' do
           is_expected.to contain_vs_config('other_config:hw-offload').with(
-            :value  => 'true', :notify => 'Service[openvswitch]', :wait => true,
+            :value  => 'true', :restart => true, :wait => true,
           )
       end
       it 'configures disable_emc option' do
