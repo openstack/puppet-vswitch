@@ -48,7 +48,9 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to_not contain_vs_config('other_config:hw-offload')
         is_expected.to_not contain_vs_config('other_config:emc-insert-inv-prob')
-        is_expected.to_not contain_vs_config('other_config:vlan-limit')
+        is_expected.to contain_vs_config('other_config:vlan-limit').with(
+          :ensure => 'absent', :wait => true,
+        )
 
       end
     end

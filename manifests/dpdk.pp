@@ -41,7 +41,7 @@
 #
 # [*vlan_limit*]
 #   (optional) Number of vlan layers allowed.
-#   Default to $::os_service_default
+#   Default to undef
 #
 # [*revalidator_cores*]
 #   (Optional) Number of cores to be used for OVS Revalidator threads.
@@ -71,7 +71,7 @@ class vswitch::dpdk (
   $socket_mem            = undef,
   $enable_hw_offload     = false,
   $disable_emc           = false,
-  $vlan_limit            = $::os_service_default,
+  $vlan_limit            = undef,
   $revalidator_cores     = undef,
   $handler_cores         = undef,
   $vs_config             = {},
@@ -82,6 +82,13 @@ class vswitch::dpdk (
   include vswitch::params
   validate_legacy(Hash, 'validate_hash', $vs_config)
   kmod::load { 'vfio-pci': }
+
+  if is_service_default($vlan_limit) {
+    warning('Usage of $::os_service_default for vlan_limit is deprecated. Use undef instead')
+    $vlan_limit_real = undef
+  } else {
+    $vlan_limit_real = $vlan_limit
+  }
 
   if $::osfamily != 'Redhat' {
     fail( "${::osfamily} not yet supported for dpdk installation by puppet-vswitch")
@@ -134,7 +141,18 @@ class vswitch::dpdk (
     }
   }
 
-  if ! is_service_default($vlan_limit) {
+  if is_service_default($vlan_limit) {
+    warning('Usage of $::os_service_default for vlan_limit is deprecated. Use undef instead')
+    vs_config { 'other_config:vlan-limit':
+      ensure => absent,
+      wait   => true,
+    }
+  } elsif $vlan_limit == undef {
+    vs_config { 'other_config:vlan-limit':
+      ensure => absent,
+      wait   => true,
+    }
+  } else {
     vs_config { 'other_config:vlan-limit':
       value => "${vlan_limit}",
       wait  => true,

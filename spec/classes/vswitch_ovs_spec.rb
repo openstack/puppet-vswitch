@@ -30,8 +30,10 @@ describe 'vswitch::ovs' do
           is_expected.to_not contain_vs_config('other_config:emc-insert-inv-prob')
       end
 
-      it 'does not set vlan-limit option' do
-          is_expected.to_not contain_vs_config('other_config:vlan-limit')
+      it 'clears vlan-limit option' do
+        is_expected.to contain_vs_config('other_config:vlan-limit').with(
+          :ensure => 'absent', :wait   => true,
+        )
       end
 
       it 'configures service' do

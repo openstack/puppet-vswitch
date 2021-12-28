@@ -1,0 +1,8 @@
+---
+deprecations:
+  - |
+    Usage of ``$::os_service_default`` fact for the following two parameters
+    have been deprecated. Use ``undef`` instead.
+
+    - ``ovs::ovs::vlan_limit``
+    - ``ovs::dpdk::vlan_limit``
