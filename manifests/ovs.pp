@@ -94,6 +94,12 @@ class vswitch::ovs(
       restart => true,
       wait    => true,
     }
+  } else {
+    vs_config { 'other_config:hw-offload':
+      ensure  => absent,
+      restart => true,
+      wait    => true,
+    }
   }
   # lint:endignore
 
