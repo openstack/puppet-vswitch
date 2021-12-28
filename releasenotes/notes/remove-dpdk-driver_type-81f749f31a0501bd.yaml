@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    The deprecaed ``ovs::dpdk::driver_type`` parameter has been removed.

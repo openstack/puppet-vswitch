@@ -56,13 +56,6 @@
 #   NOTE: that the configuration MUST NOT be already handled by this module
 #   or Puppet catalog compilation will fail with duplicate resources.
 #
-# DEPRECATED PARAMETERS
-#
-# [*driver_type*]
-#   (Optional) The DPDK Driver type
-#   Defaults to 'vfio-pci'
-#   This parameter is required only for OVS versions <= 2.5.
-#
 class vswitch::dpdk (
   $memory_channels       = undef,
   $host_core_list        = undef,
@@ -75,8 +68,6 @@ class vswitch::dpdk (
   $revalidator_cores     = undef,
   $handler_cores         = undef,
   $vs_config             = {},
-  # DEPRECATED PARAMETERS
-  $driver_type           = 'vfio-pci',
 ) {
 
   include vswitch::params
