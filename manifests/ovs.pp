@@ -31,7 +31,7 @@
 #
 # [*vlan_limit*]
 #   (optional) Number of vlan layers allowed.
-#   Default to $::os_service_default
+#   Default to undef
 #
 # [*vs_config*]
 #   (optional) allow configuration of arbitary vsiwtch configurations.
@@ -45,7 +45,7 @@ class vswitch::ovs(
   $dkms_ensure       = false,
   $enable_hw_offload = false,
   $disable_emc       = false,
-  $vlan_limit        = $::os_service_default,
+  $vlan_limit        = undef,
   $vs_config         = {},
 ) {
 
@@ -104,7 +104,18 @@ class vswitch::ovs(
     }
   }
 
-  if ! is_service_default($vlan_limit) {
+  if is_service_default($vlan_limit) {
+    warning('Usage of $::os_service_default for vlan_limit is deprecated. Use undef instead')
+    vs_config { 'other_config:vlan-limit':
+      ensure => absent,
+      wait   => true,
+    }
+  } elsif $vlan_limit == undef {
+    vs_config { 'other_config:vlan-limit':
+      ensure => absent,
+      wait   => true,
+    }
+  } else {
     vs_config { 'other_config:vlan-limit':
       value => "${vlan_limit}",
       wait  => true,
