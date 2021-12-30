@@ -22,8 +22,10 @@ describe 'vswitch::ovs' do
         is_expected.to contain_class('vswitch::params')
       end
 
-      it 'configures hw-offload option to false' do
-          is_expected.to_not contain_vs_config('other_config:hw-offload')
+      it 'clears hw-offload option' do
+        is_expected.to contain_vs_config('other_config:hw-offload').with(
+          :ensure => 'absent', :restart => true, :wait => true,
+        )
       end
 
       it 'configures disable_emc option to false' do
