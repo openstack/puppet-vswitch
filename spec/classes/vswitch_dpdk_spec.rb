@@ -32,7 +32,7 @@ describe 'vswitch::dpdk' do
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => 'true', :wait => true,
+          :value  => true, :wait => true,
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
           :value  => nil, :wait => false,
@@ -51,7 +51,7 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to_not contain_vs_config('other_config:emc-insert-inv-prob')
         is_expected.to contain_vs_config('other_config:vlan-limit').with(
-          :ensure => 'absent', :wait => true,
+          :value => nil, :wait => true,
         )
 
       end
@@ -69,7 +69,7 @@ describe 'vswitch::dpdk' do
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => 'true', :wait => true,
+          :value  => true, :wait => true,
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
           :value  => '3c0000000003c00000', :wait => false,
@@ -84,13 +84,13 @@ describe 'vswitch::dpdk' do
           :value => '-n 2', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:hw-offload').with(
-          :value  => 'true', :restart => true, :wait => true,
+          :value  => true, :restart => true, :wait => true,
         )
         is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
-          :value  => '0', :wait => false,
+          :value  => 0, :wait => false,
         )
         is_expected.to contain_vs_config('other_config:vlan-limit').with(
-          :value  => '2', :wait => true,
+          :value  => 2, :wait => true,
         )
       end
     end
