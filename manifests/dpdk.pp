@@ -102,7 +102,7 @@ class vswitch::dpdk (
 
   $dpdk_configs = {
     'other_config:dpdk-extra'            => { value => $memory_channels_conf},
-    'other_config:dpdk-socket-mem'       => { value => $socket_mem},
+    'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ',')},
     'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask},
     'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask},
     'other_config:n-revalidator-threads' => { value => $revalidator_cores},

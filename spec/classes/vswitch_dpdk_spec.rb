@@ -60,7 +60,7 @@ describe 'vswitch::dpdk' do
     context 'when passing all params' do
       before :each do
         params.merge!(:host_core_list  => '1,2')
-        params.merge!(:socket_mem      => '1024')
+        params.merge!(:socket_mem      => '1024,1024')
         params.merge!(:memory_channels => 2)
         params.merge!(:pmd_core_list => '22,23,24,25,66,67,68,69')
         params.merge!(:enable_hw_offload => true)
@@ -75,7 +75,7 @@ describe 'vswitch::dpdk' do
           :value  => '3c0000000003c00000', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
-          :value => '1024', :wait => false,
+          :value => '1024,1024', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
           :value => '6', :wait => false,
@@ -91,6 +91,18 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to contain_vs_config('other_config:vlan-limit').with(
           :value  => '2', :wait => true,
+        )
+      end
+    end
+
+    context 'when passing arrays' do
+      before :each do
+        params.merge!(:socket_mem => [1024, 1024])
+      end
+
+      it 'configres dpdk options with comma-separated lists' do
+        is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
+          :value => '1024,1024', :wait => false,
         )
       end
     end
