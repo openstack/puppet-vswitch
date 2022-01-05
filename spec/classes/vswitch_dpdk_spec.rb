@@ -25,6 +25,7 @@ describe 'vswitch::dpdk' do
       before :each do
         params.merge!(:host_core_list  => '')
         params.merge!(:socket_mem      => '')
+        params.merge!(:socket_limit    => '')
         params.merge!(:memory_channels => '' )
         params.merge!(:pmd_core_list => '')
         params.merge!(:enable_hw_offload => false)
@@ -38,6 +39,9 @@ describe 'vswitch::dpdk' do
           :value  => nil, :wait => false,
         )
         is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
+          :value => '', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-socket-limit').with(
           :value => '', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
@@ -61,6 +65,7 @@ describe 'vswitch::dpdk' do
       before :each do
         params.merge!(:host_core_list  => '1,2')
         params.merge!(:socket_mem      => '1024,1024')
+        params.merge!(:socket_limit    => '2048,2048')
         params.merge!(:memory_channels => 2)
         params.merge!(:pmd_core_list => '22,23,24,25,66,67,68,69')
         params.merge!(:enable_hw_offload => true)
@@ -76,6 +81,9 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
           :value => '1024,1024', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-socket-limit').with(
+          :value => '2048,2048', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
           :value => '6', :wait => false,
@@ -97,12 +105,18 @@ describe 'vswitch::dpdk' do
 
     context 'when passing arrays' do
       before :each do
-        params.merge!(:socket_mem => [1024, 1024])
+        params.merge!({
+          :socket_mem   => [1024, 1024],
+          :socket_limit => [2048, 2048],
+        })
       end
 
       it 'configres dpdk options with comma-separated lists' do
         is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
           :value => '1024,1024', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:dpdk-socket-limit').with(
+          :value => '2048,2048', :wait => false,
         )
       end
     end
