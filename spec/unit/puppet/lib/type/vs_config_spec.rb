@@ -47,9 +47,27 @@ describe Puppet::Type.type(:vs_config) do
     expect(described_class.attrtype(:value)).to eq(:property)
   end
 
-  it "should accept only string values" do
+  it "should accept a string value" do
+    expect(
+      described_class.new({:name => "foo", :value => "123", :ensure => :present})[:value]
+    ).to eq "123"
+  end
+
+  it "should accept a integer value" do
+    expect(
+      described_class.new({:name => "foo", :value => 123, :ensure => :present})[:value]
+    ).to eq "123"
+  end
+
+  it "should accept a boolean value" do
+    expect(
+      described_class.new({:name => "foo", :value => true, :ensure => :present})[:value]
+    ).to eq "true"
+  end
+
+  it "should accept the other values" do
     expect do
-      described_class.new({:name => "foo", :value => 123, :ensure => :present})
+      described_class.new({:name => "foo", :value => 123.4, :ensure => :present})
     end.to raise_error(Puppet::Error)
   end
 

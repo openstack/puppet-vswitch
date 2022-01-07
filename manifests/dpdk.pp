@@ -115,10 +115,9 @@ class vswitch::dpdk (
     notify  => Vs_config['other_config:dpdk-init'],
   }
 
-  # lint:ignore:quoted_booleans
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
-      value   => 'true',
+      value   => true,
       restart => true,
       wait    => true,
     }
@@ -129,11 +128,10 @@ class vswitch::dpdk (
       wait    => true,
     }
   }
-  # lint:endignore
 
   if $disable_emc {
     vs_config { 'other_config:emc-insert-inv-prob':
-      value => '0',
+      value => 0,
       wait  => false,
     }
   }
@@ -144,25 +142,18 @@ class vswitch::dpdk (
       ensure => absent,
       wait   => true,
     }
-  } elsif $vlan_limit == undef {
-    vs_config { 'other_config:vlan-limit':
-      ensure => absent,
-      wait   => true,
-    }
   } else {
     vs_config { 'other_config:vlan-limit':
-      value => "${vlan_limit}",
+      value => $vlan_limit,
       wait  => true,
     }
   }
 
-  # lint:ignore:quoted_booleans
   vs_config { 'other_config:dpdk-init':
-    value   => 'true',
+    value   => true,
     require => Service['openvswitch'],
     wait    => true,
   }
-  # lint:endignore
 
   service { 'openvswitch':
     ensure => true,

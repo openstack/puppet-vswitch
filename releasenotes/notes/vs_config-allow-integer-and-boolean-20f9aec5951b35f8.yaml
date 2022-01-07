@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Now the ``value`` property of the ``vs_config`` resource accepts Integer
+    and Boolean in addition to String.

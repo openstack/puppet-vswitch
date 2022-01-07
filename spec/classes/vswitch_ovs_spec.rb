@@ -34,7 +34,7 @@ describe 'vswitch::ovs' do
 
       it 'clears vlan-limit option' do
         is_expected.to contain_vs_config('other_config:vlan-limit').with(
-          :ensure => 'absent', :wait   => true,
+          :value => nil, :wait => true,
         )
       end
 
@@ -76,17 +76,17 @@ describe 'vswitch::ovs' do
       end
       it 'configures hw-offload option' do
           is_expected.to contain_vs_config('other_config:hw-offload').with(
-            :value  => 'true', :restart => true, :wait => true,
+            :value  => true, :restart => true, :wait => true,
           )
       end
       it 'configures disable_emc option' do
           is_expected.to contain_vs_config('other_config:emc-insert-inv-prob').with(
-            :value  => '0', :wait => false,
+            :value  => 0, :wait => false,
           )
       end
       it 'configures vlan-limit option' do
           is_expected.to contain_vs_config('other_config:vlan-limit').with(
-            :value  => '2', :wait => true,
+            :value  => 2, :wait => true,
           )
       end
 

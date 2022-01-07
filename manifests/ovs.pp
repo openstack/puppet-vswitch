@@ -87,10 +87,9 @@ class vswitch::ovs(
     }
   }
 
-  # lint:ignore:quoted_booleans
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
-      value   => 'true',
+      value   => true,
       restart => true,
       wait    => true,
     }
@@ -105,7 +104,7 @@ class vswitch::ovs(
 
   if $disable_emc {
     vs_config { 'other_config:emc-insert-inv-prob':
-      value => '0',
+      value => 0,
       wait  => false,
     }
   }
@@ -116,14 +115,9 @@ class vswitch::ovs(
       ensure => absent,
       wait   => true,
     }
-  } elsif $vlan_limit == undef {
-    vs_config { 'other_config:vlan-limit':
-      ensure => absent,
-      wait   => true,
-    }
   } else {
     vs_config { 'other_config:vlan-limit':
-      value => "${vlan_limit}",
+      value => $vlan_limit,
       wait  => true,
     }
   }
