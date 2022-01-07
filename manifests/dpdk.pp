@@ -29,6 +29,11 @@
 #   socket 1 and no allocation for socket 0, the value should be "0,1024"
 #   Defaults to undef.
 #
+# [*socket_limit*]
+#   (Optional) Limits the maximum amount of memory that can be used from
+#   the hugepage pool, on a per-socket basis.
+#   Defaults to undef.
+#
 # [*enable_hw_offload*]
 #   (optional) Configure OVS to use
 #   Hardware Offload. This feature is
@@ -62,6 +67,7 @@ class vswitch::dpdk (
   $package_ensure        = 'present',
   $pmd_core_list         = undef,
   $socket_mem            = undef,
+  $socket_limit          = undef,
   $enable_hw_offload     = false,
   $disable_emc           = false,
   $vlan_limit            = undef,
@@ -103,6 +109,7 @@ class vswitch::dpdk (
   $dpdk_configs = {
     'other_config:dpdk-extra'            => { value => $memory_channels_conf},
     'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ',')},
+    'other_config:dpdk-socket-limit'     => { value => join(any2array($socket_limit), ',')},
     'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask},
     'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask},
     'other_config:n-revalidator-threads' => { value => $revalidator_cores},
