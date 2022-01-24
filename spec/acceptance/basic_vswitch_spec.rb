@@ -11,8 +11,13 @@ describe 'basic vswitch' do
 
       include vswitch::ovs
 
-      vs_bridge { 'br-ci':
+      vs_bridge { 'br-ci1':
         ensure => present,
+      }
+
+      vs_bridge { 'br-ci2':
+        ensure       => present,
+        external_ids => 'bridge-id=br-ci2'
       }
 
       vs_config { 'external_ids:ovn-remote':
@@ -27,9 +32,21 @@ describe 'basic vswitch' do
       apply_manifest(pp, :catch_changes => true)
     end
 
-    it 'should have br-ci bridge' do
+    it 'should have br-ci1 bridge' do
       command('ovs-vsctl show') do |r|
-        expect(r.stdout).to match(/br-ci/)
+        expect(r.stdout).to match(/br-ci1/)
+      end
+    end
+
+    it 'should have br-ci2 bridge' do
+      command('ovs-vsctl show') do |r|
+        expect(r.stdout).to match(/br-ci2/)
+      end
+    end
+
+    it 'should have external_ids on br-ci2 bridge' do
+      command('ovs-vsctl br-get-external-id br-ci2') do |r|
+        expect(r.stdout).to match(/bridge-id=br-ci2/)
       end
     end
 
