@@ -9,16 +9,6 @@
 #   (Optional) State of the openvswitch package
 #   Defaults to 'present'.
 #
-# [*dkms_ensure*]
-#   (optional) on debian/wheezy, ubuntu/precise, ubuntu/trusty and
-#   ubuntu/utopic dkms (Dynamic Kernel Module Support) is used to
-#   have a kernel module which matches the running kernel.
-#   In newer distributions (which ship with a newer kernel) dkms
-#   is not available anymore for openvswitch.
-#   For RedHat this parameter is ignored.
-#   If you like turn off dkms on Debian/Ubuntu set to
-#   false. defaults to false.
-#
 # [*enable_hw_offload*]
 #   (optional) Configure OVS to use
 #   Hardware Offload. This feature is
@@ -40,51 +30,32 @@
 #   NOTE: that the configuration MUST NOT be already handled by this module
 #   or Puppet catalog compilation will fail with duplicate resources.
 #
+# DEPRECATED PARAMETERS
+#
+# [*dkms_ensure*]
+#   (optional) on debian/wheezy, ubuntu/precise, ubuntu/trusty and
+#   ubuntu/utopic dkms (Dynamic Kernel Module Support) is used to
+#   have a kernel module which matches the running kernel.
+#   In newer distributions (which ship with a newer kernel) dkms
+#   is not available anymore for openvswitch.
+#   For RedHat this parameter is ignored.
+#   If you like turn off dkms on Debian/Ubuntu set to false.
+#   defaults to undef.
+#
 class vswitch::ovs(
   $package_ensure    = 'present',
-  $dkms_ensure       = false,
   $enable_hw_offload = false,
   $disable_emc       = false,
   $vlan_limit        = undef,
   $vs_config         = {},
+  $dkms_ensure       = undef,
 ) {
 
   include vswitch::params
   validate_legacy(Hash, 'validate_hash', $vs_config)
 
-  case $::osfamily {
-    'Debian': {
-      if $dkms_ensure {
-        package { $::vswitch::params::ovs_dkms_package_name:
-          ensure  => $package_ensure,
-        }
-        # OVS doesn't build unless the kernel headers are present.
-        $kernelheaders_pkg = "linux-headers-${::kernelrelease}"
-        if ! defined(Package[$kernelheaders_pkg]) {
-          package { $kernelheaders_pkg: ensure => $package_ensure }
-        }
-        exec { 'rebuild-ovsmod':
-          command     => '/usr/sbin/dpkg-reconfigure openvswitch-datapath-dkms > /tmp/reconf-log',
-          creates     => "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch_mod.ko",
-          require     => [Package[$::vswitch::params::ovs_dkms_package_name , $kernelheaders_pkg]],
-          before      => Package['openvswitch-switch'],
-          refreshonly => true,
-        }
-      }
-
-      if $::ovs_version {
-        $major_version = regsubst($::ovs_version, '^(\d+).*', '\1')
-        if $major_version == '1' {
-          $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch_mod.ko"
-        } else {
-          $kernel_mod_file = "/lib/modules/${::kernelrelease}/updates/dkms/openvswitch.ko"
-        }
-      }
-
-    }
-    default: {
-      # to appease the lint gods.
-    }
+  if $dkms_ensure {
+    warning('The dkms_ensure parameter is deprecated and has no effect')
   }
 
   if $enable_hw_offload {

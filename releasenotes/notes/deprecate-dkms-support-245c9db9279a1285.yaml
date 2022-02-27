@@ -1,0 +1,5 @@
+---
+deprecations:
+  - |
+    The ``vswitch::ovs::dkms_ensure`` parameter has been deprecated and has
+    no effect.
