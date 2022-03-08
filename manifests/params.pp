@@ -22,25 +22,9 @@ class vswitch::params {
       $ovs_dkms_package_name = 'openvswitch-datapath-dkms'
       $ovs_service_name      = 'openvswitch-switch'
       $ovsdb_service_name    = undef
+      $ovs_service_hasstatus = true
+      $ovs_status            = undef
       $provider              = 'ovs'
-      case $::operatingsystem {
-        'ubuntu': {
-          $ovs_service_hasstatus = true
-          $ovs_status            = undef
-        }
-        'debian': {
-          if ($::lsbdistcodename == 'wheezy') {
-            $ovs_service_hasstatus = false
-            $ovs_status            = '/etc/init.d/openvswitch-switch status | fgrep -q "not running"; if [ $? -eq 0 ]; then exit 1; else exit 0; fi' # lint:ignore:140chars
-          } else {
-            $ovs_service_hasstatus = true
-            $ovs_status            = undef
-          }
-        }
-        default: {
-          fail('Unsupported Debian based system')
-        }
-      }
     }
     default: {
       fail " Osfamily ${::osfamily} not supported yet"
