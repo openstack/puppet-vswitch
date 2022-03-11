@@ -54,6 +54,14 @@ describe 'vswitch::ovs' do
           :before => 'Service[openvswitch]'
         )
       end
+
+      it 'restarts the service when needed' do
+        is_expected.to contain_exec('restart openvswitch').with(
+          :path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
+          :command     => "systemctl -q restart %s.service" % platform_params[:ovs_service_name],
+          :refreshonly => true
+        )
+      end
     end
 
     context 'custom parameters' do
