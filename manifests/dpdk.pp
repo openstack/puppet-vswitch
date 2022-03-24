@@ -141,6 +141,11 @@ class vswitch::dpdk (
       value => 0,
       wait  => false,
     }
+  } else {
+    vs_config { 'other_config:emc-insert-inv-prob':
+      ensure => absent,
+      wait   => false,
+    }
   }
 
   if is_service_default($vlan_limit) {
