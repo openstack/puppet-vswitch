@@ -71,7 +71,6 @@ class vswitch::ovs(
       wait    => true,
     }
   }
-  # lint:endignore
 
   if $disable_emc {
     vs_config { 'other_config:emc-insert-inv-prob':
