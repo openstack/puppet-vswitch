@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    The ``vswitch::ovs::dkms_ensure`` parameter has been removed.

@@ -30,33 +30,16 @@
 #   NOTE: that the configuration MUST NOT be already handled by this module
 #   or Puppet catalog compilation will fail with duplicate resources.
 #
-# DEPRECATED PARAMETERS
-#
-# [*dkms_ensure*]
-#   (optional) on debian/wheezy, ubuntu/precise, ubuntu/trusty and
-#   ubuntu/utopic dkms (Dynamic Kernel Module Support) is used to
-#   have a kernel module which matches the running kernel.
-#   In newer distributions (which ship with a newer kernel) dkms
-#   is not available anymore for openvswitch.
-#   For RedHat this parameter is ignored.
-#   If you like turn off dkms on Debian/Ubuntu set to false.
-#   defaults to undef.
-#
 class vswitch::ovs(
   $package_ensure    = 'present',
   $enable_hw_offload = false,
   $disable_emc       = false,
   $vlan_limit        = undef,
   $vs_config         = {},
-  $dkms_ensure       = undef,
 ) {
 
   include vswitch::params
   validate_legacy(Hash, 'validate_hash', $vs_config)
-
-  if $dkms_ensure {
-    warning('The dkms_ensure parameter is deprecated and has no effect')
-  }
 
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
