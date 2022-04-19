@@ -27,4 +27,8 @@ Puppet::Type.newtype(:vs_bridge) do
       end
     end
   end
+
+  autorequire(:service) do
+    ['openvswitch']
+  end
 end

@@ -180,4 +180,8 @@ Puppet::Type.newtype(:vs_port) do
   autorequire(:vs_bridge) do
     self[:bridge] if self[:bridge]
   end
+
+  autorequire(:service) do
+    ['openvswitch']
+  end
 end

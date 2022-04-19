@@ -117,9 +117,8 @@ class vswitch::dpdk (
   }
 
   $dpdk_dependencies = {
-    wait    => false,
-    require => Service['openvswitch'],
-    notify  => Vs_config['other_config:dpdk-init'],
+    wait   => false,
+    notify => Vs_config['other_config:dpdk-init'],
   }
 
   if $enable_hw_offload {
@@ -162,9 +161,8 @@ class vswitch::dpdk (
   }
 
   vs_config { 'other_config:dpdk-init':
-    value   => true,
-    require => Service['openvswitch'],
-    wait    => true,
+    value => true,
+    wait  => true,
   }
 
   service { 'openvswitch':
@@ -180,8 +178,6 @@ class vswitch::dpdk (
     command     => "systemctl -q restart ${::vswitch::params::ovs_service_name}.service",
     refreshonly => true,
   }
-
-  Service['openvswitch'] -> Vs_config<||>
 
   create_resources('vs_config', $dpdk_configs, $dpdk_dependencies)
   create_resources('vs_config', $vs_config)
