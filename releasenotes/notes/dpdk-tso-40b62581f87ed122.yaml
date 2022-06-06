@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    The new ``vswitch::dpdk::enable_tso`` parameter has been added.

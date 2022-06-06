@@ -59,6 +59,9 @@ describe 'vswitch::dpdk' do
         is_expected.to contain_vs_config('other_config:vlan-limit').with(
           :value => nil, :wait => true,
         )
+        is_expected.to contain_vs_config('other_config:userspace-tso-enable').with(
+          :ensure => 'absent', :wait => false,
+        )
       end
       it 'restarts the service when needed' do
         is_expected.to contain_exec('restart openvswitch').with(
@@ -79,6 +82,7 @@ describe 'vswitch::dpdk' do
         params.merge!(:enable_hw_offload => true)
         params.merge!(:disable_emc => true)
         params.merge!(:vlan_limit => 2)
+        params.merge!(:enable_tso => true)
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
@@ -107,6 +111,9 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to contain_vs_config('other_config:vlan-limit').with(
           :value  => 2, :wait => true,
+        )
+        is_expected.to contain_vs_config('other_config:userspace-tso-enable').with(
+          :value => true, :wait => false,
         )
       end
     end

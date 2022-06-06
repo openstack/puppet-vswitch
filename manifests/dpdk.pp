@@ -54,6 +54,10 @@
 # [*handler_cores*]
 #   (Optional) Number of cores to be used for OVS handler threads.
 #
+# [*enable_tso*]
+#   (Optional) Enable TSO support.
+#   Defaults to false.
+#
 # [*vs_config*]
 #   (optional) allow configuration of arbitary vsiwtch configurations.
 #   The value is an hash of vs_config resources. Example:
@@ -73,6 +77,7 @@ class vswitch::dpdk (
   $vlan_limit            = undef,
   $revalidator_cores     = undef,
   $handler_cores         = undef,
+  $enable_tso            = false,
   $vs_config             = {},
 ) {
 
@@ -157,6 +162,18 @@ class vswitch::dpdk (
     vs_config { 'other_config:vlan-limit':
       value => $vlan_limit,
       wait  => true,
+    }
+  }
+
+  if $enable_tso {
+    vs_config { 'other_config:userspace-tso-enable':
+      value => $enable_tso,
+      wait  => false,
+    }
+  } else {
+    vs_config { 'other_config:userspace-tso-enable':
+      ensure => absent,
+      wait   => false,
     }
   }
 
