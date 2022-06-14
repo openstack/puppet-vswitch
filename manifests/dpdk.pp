@@ -85,13 +85,6 @@ class vswitch::dpdk (
   validate_legacy(Hash, 'validate_hash', $vs_config)
   kmod::load { 'vfio-pci': }
 
-  if is_service_default($vlan_limit) {
-    warning('Usage of $::os_service_default for vlan_limit is deprecated. Use undef instead')
-    $vlan_limit_real = undef
-  } else {
-    $vlan_limit_real = $vlan_limit
-  }
-
   if $::osfamily != 'Redhat' {
     fail( "${::osfamily} not yet supported for dpdk installation by puppet-vswitch")
   }
