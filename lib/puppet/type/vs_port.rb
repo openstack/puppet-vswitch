@@ -138,7 +138,7 @@ Puppet::Type.newtype(:vs_port) do
     desc "Allowed VLAN ids on this port.
 
       This parameter is only meaningful for no access ports. Ports in native-tagged or
-      native-untagged mode allways allow their native VLAN id.
+      native-untagged mode always allow their native VLAN id.
 
       VLAN ids may be specified as a list of integers. Defaults to []."
 

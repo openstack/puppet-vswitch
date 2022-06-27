@@ -24,7 +24,7 @@
 #   Default to undef
 #
 # [*vs_config*]
-#   (optional) allow configuration of arbitary vsiwtch configurations.
+#   (optional) allow configuration of arbitrary vswitch configurations.
 #   The value is an hash of vs_config resources. Example:
 #   { 'other_config:foo' => { value => 'baa' } }
 #   NOTE: that the configuration MUST NOT be already handled by this module

@@ -126,7 +126,7 @@ describe 'vswitch::dpdk' do
         })
       end
 
-      it 'configres dpdk options with comma-separated lists' do
+      it 'configures dpdk options with comma-separated lists' do
         is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
           :value => '1024,1024', :wait => false,
         )
