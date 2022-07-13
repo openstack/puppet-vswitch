@@ -145,17 +145,9 @@ class vswitch::dpdk (
     }
   }
 
-  if is_service_default($vlan_limit) {
-    warning('Usage of $::os_service_default for vlan_limit is deprecated. Use undef instead')
-    vs_config { 'other_config:vlan-limit':
-      ensure => absent,
-      wait   => true,
-    }
-  } else {
-    vs_config { 'other_config:vlan-limit':
-      value => $vlan_limit,
-      wait  => true,
-    }
+  vs_config { 'other_config:vlan-limit':
+    value => $vlan_limit,
+    wait  => true,
   }
 
   if $enable_tso {

@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    The following parameters no longer accepts ``$::os_service_default`` as
+    the special value to use default. Use ``undef`` instead.
