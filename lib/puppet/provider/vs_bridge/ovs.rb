@@ -16,6 +16,9 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     if @resource[:external_ids]
       self.class.set_external_ids(@resource[:name], @resource[:external_ids])
     end
+    if @resource[:mac_table_size]
+      self.class.set_mac_table_size(@resource[:name], @resource[:mac_table_size])
+    end
   end
 
   def destroy
@@ -49,5 +52,34 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
         vsctl('br-set-external-id', br, k, v)
       end
     end
+  end
+
+  def mac_table_size
+    self.class.get_mac_table_size(@resource[:name])
+  end
+
+  def mac_table_size=(value)
+    self.class.set_mac_table_size(@resource[:name], value)
+  end
+
+  def self.get_mac_table_size(br)
+    value = get_bridge_other_config(br)['mac-table-size']
+    if value
+      Integer(value.gsub(/^"|"$/, ''))
+    else
+      nil
+    end
+  end
+
+  def self.set_mac_table_size(br, value)
+    vsctl('set', 'Bridge', br, "other-config:mac-table-size=#{value}")
+  end
+
+  private
+
+  def self.get_bridge_other_config(br)
+    value = vsctl('get', 'Bridge', br, 'other-config').strip
+    value = value.gsub(/^{|}$/, '').split(',').map{|i| i.strip}
+    return Hash[value.map{|i| i.split('=')}]
   end
 end

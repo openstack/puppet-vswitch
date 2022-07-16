@@ -21,8 +21,14 @@ describe 'basic vswitch' do
       }
 
       vs_bridge { 'br-ci3':
-        ensure       => present,
-        external_ids => 'bridge-id=br-ci3'
+        ensure         => present,
+        mac_table_size => 50000,
+      }
+
+      vs_bridge { 'br-ci4':
+        ensure         => present,
+        external_ids   => 'bridge-id=br-ci4',
+        mac_table_size => 50000,
       }
       ~> exec { 'create_loop1_port':
         path        => '/usr/bin:/bin:/usr/sbin:/sbin',
@@ -33,7 +39,7 @@ describe 'basic vswitch' do
       }
       -> vs_port { 'loop1':
         ensure => present,
-        bridge => 'br-ci3',
+        bridge => 'br-ci4',
       }
 
       vs_config { 'external_ids:ovn-remote':
@@ -72,9 +78,27 @@ describe 'basic vswitch' do
       end
     end
 
-    it 'should have external_ids on br-ci3 bridge' do
-      command('ovs-vsctl br-get-external-id br-ci3') do |r|
-        expect(r.stdout).to match(/bridge-id=br-ci3/)
+    it 'should have mac-table-size on br-ci3 bridge' do
+      command('ovs-vsctl get Bridge br-ci3 other-config:mac-table-size') do |r|
+        expect(r.stdout).to match(/\"50000\"/)
+      end
+    end
+
+    it 'should have br-ci4 bridge' do
+      command('ovs-vsctl show') do |r|
+        expect(r.stdout).to match(/br-ci4/)
+      end
+    end
+
+    it 'should have external_ids on br-ci4 bridge' do
+      command('ovs-vsctl br-get-external-id br-ci4') do |r|
+        expect(r.stdout).to match(/bridge-id=br-ci4/)
+      end
+    end
+
+    it 'should have mac-table-size on br-ci4 bridge' do
+      command('ovs-vsctl get Bridge br-ci4 other-config:mac-table-size') do |r|
+        expect(r.stdout).to match(/\"50000\"/)
       end
     end
 

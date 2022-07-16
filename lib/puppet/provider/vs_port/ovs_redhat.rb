@@ -109,11 +109,23 @@ Puppet::Type.type(:vs_port).provide(
     end
   end
 
+  def get_bridge_other_config(br)
+    value = vsctl('get', 'Bridge', br, 'other-config').strip
+    value = value.gsub(/^{|}$/, '').split(',').map{|i| i.strip}
+    return Hash[value.map{|i| i.split('=')}]
+  end
+
   def get_ovs_extra(opts=[])
     external_ids = get_bridge_external_ids(@resource[:bridge])
     # Add commands to set external-id
     external_ids.each do |k, v|
       opts += ["br-set-external-id #{resource[:bridge]} #{k} #{v}"]
+    end
+
+    other_config = get_bridge_other_config(@resource[:bridge])
+    mac_table_size = other_config['mac-table-size']
+    if mac_table_size
+      opts += ["set bridge #{@resource[:bridge]} other-config:mac-table-size=#{mac_table_size.gsub(/^"|"$/, '')}"]
     end
 
     if opts.empty?
