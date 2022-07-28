@@ -62,6 +62,18 @@ describe 'vswitch::dpdk' do
         is_expected.to contain_vs_config('other_config:userspace-tso-enable').with(
           :ensure => 'absent', :wait => false,
         )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb').with(
+          :ensure => 'absent', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb-rebal-interval').with(
+          :ensure => 'absent', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb-load-threshold').with(
+          :ensure => 'absent', :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb-improvement-threshold').with(
+          :ensure => 'absent', :wait => false,
+        )
       end
       it 'restarts the service when needed' do
         is_expected.to contain_exec('restart openvswitch').with(
@@ -74,15 +86,21 @@ describe 'vswitch::dpdk' do
 
     context 'when passing all params' do
       before :each do
-        params.merge!(:host_core_list  => '1,2')
-        params.merge!(:socket_mem      => '1024,1024')
-        params.merge!(:socket_limit    => '2048,2048')
-        params.merge!(:memory_channels => 2)
-        params.merge!(:pmd_core_list => '22,23,24,25,66,67,68,69')
-        params.merge!(:enable_hw_offload => true)
-        params.merge!(:disable_emc => true)
-        params.merge!(:vlan_limit => 2)
-        params.merge!(:enable_tso => true)
+        params.merge!({
+          :host_core_list                    => '1,2',
+          :socket_mem                        => '1024,1024',
+          :socket_limit                      => '2048,2048',
+          :memory_channels                   => 2,
+          :pmd_core_list                     => '22,23,24,25,66,67,68,69',
+          :enable_hw_offload                 => true,
+          :disable_emc                       => true,
+          :vlan_limit                        => 2,
+          :enable_tso                        => true,
+          :pmd_auto_lb                       => true,
+          :pmd_auto_lb_rebal_interval        => 1,
+          :pmd_auto_lb_load_threshold        => 95,
+          :pmd_auto_lb_improvement_threshold => 25,
+        })
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
@@ -114,6 +132,18 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to contain_vs_config('other_config:userspace-tso-enable').with(
           :value => true, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb').with(
+          :value => true, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb-rebal-interval').with(
+          :value => 1, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb-load-threshold').with(
+          :value => 95, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:pmd-auto-lb-improvement-threshold').with(
+          :value => 25, :wait => false,
         )
       end
     end

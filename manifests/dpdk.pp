@@ -58,6 +58,26 @@
 #   (Optional) Enable TSO support.
 #   Defaults to false.
 #
+# [*pmd_auto_lb*]
+#   (Optional) Configures PMD Auto Load Balancing
+#   Defaults to false.
+#
+# [*pmd_auto_lb_rebal_interval*]
+#   (Optional) The minimum time (in minutes) 2 consecutive PMD Auto Load
+#   Balancing iterations.
+#   Defaults to undef.
+#
+# [*pmd_auto_lb_load_threshold*]
+#   (Optional) Specifies the minimum PMD thread load threshold of any
+#   non-isolated PMD threads when a PMD Auto Load Balance may be triggered.
+#   Defaults to undef.
+#
+# [*pmd_auto_lb_improvement_threshold*]
+#   (Optional) Specifies the minimum evaluated % improvement in load
+#   distribution across the non-isolated PMD threads that will allow a PMD Auto
+#   Load Balance to occur.
+#   Defaults to undef.
+#
 # [*vs_config*]
 #   (optional) allow configuration of arbitrary vswitch configurations.
 #   The value is an hash of vs_config resources. Example:
@@ -66,25 +86,30 @@
 #   or Puppet catalog compilation will fail with duplicate resources.
 #
 class vswitch::dpdk (
-  $memory_channels       = undef,
-  $host_core_list        = undef,
-  $package_ensure        = 'present',
-  $pmd_core_list         = undef,
-  $socket_mem            = undef,
-  $socket_limit          = undef,
-  $enable_hw_offload     = false,
-  $disable_emc           = false,
-  $vlan_limit            = undef,
-  $revalidator_cores     = undef,
-  $handler_cores         = undef,
-  $enable_tso            = false,
-  $vs_config             = {},
+  $memory_channels                   = undef,
+  $host_core_list                    = undef,
+  $package_ensure                    = 'present',
+  $pmd_core_list                     = undef,
+  $socket_mem                        = undef,
+  $socket_limit                      = undef,
+  $enable_hw_offload                 = false,
+  $disable_emc                       = false,
+  $vlan_limit                        = undef,
+  $revalidator_cores                 = undef,
+  $handler_cores                     = undef,
+  $enable_tso                        = false,
+  $pmd_auto_lb                       = false,
+  $pmd_auto_lb_rebal_interval        = undef,
+  $pmd_auto_lb_load_threshold        = undef,
+  $pmd_auto_lb_improvement_threshold = undef,
+  $vs_config                         = {},
 ) {
 
   include vswitch::params
   validate_legacy(Boolean, 'validate_bool', $enable_hw_offload)
   validate_legacy(Boolean, 'validate_bool', $disable_emc)
   validate_legacy(Boolean, 'validate_bool', $enable_tso)
+  validate_legacy(Boolean, 'validate_bool', $pmd_auto_lb)
   validate_legacy(Hash, 'validate_hash', $vs_config)
 
   kmod::load { 'vfio-pci': }
@@ -171,6 +196,57 @@ class vswitch::dpdk (
     vs_config { 'other_config:userspace-tso-enable':
       ensure => absent,
       wait   => false,
+    }
+  }
+
+  if $pmd_auto_lb {
+    vs_config { 'other_config:pmd-auto-lb':
+      value => true,
+      wait  => false,
+    }
+
+    if $pmd_auto_lb_rebal_interval {
+      vs_config { 'other_config:pmd-auto-lb-rebal-interval':
+        value => $pmd_auto_lb_rebal_interval,
+        wait  => false;
+      }
+    } else {
+      vs_config { 'other_config:pmd-auto-lb-rebal-interval':
+        ensure => absent,
+        wait   => false,
+      }
+    }
+
+    if $pmd_auto_lb_load_threshold {
+      vs_config { 'other_config:pmd-auto-lb-load-threshold':
+        value => $pmd_auto_lb_load_threshold,
+        wait  => false
+      }
+    } else {
+      vs_config { 'other_config:pmd-auto-lb-load-threshold':
+        ensure => absent,
+        wait   => false
+      }
+    }
+
+    if $pmd_auto_lb_improvement_threshold {
+      vs_config { 'other_config:pmd-auto-lb-improvement-threshold':
+        value => $pmd_auto_lb_improvement_threshold,
+        wait  => false
+      }
+    } else {
+      vs_config { 'other_config:pmd-auto-lb-improvement-threshold':
+        ensure => absent,
+        wait   => false
+      }
+    }
+
+  } else {
+    vs_config {
+      'other_config:pmd-auto-lb':                       ensure => absent, wait => false;
+      'other_config:pmd-auto-lb-rebal-interval':        ensure => absent, wait => false;
+      'other_config:pmd-auto-lb-load-threshold':        ensure => absent, wait => false;
+      'other_config:pmd-auto-lb-improvement-threshold': ensure => absent, wait => false;
     }
   }
 
