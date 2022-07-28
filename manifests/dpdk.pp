@@ -82,7 +82,11 @@ class vswitch::dpdk (
 ) {
 
   include vswitch::params
+  validate_legacy(Boolean, 'validate_bool', $enable_hw_offload)
+  validate_legacy(Boolean, 'validate_bool', $disable_emc)
+  validate_legacy(Boolean, 'validate_bool', $enable_tso)
   validate_legacy(Hash, 'validate_hash', $vs_config)
+
   kmod::load { 'vfio-pci': }
 
   if $::osfamily != 'Redhat' {
