@@ -62,6 +62,9 @@ describe 'vswitch::dpdk' do
         is_expected.to contain_vs_config('other_config:userspace-tso-enable').with(
           :ensure => 'absent', :wait => false,
         )
+        is_expected.to contain_vs_config('other_config:vhost-postcopy-support').with(
+          :ensure => 'absent', :restart => true, :wait => false,
+        )
         is_expected.to contain_vs_config('other_config:pmd-auto-lb').with(
           :ensure => 'absent', :wait => false,
         )
@@ -96,6 +99,7 @@ describe 'vswitch::dpdk' do
           :disable_emc                       => true,
           :vlan_limit                        => 2,
           :enable_tso                        => true,
+          :vhost_postcopy_support            => true,
           :pmd_auto_lb                       => true,
           :pmd_auto_lb_rebal_interval        => 1,
           :pmd_auto_lb_load_threshold        => 95,
@@ -132,6 +136,9 @@ describe 'vswitch::dpdk' do
         )
         is_expected.to contain_vs_config('other_config:userspace-tso-enable').with(
           :value => true, :wait => false,
+        )
+        is_expected.to contain_vs_config('other_config:vhost-postcopy-support').with(
+          :value => true, :restart => true, :wait => false,
         )
         is_expected.to contain_vs_config('other_config:pmd-auto-lb').with(
           :value => true, :wait => false,
