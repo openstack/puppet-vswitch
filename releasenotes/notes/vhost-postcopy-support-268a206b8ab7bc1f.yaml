@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    The ``ovs::dpdk`` class now supports the ``vhost_postcopy_support``
+    parameter, which enables/disables postcopy support.

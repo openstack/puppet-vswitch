@@ -58,6 +58,11 @@
 #   (Optional) Enable TSO support.
 #   Defaults to false.
 #
+# [*vhost_postcopy_support*]
+#   (Optional) Allow switching live migration of VM attached to
+#   dpdkvhostuserclient port to post-copy mode.
+#   Defaults to false
+#
 # [*pmd_auto_lb*]
 #   (Optional) Configures PMD Auto Load Balancing
 #   Defaults to false.
@@ -98,6 +103,7 @@ class vswitch::dpdk (
   $revalidator_cores                 = undef,
   $handler_cores                     = undef,
   $enable_tso                        = false,
+  $vhost_postcopy_support            = false,
   $pmd_auto_lb                       = false,
   $pmd_auto_lb_rebal_interval        = undef,
   $pmd_auto_lb_load_threshold        = undef,
@@ -181,13 +187,27 @@ class vswitch::dpdk (
 
   if $enable_tso {
     vs_config { 'other_config:userspace-tso-enable':
-      value => $enable_tso,
+      value => true,
       wait  => false,
     }
   } else {
     vs_config { 'other_config:userspace-tso-enable':
       ensure => absent,
       wait   => false,
+    }
+  }
+
+  if $vhost_postcopy_support {
+    vs_config { 'other_config:vhost-postcopy-support':
+      value   => true,
+      restart => true,
+      wait    => false
+    }
+  } else {
+    vs_config { 'other_config:vhost-postcopy-support':
+      ensure  => absent,
+      restart => true,
+      wait    => false
     }
   }
 
