@@ -44,10 +44,10 @@ Puppet::Type.type(:vs_port).provide(
 
     if interface_physical?
       template = DEFAULT
-      extras = { 'OVS_EXTRA' => "\"set bridge #{@resource[:bridge]} fail_mode=#{@resource[:fail_mode]}\"" }
+      ovs_extra = get_ovs_extra(["set bridge #{@resource[:bridge]} fail_mode=#{@resource[:fail_mode]}"])
 
       if link?
-        extras = dynamic_default if dynamic?
+        ovs_extra = dynamic_default if dynamic?
         if File.exist?(BASE + @resource[:port])
           template = cleared(from_str(File.read(BASE + @resource[:port])))
         end
@@ -67,7 +67,7 @@ Puppet::Type.type(:vs_port).provide(
       port.save(BASE + @resource[:port])
 
       bridge = IFCFG::Bridge.new(@resource[:bridge], template)
-      bridge.set(extras) if extras
+      bridge.set(ovs_extra) if ovs_extra
       bridge.save(BASE + @resource[:bridge])
 
       ifdown(@resource[:bridge])
@@ -98,6 +98,30 @@ Puppet::Type.type(:vs_port).provide(
   end
 
   private
+
+  def get_bridge_external_ids(br)
+    external_ids_raw = vsctl('br-get-external-id', br).split("\n")
+    external_ids_raw.delete('')
+    if external_ids_raw
+      return Hash[external_ids_raw.map{|i| i.split('=')}]
+    else
+      return {}
+    end
+  end
+
+  def get_ovs_extra(opts=[])
+    external_ids = get_bridge_external_ids(@resource[:bridge])
+    # Add commands to set external-id
+    external_ids.each do |k, v|
+      opts += ["br-set-external-id #{resource[:bridge]} #{k} #{v}"]
+    end
+
+    if opts.empty?
+      return {}
+    else
+      return { 'OVS_EXTRA' => "\"#{opts.join(' -- ')}\"" }
+    end
+  end
 
   def bonding?
     # To do: replace with iproute2 commands
@@ -131,8 +155,9 @@ Puppet::Type.type(:vs_port).provide(
     # Persistent MAC address taken from interface
     bridge_mac_address = File.read("/sys/class/net/#{@resource[:port]}/address").chomp
     if bridge_mac_address != ''
-      list.merge!({ 'OVS_EXTRA' =>
-        "\"set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address} fail_mode=#{@resource[:fail_mode]}\"" })
+      list.merge!(get_ovs_extra(["set bridge #{@resource[:bridge]} other-config:hwaddr=#{bridge_mac_address} fail_mode=#{@resource[:fail_mode]}"]))
+    else
+      list.merge!(get_ovs_extra())
     end
     list
   end
