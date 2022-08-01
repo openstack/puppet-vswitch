@@ -9,7 +9,6 @@ class vswitch::params {
       # OVS2.5 in Red Hat family is unified package which will support plain
       # OVS and also DPDK (if enabled at runtime).
       $ovs_dpdk_package_name = 'openvswitch'
-      $ovs_dkms_package_name = undef
       $ovs_service_name      = 'openvswitch'
       $ovsdb_service_name    = undef
       $ovs_service_hasstatus = undef
@@ -19,7 +18,6 @@ class vswitch::params {
     'Debian': {
       $ovs_package_name      = 'openvswitch-switch'
       $ovs_dpdk_package_name = 'openvswitch-switch-dpdk'
-      $ovs_dkms_package_name = 'openvswitch-datapath-dkms'
       $ovs_service_name      = 'openvswitch-switch'
       $ovsdb_service_name    = undef
       $ovs_service_hasstatus = true
