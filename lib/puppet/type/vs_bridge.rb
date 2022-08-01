@@ -28,6 +28,15 @@ Puppet::Type.newtype(:vs_bridge) do
     end
   end
 
+  newproperty(:mac_table_size) do
+    desc 'Mac table size'
+    validate do |value|
+      if !value.is_a?(Integer)
+        raise ArgumentError, "Invalid mac_table_size #{value}. Requires an Integer, not a #{value.class}"
+      end
+    end
+  end
+
   autorequire(:service) do
     ['openvswitch']
   end

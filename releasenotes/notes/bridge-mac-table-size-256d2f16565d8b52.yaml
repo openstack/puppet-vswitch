@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    The ``vs_bridge`` resource type now supports the ``mac_table_size``
+    property.
