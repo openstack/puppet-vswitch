@@ -39,6 +39,8 @@ class vswitch::ovs(
 ) {
 
   include vswitch::params
+  validate_legacy(Boolean, 'validate_bool', $enable_hw_offload)
+  validate_legacy(Boolean, 'validate_bool', $disable_emc)
   validate_legacy(Hash, 'validate_hash', $vs_config)
 
   if $enable_hw_offload {
