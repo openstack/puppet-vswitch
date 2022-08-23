@@ -85,6 +85,8 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
     # if skip_if_version matches ovs_version(), then skip the configuration by faking exists
     if @resource[:skip_if_version].eql? ovs_version()
       return true
+    elsif ensure_absent?
+      @property_hash[:ensure] != :present
     else
       @property_hash[:ensure] == :present
     end
@@ -108,7 +110,7 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
   end
 
   def create
-    if @resource[:value].nil? or @resource[:value].empty?
+    if ensure_absent?
       destroy
     else
       _set
@@ -118,6 +120,8 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
   def value
     # if skip_if_version matches ovs_version(), then skip the configuration by returning the same value
     if @resource[:skip_if_version].eql? ovs_version()
+      @resource[:value]
+    elsif ensure_absent?
       @resource[:value]
     else
       @property_hash[:value]
@@ -129,10 +133,16 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
   end
 
   def value=(value)
-    if  @resource[:value].nil? or @resource[:value].empty?
+    if ensure_absent?
       destroy
     else
       _set
     end
+  end
+
+  private
+
+  def ensure_absent?
+    (@resource[:value].nil? or @resource[:value].empty?) and @resource[:ensure] == :present
   end
 end
