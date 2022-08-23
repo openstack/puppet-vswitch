@@ -44,7 +44,24 @@ describe 'basic vswitch' do
 
       vs_config { 'external_ids:ovn-remote':
         ensure => present,
-        value => 'tcp:127.0.0.1:2300',
+        value  => 'tcp:127.0.0.1:2300',
+      }
+
+      vs_config { 'other_config:thisshouldexist':
+        ensure => present,
+        value  => 'customvalue',
+      }
+      vs_config { 'other_config:thisshouldnotexist':
+        ensure => present,
+        value  => undef,
+      }
+      vs_config { 'other_config:thisshouldnotexist2':
+        ensure => present,
+        value  => '',
+      }
+      vs_config { 'other_config:thisshouldnotexist3':
+        ensure => present,
+        value  => [],
       }
       EOS
 
@@ -105,6 +122,12 @@ describe 'basic vswitch' do
     it 'should get remote addr' do
       command('ovs-vsctl get Open_vSwitch . external_ids:ovn-remote') do |r|
         expect(r.stdout).to match(/\"tcp:127.0.0.1:2300\"/)
+      end
+    end
+
+    it 'should get other config' do
+      command('sudo ovs-vsctl get Open_Vswitch . other_config') do |r|
+        expect(r.stdout).to match(/\"{thishshouldexist=customvalue}"/)
       end
     end
   end
