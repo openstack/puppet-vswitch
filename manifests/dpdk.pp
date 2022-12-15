@@ -115,6 +115,7 @@ class vswitch::dpdk (
   validate_legacy(Boolean, 'validate_bool', $enable_hw_offload)
   validate_legacy(Boolean, 'validate_bool', $disable_emc)
   validate_legacy(Boolean, 'validate_bool', $enable_tso)
+  validate_legacy(Boolean, 'validate_bool', $vhost_postcopy_support)
   validate_legacy(Boolean, 'validate_bool', $pmd_auto_lb)
   validate_legacy(Hash, 'validate_hash', $vs_config)
 
