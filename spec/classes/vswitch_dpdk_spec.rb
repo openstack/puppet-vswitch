@@ -33,22 +33,22 @@ describe 'vswitch::dpdk' do
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => true, :wait => true,
+          :value  => true, :wait => true, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
-          :value  => nil, :wait => false,
+          :value  => nil, :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
-          :value => '', :wait => false,
+          :value => '', :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:dpdk-socket-limit').with(
-          :value => '', :wait => false,
+          :value => '', :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
-          :value => nil, :wait => false,
+          :value => nil, :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:dpdk-extra').with(
-          :value => nil, :wait => false,
+          :value => nil, :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:hw-offload').with(
           :ensure => 'absent', :restart => true, :wait => true,
@@ -108,22 +108,22 @@ describe 'vswitch::dpdk' do
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
-          :value  => true, :wait => true,
+          :value  => true, :wait => true, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:pmd-cpu-mask').with(
           :value  => '3c0000000003c00000', :wait => false,
         )
         is_expected.to contain_vs_config('other_config:dpdk-socket-mem').with(
-          :value => '1024,1024', :wait => false,
+          :value => '1024,1024', :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:dpdk-socket-limit').with(
-          :value => '2048,2048', :wait => false,
+          :value => '2048,2048', :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:dpdk-lcore-mask').with(
-          :value => '6', :wait => false,
+          :value => '6', :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:dpdk-extra').with(
-          :value => '-n 2', :wait => false,
+          :value => '-n 2', :wait => false, :restart => true,
         )
         is_expected.to contain_vs_config('other_config:hw-offload').with(
           :value  => true, :restart => true, :wait => true,

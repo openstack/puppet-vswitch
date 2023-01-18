@@ -141,11 +141,11 @@ class vswitch::dpdk (
   }
 
   $dpdk_configs = {
-    'other_config:dpdk-extra'            => { value => $memory_channels_conf},
-    'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ',')},
-    'other_config:dpdk-socket-limit'     => { value => join(any2array($socket_limit), ',')},
-    'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask},
-    'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask},
+    'other_config:dpdk-extra'            => { value => $memory_channels_conf, restart => true },
+    'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ','), restart => true},
+    'other_config:dpdk-socket-limit'     => { value => join(any2array($socket_limit), ','), restart => true},
+    'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask, restart => true},
+    'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask, restart => true},
     'other_config:n-revalidator-threads' => { value => $revalidator_cores},
     'other_config:n-handler-threads'     => { value => $handler_cores},
   }
@@ -264,8 +264,9 @@ class vswitch::dpdk (
   }
 
   vs_config { 'other_config:dpdk-init':
-    value => true,
-    wait  => true,
+    value   => true,
+    restart => true,
+    wait    => true,
   }
 
   service { 'openvswitch':
