@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fixed missing triggers to restart the ovs daemon when dpdk options are
+    updated.
