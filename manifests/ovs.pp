@@ -30,29 +30,39 @@
 #   NOTE: that the configuration MUST NOT be already handled by this module
 #   or Puppet catalog compilation will fail with duplicate resources.
 #
+# [*skip_restart*]
+#   (optional) Skip restarting the service even when updating some options
+#   which require service restart. Setting this parameter to true avoids
+#   immedicate network distuption caused by restarting the ovs daemon.
+#   Defaults to false.
+#
 class vswitch::ovs(
   $package_ensure    = 'present',
   $enable_hw_offload = false,
   $disable_emc       = false,
   $vlan_limit        = undef,
   $vs_config         = {},
+  $skip_restart      = false,
 ) {
 
   include vswitch::params
   validate_legacy(Boolean, 'validate_bool', $enable_hw_offload)
   validate_legacy(Boolean, 'validate_bool', $disable_emc)
   validate_legacy(Hash, 'validate_hash', $vs_config)
+  validate_legacy(Boolean, 'validate_bool', $skip_restart)
+
+  $restart = !$skip_restart
 
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
       value   => true,
-      restart => true,
+      restart => $restart,
       wait    => true,
     }
   } else {
     vs_config { 'other_config:hw-offload':
       ensure  => absent,
-      restart => true,
+      restart => $restart,
       wait    => true,
     }
   }

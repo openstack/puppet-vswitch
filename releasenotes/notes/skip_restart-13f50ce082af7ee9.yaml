@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    The new ``skip_restart`` parameter has been added. When this parmeter is
+    set to ``false``, the ovs daemon is not restarted when some options which
+    requires service restart are updated. This avoids immediate network
+    disruption caused by restarting the ovs daemon.

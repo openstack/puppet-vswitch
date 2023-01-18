@@ -90,6 +90,12 @@
 #   NOTE: that the configuration MUST NOT be already handled by this module
 #   or Puppet catalog compilation will fail with duplicate resources.
 #
+# [*skip_restart*]
+#   (optional) Skip restarting the service even when updating some options
+#   which require service restart. Setting this parameter to true avoids
+#   immedicate network distuption caused by restarting the ovs daemon.
+#   Defaults to false.
+#
 class vswitch::dpdk (
   $memory_channels                   = undef,
   $host_core_list                    = undef,
@@ -109,6 +115,7 @@ class vswitch::dpdk (
   $pmd_auto_lb_load_threshold        = undef,
   $pmd_auto_lb_improvement_threshold = undef,
   $vs_config                         = {},
+  $skip_restart                      = false,
 ) {
 
   include vswitch::params
@@ -118,6 +125,9 @@ class vswitch::dpdk (
   validate_legacy(Boolean, 'validate_bool', $vhost_postcopy_support)
   validate_legacy(Boolean, 'validate_bool', $pmd_auto_lb)
   validate_legacy(Hash, 'validate_hash', $vs_config)
+  validate_legacy(Boolean, 'validate_bool', $skip_restart)
+
+  $restart = !$skip_restart
 
   kmod::load { 'vfio-pci': }
 
@@ -141,11 +151,11 @@ class vswitch::dpdk (
   }
 
   $dpdk_configs = {
-    'other_config:dpdk-extra'            => { value => $memory_channels_conf, restart => true },
-    'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ','), restart => true},
-    'other_config:dpdk-socket-limit'     => { value => join(any2array($socket_limit), ','), restart => true},
-    'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask, restart => true},
-    'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask, restart => true},
+    'other_config:dpdk-extra'            => { value => $memory_channels_conf, restart => $restart },
+    'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ','), restart => $restart},
+    'other_config:dpdk-socket-limit'     => { value => join(any2array($socket_limit), ','), restart => $restart},
+    'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask, restart => $restart},
+    'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask, restart => $restart},
     'other_config:n-revalidator-threads' => { value => $revalidator_cores},
     'other_config:n-handler-threads'     => { value => $handler_cores},
   }
@@ -158,13 +168,13 @@ class vswitch::dpdk (
   if $enable_hw_offload {
     vs_config { 'other_config:hw-offload':
       value   => true,
-      restart => true,
+      restart => $restart,
       wait    => true,
     }
   } else {
     vs_config { 'other_config:hw-offload':
       ensure  => absent,
-      restart => true,
+      restart => $restart,
       wait    => true,
     }
   }
@@ -201,13 +211,13 @@ class vswitch::dpdk (
   if $vhost_postcopy_support {
     vs_config { 'other_config:vhost-postcopy-support':
       value   => true,
-      restart => true,
+      restart => $restart,
       wait    => false
     }
   } else {
     vs_config { 'other_config:vhost-postcopy-support':
       ensure  => absent,
-      restart => true,
+      restart => $restart,
       wait    => false
     }
   }
@@ -265,7 +275,7 @@ class vswitch::dpdk (
 
   vs_config { 'other_config:dpdk-init':
     value   => true,
-    restart => true,
+    restart => $restart,
     wait    => true,
   }
 
