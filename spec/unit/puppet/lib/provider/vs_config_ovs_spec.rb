@@ -11,10 +11,10 @@ describe Puppet::Type.type(:vs_config).provider(:ovs) do
 
   context "Testing string values" do
     before :each do
-      described_class.expects(:vsctl).with(
-        "list", "Open_vSwitch", ".").returns 'key1     : value1
+      expect(described_class).to receive(:vsctl).with(
+        "list", "Open_vSwitch", ".").and_return('key1     : value1
 key2     : value2
-key3     : value3'
+key3     : value3')
     end
 
     it "should return three resources" do
@@ -43,10 +43,10 @@ key3     : value3'
 
   context "Testing array values" do
     before :each do
-      described_class.expects(:vsctl).with(
-        "list", "Open_vSwitch", ".").returns 'key1        : [abc, def, ghi]
+      expect(described_class).to receive(:vsctl).with(
+        "list", "Open_vSwitch", ".").and_return('key1        : [abc, def, ghi]
 key2     : [def, abc, ghi]
-key3     : [1001, 399, 240, 1200]'
+key3     : [1001, 399, 240, 1200]')
       end
 
     it "should return three resources" do
@@ -70,10 +70,10 @@ key3     : [1001, 399, 240, 1200]'
 
   context "Testing hash values" do
     before :each do
-      described_class.expects(:vsctl).with(
-        "list", "Open_vSwitch", ".").returns 'key1        : {}
+      expect(described_class).to receive(:vsctl).with(
+        "list", "Open_vSwitch", ".").and_return('key1        : {}
 key2     : {"hash21"="value21"}
-key3     : {"hash31"="value31", "hash32"="value32", "hash33"=33}'
+key3     : {"hash31"="value31", "hash32"="value32", "hash33"=33}')
       end
 
     it "should return three resources" do
