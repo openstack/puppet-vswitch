@@ -18,27 +18,27 @@ describe Puppet::Type.type(:vs_ssl).provider(:ovs) do
 
   context 'when changing cert_file' do
     it 'should recreate ssl config' do
-      File.stubs(:file?).returns(true)
-      provider.expects(:destroy)
-      provider.expects(:create)
+      allow(File).to receive(':file?').and_return(true)
+      expect(provider).to receive(:destroy)
+      expect(provider).to receive(:create)
       provider.cert_file = '/tmp/blah.crt'
     end
   end
 
   context 'when changing key_file' do
     it 'should recreate ssl config' do
-      File.stubs(:file?).returns(true)
-      provider.expects(:destroy)
-      provider.expects(:create)
+      allow(File).to receive(':file?').and_return(true)
+      expect(provider).to receive(:destroy)
+      expect(provider).to receive(:create)
       provider.key_file = '/tmp/blah.pem'
     end
   end
 
   context 'when changing ca_file' do
     it 'should recreate ssl config' do
-      File.stubs(:file?).returns(true)
-      provider.expects(:destroy)
-      provider.expects(:create)
+      allow(File).to receive(':file?').and_return(true)
+      expect(provider).to receive(:destroy)
+      expect(provider).to receive(:create)
       provider.ca_file = '/tmp/blah.crt'
     end
   end
