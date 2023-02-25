@@ -127,6 +127,16 @@ class vswitch::dpdk (
   validate_legacy(Hash, 'validate_hash', $vs_config)
   validate_legacy(Boolean, 'validate_bool', $skip_restart)
 
+  if $vlan_limit != undef {
+    validate_legacy(Integer, 'validate_integer', $vlan_limit)
+  }
+  if $revalidator_cores != undef {
+    validate_legacy(Integer, 'validate_integer', $revalidator_cores)
+  }
+  if $handler_cores != undef {
+    validate_legacy(Integer, 'validate_integer', $handler_cores)
+  }
+
   $restart = !$skip_restart
 
   kmod::load { 'vfio-pci': }

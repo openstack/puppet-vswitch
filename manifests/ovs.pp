@@ -51,6 +51,10 @@ class vswitch::ovs(
   validate_legacy(Hash, 'validate_hash', $vs_config)
   validate_legacy(Boolean, 'validate_bool', $skip_restart)
 
+  if $vlan_limit != undef {
+    validate_legacy(Integer, 'validate_integer', $vlan_limit)
+  }
+
   $restart = !$skip_restart
 
   if $enable_hw_offload {
