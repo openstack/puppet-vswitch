@@ -110,16 +110,16 @@ describe 'vswitch::ovs' do
       end
 
       let (:platform_params) do
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
-          if facts[:operatingsystem] == 'Debian'
+          if facts[:os]['name'] == 'Debian'
             {
               :ovs_package_name  => 'openvswitch-switch',
               :ovs_service_name  => 'openvswitch-switch',
               :provider          => 'ovs',
               :service_hasstatus => true,
             }
-          elsif facts[:operatingsystem] == 'Ubuntu'
+          elsif facts[:os]['name'] == 'Ubuntu'
             {
               :ovs_package_name  => 'openvswitch-switch',
               :ovs_service_name  => 'openvswitch-switch',

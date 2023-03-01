@@ -141,8 +141,8 @@ class vswitch::dpdk (
 
   kmod::load { 'vfio-pci': }
 
-  if $::osfamily != 'Redhat' {
-    fail( "${::osfamily} not yet supported for dpdk installation by puppet-vswitch")
+  if $facts['os']['family'] != 'Redhat' {
+    fail( "${facts['os']['family']} not yet supported for dpdk installation by puppet-vswitch")
   }
 
   package { $::vswitch::params::ovs_dpdk_package_name:

@@ -183,7 +183,7 @@ describe 'vswitch::dpdk' do
         facts.merge!(OSDefaults.get_facts({ :ovs_version => '2.6.1' }))
       end
       let (:platform_params) do
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           {
             # not supported
@@ -197,7 +197,7 @@ describe 'vswitch::dpdk' do
           }
         end
       end
-      it_behaves_like "vswitch::dpdk on #{facts[:osfamily]}"
+      it_behaves_like "vswitch::dpdk on #{facts[:os]['family']}"
     end
   end
 end

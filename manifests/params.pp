@@ -3,7 +3,7 @@
 class vswitch::params {
   include openstacklib::defaults
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Redhat': {
       $ovs_package_name      = 'openvswitch'
       # OVS2.5 in Red Hat family is unified package which will support plain
@@ -25,7 +25,7 @@ class vswitch::params {
       $provider              = 'ovs'
     }
     default: {
-      fail " Osfamily ${::osfamily} not supported yet"
+      fail " Osfamily ${facts['os']['family']} not supported yet"
     }
-  } # Case $::osfamily
+  } # Case $facts['os']['family']
 }
