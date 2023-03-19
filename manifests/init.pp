@@ -25,7 +25,7 @@
 # Apache License 2.0 (see LICENSE file)
 #
 class vswitch (
-  $provider = $vswitch::params::provider
+  Enum['ovs', 'dpdk'] $provider = $vswitch::params::provider
 ) {
   $cls = "::vswitch::${provider}"
   include $cls

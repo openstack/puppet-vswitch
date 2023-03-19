@@ -97,45 +97,28 @@
 #   Defaults to false.
 #
 class vswitch::dpdk (
-  $memory_channels                   = undef,
-  $host_core_list                    = undef,
-  $package_ensure                    = 'present',
-  $pmd_core_list                     = undef,
-  $socket_mem                        = undef,
-  $socket_limit                      = undef,
-  $enable_hw_offload                 = false,
-  $disable_emc                       = false,
-  $vlan_limit                        = undef,
-  $revalidator_cores                 = undef,
-  $handler_cores                     = undef,
-  $enable_tso                        = false,
-  $vhost_postcopy_support            = false,
-  $pmd_auto_lb                       = false,
-  $pmd_auto_lb_rebal_interval        = undef,
-  $pmd_auto_lb_load_threshold        = undef,
-  $pmd_auto_lb_improvement_threshold = undef,
-  $vs_config                         = {},
-  $skip_restart                      = false,
+  Optional[Variant[Integer[0], String]] $memory_channels                          = undef,
+  Optional[String] $host_core_list                                                = undef,
+  String $package_ensure                                                          = 'present',
+  Optional[String] $pmd_core_list                                                 = undef,
+  Optional[Variant[String, Integer, Array[String], Array[Integer]]] $socket_mem   = undef,
+  Optional[Variant[String, Integer, Array[String], Array[Integer]]] $socket_limit = undef,
+  Boolean $enable_hw_offload                                                      = false,
+  Boolean $disable_emc                                                            = false,
+  Optional[Integer[0]] $vlan_limit                                                = undef,
+  Optional[Integer[0]] $revalidator_cores                                         = undef,
+  Optional[Integer[0]] $handler_cores                                             = undef,
+  Boolean $enable_tso                                                             = false,
+  Boolean $vhost_postcopy_support                                                 = false,
+  Boolean $pmd_auto_lb                                                            = false,
+  Optional[Integer[0]] $pmd_auto_lb_rebal_interval                                = undef,
+  Optional[Integer[0]] $pmd_auto_lb_load_threshold                                = undef,
+  Optional[Integer[0]] $pmd_auto_lb_improvement_threshold                         = undef,
+  Hash $vs_config                                                                 = {},
+  Boolean $skip_restart                                                           = false,
 ) {
 
   include vswitch::params
-  validate_legacy(Boolean, 'validate_bool', $enable_hw_offload)
-  validate_legacy(Boolean, 'validate_bool', $disable_emc)
-  validate_legacy(Boolean, 'validate_bool', $enable_tso)
-  validate_legacy(Boolean, 'validate_bool', $vhost_postcopy_support)
-  validate_legacy(Boolean, 'validate_bool', $pmd_auto_lb)
-  validate_legacy(Hash, 'validate_hash', $vs_config)
-  validate_legacy(Boolean, 'validate_bool', $skip_restart)
-
-  if $vlan_limit != undef {
-    validate_legacy(Integer, 'validate_integer', $vlan_limit)
-  }
-  if $revalidator_cores != undef {
-    validate_legacy(Integer, 'validate_integer', $revalidator_cores)
-  }
-  if $handler_cores != undef {
-    validate_legacy(Integer, 'validate_integer', $handler_cores)
-  }
 
   $restart = !$skip_restart
 
@@ -153,11 +136,17 @@ class vswitch::dpdk (
 
   $pmd_core_mask = range_to_mask($pmd_core_list)
   $dpdk_lcore_mask = range_to_mask($host_core_list)
-  if $memory_channels and !empty($memory_channels) {
-    $memory_channels_conf = "-n ${memory_channels}"
+
+  if $memory_channels =~ String {
+    warning('Support for string by memory_channels is deprecated. Use integer instead')
   }
-  else {
-    $memory_channels_conf = undef
+  $memory_channels_conf = $memory_channels ? {
+    String  => empty($memory_channels) ? {
+      true    => undef,
+      default => "-n ${memory_channels}",
+    },
+    Integer => "-n ${memory_channels}",
+    default => undef,
   }
 
   $dpdk_configs = {

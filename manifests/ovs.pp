@@ -37,23 +37,15 @@
 #   Defaults to false.
 #
 class vswitch::ovs(
-  $package_ensure    = 'present',
-  $enable_hw_offload = false,
-  $disable_emc       = false,
-  $vlan_limit        = undef,
-  $vs_config         = {},
-  $skip_restart      = false,
+  String $package_ensure           = 'present',
+  Boolean $enable_hw_offload       = false,
+  Boolean $disable_emc             = false,
+  Optional[Integer[0]] $vlan_limit = undef,
+  Hash $vs_config                  = {},
+  Boolean $skip_restart            = false,
 ) {
 
   include vswitch::params
-  validate_legacy(Boolean, 'validate_bool', $enable_hw_offload)
-  validate_legacy(Boolean, 'validate_bool', $disable_emc)
-  validate_legacy(Hash, 'validate_hash', $vs_config)
-  validate_legacy(Boolean, 'validate_bool', $skip_restart)
-
-  if $vlan_limit != undef {
-    validate_legacy(Integer, 'validate_integer', $vlan_limit)
-  }
 
   $restart = !$skip_restart
 

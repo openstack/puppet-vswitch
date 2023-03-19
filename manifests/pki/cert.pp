@@ -9,7 +9,7 @@
 #  Defaults to '/etc/openvswitch'
 #
 define vswitch::pki::cert(
-  $cert_dir = '/etc/openvswitch',
+  Stdlib::Absolutepath $cert_dir = '/etc/openvswitch',
 ) {
   include vswitch::params
 
