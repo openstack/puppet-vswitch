@@ -10,18 +10,12 @@ class vswitch::params {
       # OVS and also DPDK (if enabled at runtime).
       $ovs_dpdk_package_name = 'openvswitch'
       $ovs_service_name      = 'openvswitch'
-      $ovsdb_service_name    = undef
-      $ovs_service_hasstatus = undef
-      $ovs_status            = undef
       $provider              = 'ovs'
     }
     'Debian': {
       $ovs_package_name      = 'openvswitch-switch'
       $ovs_dpdk_package_name = 'openvswitch-switch-dpdk'
       $ovs_service_name      = 'openvswitch-switch'
-      $ovsdb_service_name    = undef
-      $ovs_service_hasstatus = true
-      $ovs_status            = undef
       $provider              = 'ovs'
     }
     default: {

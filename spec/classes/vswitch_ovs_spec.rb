@@ -41,11 +41,9 @@ describe 'vswitch::ovs' do
 
       it 'configures service' do
         is_expected.to contain_service('openvswitch').with(
-          :ensure    => true,
-          :enable    => true,
-          :name      => platform_params[:ovs_service_name],
-          :hasstatus => platform_params[:service_hasstatus],
-          :status    => platform_params[:service_status],
+          :ensure => true,
+          :enable => true,
+          :name   => platform_params[:ovs_service_name],
         )
       end
 
@@ -117,14 +115,12 @@ describe 'vswitch::ovs' do
               :ovs_package_name  => 'openvswitch-switch',
               :ovs_service_name  => 'openvswitch-switch',
               :provider          => 'ovs',
-              :service_hasstatus => true,
             }
           elsif facts[:os]['name'] == 'Ubuntu'
             {
               :ovs_package_name  => 'openvswitch-switch',
               :ovs_service_name  => 'openvswitch-switch',
               :provider          => 'ovs',
-              :service_hasstatus => true,
             }
           end
         when 'RedHat'

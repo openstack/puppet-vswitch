@@ -91,22 +91,9 @@ class vswitch::ovs(
   create_resources('vs_config', $vs_config)
 
   service { 'openvswitch':
-    ensure    => true,
-    enable    => true,
-    name      => $::vswitch::params::ovs_service_name,
-    status    => $::vswitch::params::ovs_status,
-    hasstatus => $::vswitch::params::ovs_service_hasstatus
-  }
-
-  if $::vswitch::params::ovsdb_service_name {
-    service { 'ovsdb-server':
-      ensure => true,
-      enable => true,
-      name   => $::vswitch::params::ovsdb_service_name,
-      status => $::vswitch::params::ovsdb_status,
-    }
-
-    Service['ovsdb-server'] ~> Service['openvswitch']
+    ensure => true,
+    enable => true,
+    name   => $::vswitch::params::ovs_service_name,
   }
 
   # NOTE(tkajinam): This resource is defined to restart the openvswitch service
