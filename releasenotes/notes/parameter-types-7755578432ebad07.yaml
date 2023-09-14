@@ -1,0 +1,10 @@
+---
+upgrade:
+  - |
+    Now this module implements strict data type validations.
+
+deprecations:
+  - |
+    The ``vswitch::dpdk::memory_channels`` parameter now supports string and
+    integer but string support has been deprecated. Use an integer value
+    instead.
