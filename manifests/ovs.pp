@@ -5,6 +5,12 @@
 #
 # === Parameters:
 #
+# [*package_name*]
+#   (required) Name of OVS package.
+#
+# [*service_name*]
+#   (required) Name of OVS service.
+#
 # [*package_ensure*]
 #   (Optional) State of the openvswitch package
 #   Defaults to 'present'.
@@ -37,6 +43,8 @@
 #   Defaults to false.
 #
 class vswitch::ovs(
+  String[1] $package_name,
+  String[1] $service_name,
   String $package_ensure           = 'present',
   Boolean $enable_hw_offload       = false,
   Boolean $disable_emc             = false,
@@ -44,8 +52,6 @@ class vswitch::ovs(
   Hash $vs_config                  = {},
   Boolean $skip_restart            = false,
 ) {
-
-  include vswitch::params
 
   $restart = !$skip_restart
 
@@ -85,19 +91,21 @@ class vswitch::ovs(
   service { 'openvswitch':
     ensure => true,
     enable => true,
-    name   => $::vswitch::params::ovs_service_name,
+    name   => $service_name,
+    tag    => 'openvswitch',
   }
 
   # NOTE(tkajinam): This resource is defined to restart the openvswitch service
   # when any vs_config resource with restart => true is enabled.
   exec { 'restart openvswitch':
     path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
-    command     => "systemctl -q restart ${::vswitch::params::ovs_service_name}.service",
+    command     => "systemctl -q restart ${service_name}.service",
     refreshonly => true,
   }
 
-  package { $::vswitch::params::ovs_package_name:
+  package { 'openvswitch':
     ensure => $package_ensure,
+    name   => $package_name,
     before => Service['openvswitch'],
     tag    => 'openvswitch',
   }

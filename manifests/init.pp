@@ -6,6 +6,7 @@
 #
 # [*provider*]
 #   Select vswitch to install
+#   Defaults to 'ovs'
 #
 # === Examples
 #
@@ -25,7 +26,7 @@
 # Apache License 2.0 (see LICENSE file)
 #
 class vswitch (
-  Enum['ovs', 'dpdk'] $provider = $vswitch::params::provider
+  Enum['ovs', 'dpdk'] $provider = 'ovs'
 ) {
   $cls = "::vswitch::${provider}"
   include $cls
