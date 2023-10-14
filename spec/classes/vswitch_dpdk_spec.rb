@@ -2,35 +2,8 @@ require 'spec_helper'
 
 describe 'vswitch::dpdk' do
 
-  let :default_params do {
-    :package_ensure   => 'present',
-  }
-  end
-
-  shared_examples_for 'vswitch::dpdk on Debian' do
-    let(:params) { default_params }
-    context 'basic parameters' do
-      before :each do
-        params.merge!(:host_core_list => '1,2')
-      end
-
-      it_raises 'a Puppet::Error', /Debian not yet supported for dpdk/
-    end
-  end
-
-  shared_examples_for 'vswitch::dpdk on RedHat' do
-    let(:params) { default_params }
-
+  shared_examples_for 'vswitch::dpdk' do
     context 'when passing all empty params' do
-      before :each do
-        params.merge!(:host_core_list  => '')
-        params.merge!(:socket_mem      => '')
-        params.merge!(:socket_limit    => '')
-        params.merge!(:memory_channels => '' )
-        params.merge!(:pmd_core_list => '')
-        params.merge!(:enable_hw_offload => false)
-        params.merge!(:disable_emc => false)
-      end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
           :value  => true, :wait => true, :restart => true,
@@ -78,6 +51,23 @@ describe 'vswitch::dpdk' do
           :ensure => 'absent', :wait => false,
         )
       end
+
+      it 'configures service' do
+        is_expected.to contain_service('openvswitch').with(
+          :ensure => true,
+          :enable => true,
+          :name   => platform_params[:ovs_service_name],
+        )
+      end
+
+      it 'install package' do
+        is_expected.to contain_package(platform_params[:ovs_dpdk_package_name]).with(
+          :name   => platform_params[:ovs_dpdk_package_name],
+          :ensure => 'present',
+          :before => 'Service[openvswitch]'
+        )
+      end
+
       it 'restarts the service when needed' do
         is_expected.to contain_exec('restart openvswitch').with(
           :path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
@@ -88,8 +78,8 @@ describe 'vswitch::dpdk' do
     end
 
     context 'when passing all params' do
-      before :each do
-        params.merge!({
+      let :params do
+        {
           :host_core_list                    => '1,2',
           :socket_mem                        => '1024,1024',
           :socket_limit                      => '2048,2048',
@@ -104,7 +94,7 @@ describe 'vswitch::dpdk' do
           :pmd_auto_lb_rebal_interval        => 1,
           :pmd_auto_lb_load_threshold        => 95,
           :pmd_auto_lb_improvement_threshold => 25,
-        })
+        }
       end
       it 'configures dpdk options' do
         is_expected.to contain_vs_config('other_config:dpdk-init').with(
@@ -156,11 +146,11 @@ describe 'vswitch::dpdk' do
     end
 
     context 'when passing arrays' do
-      before :each do
-        params.merge!({
+      let :params do
+        {
           :socket_mem   => [1024, 1024],
           :socket_limit => [2048, 2048],
-        })
+        }
       end
 
       it 'configures dpdk options with comma-separated lists' do
@@ -186,18 +176,17 @@ describe 'vswitch::dpdk' do
         case facts[:os]['family']
         when 'Debian'
           {
-            # not supported
+            :ovs_dpdk_package_name => 'openvswitch-switch-dpdk',
+            :ovs_service_name      => 'openvswitch-switch',
           }
         when 'RedHat'
           {
             :ovs_dpdk_package_name => 'openvswitch',
             :ovs_service_name      => 'openvswitch',
-            :provider              => 'ovs_redhat',
-            :ovsdb_service_name    => 'ovsdb-server',
           }
         end
       end
-      it_behaves_like "vswitch::dpdk on #{facts[:os]['family']}"
+      it_behaves_like "vswitch::dpdk"
     end
   end
 end

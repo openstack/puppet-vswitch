@@ -2,16 +2,8 @@ require 'spec_helper'
 
 describe 'vswitch::ovs' do
 
-  let :default_params do {
-    :package_ensure    => 'present',
-    :enable_hw_offload => false,
-    :disable_emc       => false,
-  }
-  end
-
   shared_examples_for 'vswitch::ovs' do
     context 'default parameters' do
-      let (:params) { default_params }
 
       it 'contains the ovs class' do
         is_expected.to contain_class('vswitch::ovs')
@@ -50,7 +42,7 @@ describe 'vswitch::ovs' do
       it 'install package' do
         is_expected.to contain_package(platform_params[:ovs_package_name]).with(
           :name   => platform_params[:ovs_package_name],
-          :ensure => params[:package_ensure],
+          :ensure => 'present',
           :before => 'Service[openvswitch]'
         )
       end
@@ -114,20 +106,17 @@ describe 'vswitch::ovs' do
             {
               :ovs_package_name  => 'openvswitch-switch',
               :ovs_service_name  => 'openvswitch-switch',
-              :provider          => 'ovs',
             }
           elsif facts[:os]['name'] == 'Ubuntu'
             {
               :ovs_package_name  => 'openvswitch-switch',
               :ovs_service_name  => 'openvswitch-switch',
-              :provider          => 'ovs',
             }
           end
         when 'RedHat'
           {
             :ovs_package_name => 'openvswitch',
             :ovs_service_name => 'openvswitch',
-            :provider         => 'ovs_redhat',
           }
         end
       end

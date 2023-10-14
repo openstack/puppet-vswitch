@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    The ``vswitch::dpdk`` class now supports Debian OS family.
