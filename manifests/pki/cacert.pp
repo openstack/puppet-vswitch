@@ -3,7 +3,6 @@
 # Initialize CA authority
 #
 class vswitch::pki::cacert {
-  include vswitch::params
 
   exec { 'ovs-pki-init-ca-authority':
     command => 'ovs-pki init --force',
@@ -11,6 +10,6 @@ class vswitch::pki::cacert {
     path    => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
   }
 
-  Package<| title == $::vswitch::params::ovs_package_name |>
+  Package<| title == 'openvswitch' |>
     -> Exec['ovs-pki-init-ca-authority']
 }

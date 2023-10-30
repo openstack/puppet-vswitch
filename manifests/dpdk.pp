@@ -3,6 +3,16 @@
 #
 # === Parameters
 #
+# [*package_name*]
+#   (required) Name of OVS DPDK package.
+#
+# [*service_name*]
+#   (required) Name of OVS service with DPDK functionality.
+#
+# [*package_ensure*]
+#   (Optional) State of the openvswitch package
+#   Defaults to 'present'.
+#
 # [*memory_channels*]
 #   (optional) The number of memory channels to use as an integer.
 #
@@ -11,10 +21,6 @@
 #   The host_core_list is a string with format as <c1>[-c2][,c3[-c4],...]
 #   where c1, c2, etc are core indexes between 0 and 128.
 #   For example, to configure 3 cores the value should be "0-2"
-#
-# [*package_ensure*]
-#   (Optional) State of the openvswitch package
-#   Defaults to 'present'.
 #
 # [*pmd_core_list*]
 #   (optional) The list of cores to be used by the DPDK PMD threads.
@@ -97,9 +103,11 @@
 #   Defaults to false.
 #
 class vswitch::dpdk (
+  String[1] $package_name,
+  String[1] $service_name,
+  String $package_ensure                                                          = 'present',
   Optional[Variant[Integer[0], String]] $memory_channels                          = undef,
   Optional[String] $host_core_list                                                = undef,
-  String $package_ensure                                                          = 'present',
   Optional[String] $pmd_core_list                                                 = undef,
   Optional[Variant[String, Integer, Array[String], Array[Integer]]] $socket_mem   = undef,
   Optional[Variant[String, Integer, Array[String], Array[Integer]]] $socket_limit = undef,
@@ -118,14 +126,13 @@ class vswitch::dpdk (
   Boolean $skip_restart                                                           = false,
 ) {
 
-  include vswitch::params
-
   $restart = !$skip_restart
 
   kmod::load { 'vfio-pci': }
 
-  package { $::vswitch::params::ovs_dpdk_package_name:
+  package { 'openvswitch':
     ensure => $package_ensure,
+    name   => $package_name,
     before => Service['openvswitch'],
     tag    => 'openvswitch',
   }
@@ -277,14 +284,15 @@ class vswitch::dpdk (
   service { 'openvswitch':
     ensure => true,
     enable => true,
-    name   => $::vswitch::params::ovs_service_name,
+    name   => $service_name,
+    tag    => 'openvswitch',
   }
 
   # NOTE(tkajinam): This resource is defined to restart the openvswitch services
   # when any vs_config resource with restart => true is enabled.
   exec { 'restart openvswitch':
     path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
-    command     => "systemctl -q restart ${::vswitch::params::ovs_service_name}.service",
+    command     => "systemctl -q restart ${service_name}.service",
     refreshonly => true,
   }
 

@@ -11,7 +11,6 @@
 define vswitch::pki::cert(
   Stdlib::Absolutepath $cert_dir = '/etc/openvswitch',
 ) {
-  include vswitch::params
 
   exec { "ovs-req-and-sign-cert-${name}":
     command => "ovs-pki req+sign ${name}",
@@ -20,7 +19,7 @@ define vswitch::pki::cert(
     path    => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
   }
 
-  Package<| title == $::vswitch::params::ovs_package_name |>
+  Package<| title == 'openvswitch' |>
     -> Exec["ovs-req-and-sign-cert-${name}"]
 
   Exec<| title == 'ovs-pki-init-ca-authority' |>

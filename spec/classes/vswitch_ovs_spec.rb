@@ -9,10 +9,6 @@ describe 'vswitch::ovs' do
         is_expected.to contain_class('vswitch::ovs')
       end
 
-      it 'contains params' do
-        is_expected.to contain_class('vswitch::params')
-      end
-
       it 'clears hw-offload option' do
         is_expected.to contain_vs_config('other_config:hw-offload').with(
           :ensure => 'absent', :restart => true, :wait => true,
@@ -36,14 +32,16 @@ describe 'vswitch::ovs' do
           :ensure => true,
           :enable => true,
           :name   => platform_params[:ovs_service_name],
+          :tag    => 'openvswitch'
         )
       end
 
       it 'install package' do
-        is_expected.to contain_package(platform_params[:ovs_package_name]).with(
+        is_expected.to contain_package('openvswitch').with(
           :name   => platform_params[:ovs_package_name],
           :ensure => 'present',
-          :before => 'Service[openvswitch]'
+          :before => 'Service[openvswitch]',
+          :tag    => 'openvswitch'
         )
       end
 
@@ -66,10 +64,11 @@ describe 'vswitch::ovs' do
         }
       end
       it 'installs correct package' do
-        is_expected.to contain_package(platform_params[:ovs_package_name]).with(
+        is_expected.to contain_package('openvswitch').with(
           :name   => platform_params[:ovs_package_name],
           :ensure => 'latest',
-          :before => 'Service[openvswitch]'
+          :before => 'Service[openvswitch]',
+          :tag    => 'openvswitch'
         )
       end
       it 'configures hw-offload option' do

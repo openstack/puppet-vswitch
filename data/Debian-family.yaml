@@ -1,0 +1,5 @@
+---
+vswitch::dpdk::package_name: 'openvswitch-switch-dpdk'
+vswitch::dpdk::service_name: 'openvswitch-switch'
+vswitch::ovs::package_name: 'openvswitch-switch'
+vswitch::ovs::service_name: 'openvswitch-switch'

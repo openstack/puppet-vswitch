@@ -57,14 +57,16 @@ describe 'vswitch::dpdk' do
           :ensure => true,
           :enable => true,
           :name   => platform_params[:ovs_service_name],
+          :tag    => 'openvswitch'
         )
       end
 
       it 'install package' do
-        is_expected.to contain_package(platform_params[:ovs_dpdk_package_name]).with(
+        is_expected.to contain_package('openvswitch').with(
           :name   => platform_params[:ovs_dpdk_package_name],
           :ensure => 'present',
-          :before => 'Service[openvswitch]'
+          :before => 'Service[openvswitch]',
+          :tag    => 'openvswitch'
         )
       end
 
