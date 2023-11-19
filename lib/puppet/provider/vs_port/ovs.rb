@@ -13,7 +13,7 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
   commands :vsctl => 'ovs-vsctl'
 
   def exists?
-    vsctl('list-ports', @resource[:bridge]).include? @resource[:port]
+    vsctl('list-ports', @resource[:bridge]).split("\n").include? @resource[:port]
   rescue Puppet::ExecutionFailure => e
     return false
   end
