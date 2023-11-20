@@ -26,10 +26,6 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     vsctl('del-br', @resource[:name])
   end
 
-  def self._split(string, splitter=',')
-    return Hash[string.split(splitter).map{|i| i.split('=')}]
-  end
-
   def external_ids
     self.class.get_external_ids(@resource[:name])
   end
@@ -37,6 +33,16 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
   def external_ids=(value)
     self.class.set_external_ids(@resource[:name], value)
   end
+
+  def mac_table_size
+    self.class.get_mac_table_size(@resource[:name])
+  end
+
+  def mac_table_size=(value)
+    self.class.set_mac_table_size(@resource[:name], value)
+  end
+
+  private
 
   def self.get_external_ids(br)
     result = vsctl('br-get-external-id', br)
@@ -54,14 +60,6 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     end
   end
 
-  def mac_table_size
-    self.class.get_mac_table_size(@resource[:name])
-  end
-
-  def mac_table_size=(value)
-    self.class.set_mac_table_size(@resource[:name], value)
-  end
-
   def self.get_mac_table_size(br)
     value = get_bridge_other_config(br)['mac-table-size']
     if value
@@ -75,7 +73,9 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     vsctl('set', 'Bridge', br, "other-config:mac-table-size=#{value}")
   end
 
-  private
+  def self._split(string, splitter=',')
+    return Hash[string.split(splitter).map{|i| i.split('=')}]
+  end
 
   def self.get_bridge_other_config(br)
     value = vsctl('get', 'Bridge', br, 'other-config').strip
