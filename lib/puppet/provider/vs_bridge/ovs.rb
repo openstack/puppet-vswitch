@@ -53,9 +53,13 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     old_ids = _split(get_external_ids(br))
     new_ids = _split(value)
 
-    new_ids.each_pair do |k,v|
-      unless old_ids.has_key?(k)
-        vsctl('br-set-external-id', br, k, v)
+    new_ids.each do |k,v|
+      vsctl('br-set-external-id', br, k, v)
+    end
+
+    old_ids.each do |k, v|
+      if ! new_ids.has_key?(k)
+        vsctl('br-set-external-id', br, k)
       end
     end
   end

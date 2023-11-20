@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    The ``vs_bridge`` resource now updates existing keys when external ids are
+    set. Also, the keys not included by the given extenral ids are removed.
