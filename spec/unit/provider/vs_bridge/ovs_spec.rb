@@ -105,6 +105,24 @@ describe Puppet::Type.type(:vs_bridge).provider(:ovs) do
       )
       provider.external_ids = 'k=v'
     end
+
+    it 'configures external ids when ids already exist' do
+      expect(described_class).to receive(:vsctl).with(
+        'br-get-external-id', 'testbr'
+      ).and_return('k1=v1
+k2=v2
+k3=v3')
+      expect(described_class).to receive(:vsctl).with(
+        'br-set-external-id', 'testbr', 'k1', 'v1'
+      )
+      expect(described_class).to receive(:vsctl).with(
+        'br-set-external-id', 'testbr', 'k2', 'v2new'
+      )
+      expect(described_class).to receive(:vsctl).with(
+        'br-set-external-id', 'testbr', 'k3'
+      )
+      provider.external_ids = 'k1=v1,k2=v2new'
+    end
   end
 
   describe '#mac_table_size' do
