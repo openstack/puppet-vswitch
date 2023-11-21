@@ -37,6 +37,10 @@ Puppet::Type.type(:vs_port).provide(
   end
 
   def create
+    if ! bridge_exists?
+      raise Puppet::Error, "Bridge #{@resource[:bridge]} does not exist"
+    end
+
     unless vsctl('list-ports',
       @resource[:bridge]).include? @resource[:port]
       super
