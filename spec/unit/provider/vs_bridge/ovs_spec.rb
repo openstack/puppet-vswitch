@@ -113,9 +113,6 @@ describe Puppet::Type.type(:vs_bridge).provider(:ovs) do
 k2=v2
 k3=v3')
       expect(described_class).to receive(:vsctl).with(
-        'br-set-external-id', 'testbr', 'k1', 'v1'
-      )
-      expect(described_class).to receive(:vsctl).with(
         'br-set-external-id', 'testbr', 'k2', 'v2new'
       )
       expect(described_class).to receive(:vsctl).with(
