@@ -66,7 +66,7 @@ describe Puppet::Type.type(:vs_bridge).provider(:ovs) do
         )
 
         expect(described_class).to receive(:vsctl).with(
-          'set', 'Bridge', 'testbr', 'other-config:mac-table-size=60000'
+          'set', 'Bridge', 'testbr', 'other_config:mac-table-size=60000'
         )
 
         provider.create
@@ -125,7 +125,7 @@ k3=v3')
   describe '#mac_table_size' do
     it 'returns mac table size' do
       expect(described_class).to receive(:vsctl).with(
-        'get', 'Bridge', 'testbr', 'other-config'
+        'get', 'Bridge', 'testbr', 'other_config'
       ).and_return(
         '{disable-in-band="true", mac-table-size="50000"}'
       )
@@ -136,7 +136,7 @@ k3=v3')
   describe '#mac_table_size=' do
     it 'sets mac table size' do
       expect(described_class).to receive(:vsctl).with(
-        'set', 'Bridge', 'testbr', 'other-config:mac-table-size=60000'
+        'set', 'Bridge', 'testbr', 'other_config:mac-table-size=60000'
       )
       provider.mac_table_size = 60000
     end

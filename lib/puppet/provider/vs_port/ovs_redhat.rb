@@ -6,8 +6,6 @@ Puppet::Type.type(:vs_port).provide(
   :parent => Puppet::Type.type(:vs_port).provider(:ovs)
 ) do
 
-  desc 'Openvswitch port manipulation for RedHat OSes family'
-
   BASE ||= '/etc/sysconfig/network-scripts/ifcfg-'
 
   # When not seedling from interface file

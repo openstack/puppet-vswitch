@@ -1,16 +1,17 @@
-require 'puppet'
+require File.join(File.dirname(__FILE__), '..','..','..', 'puppet/provider/ovs')
 
-
-Puppet::Type.type(:vs_port).provide(:ovs) do
-  desc 'Openvswitch port manipulation'
+Puppet::Type.type(:vs_port).provide(
+  :ovs,
+  :parent => Puppet::Provider::Ovs
+) do
 
   UUID_RE ||= /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/
+
+  commands :vsctl => 'ovs-vsctl'
 
   has_feature :bonding
   has_feature :vlan
   has_feature :interface_type
-
-  commands :vsctl => 'ovs-vsctl'
 
   def exists?
     vsctl('list-ports', @resource[:bridge]).split("\n").include? @resource[:port]
@@ -59,7 +60,7 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
   end
 
   def interface
-    get_port_interface_column('name')
+    get_port_interface_property('name')
   end
 
   def interface=(value)
@@ -74,7 +75,7 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
   end
 
   def interface_type
-    types = get_port_interface_column('type').uniq
+    types = get_port_interface_property('type').uniq
     types != nil ? types.join(' ') : :system
   end
 
@@ -85,51 +86,52 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
   end
 
   def bond_mode
-    get_port_column('bond_mode')
+    get_port_property('bond_mode')
   end
 
   def bond_mode=(value)
-    set_port_column('bond_mode', value)
+    set_port_property('bond_mode', value)
   end
 
   def lacp
-    get_port_column('lacp')
+    get_port_property('lacp')
   end
 
   def lacp=(value)
-    set_port_column('lacp', value)
+    set_port_property('lacp', value)
   end
 
   def lacp_time
-    get_port_column('other_config:lacp-time')
+    val = self.class.get_other_config('Port', @resource[:port], 'lacp-time')
+    if val.nil? then '' else val.gsub(/^"|"$/, '') end
   end
 
   def lacp_time=(value)
-    set_port_column('other_config:lacp-time', value)
+    self.class.set_other_config('Port', @resource[:port], 'lacp-time', value)
   end
 
   def vlan_mode
-    get_port_column('vlan_mode')
+    get_port_property('vlan_mode')
   end
 
   def vlan_mode=(value)
-    set_port_column('vlan_mode', value)
+    set_port_property('vlan_mode', value)
   end
 
   def vlan_tag
-    get_port_column('tag')
+    get_port_property('tag')
   end
 
   def vlan_tag=(value)
-    set_port_column('tag', value)
+    set_port_property('tag', value)
   end
 
   def vlan_trunks
-    get_port_column('trunks').scan(/\d+/)
+    get_port_property('trunks').scan(/\d+/)
   end
 
   def vlan_trunks=(value)
-    set_port_column('trunks', value.join(' '))
+    set_port_property('trunks', value.join(' '))
   end
 
   protected
@@ -143,36 +145,17 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
 
   private
 
-  def port_column_command(command, column, value=nil)
-    if value
-      vsctl(command, 'Port', @resource[:port], column, value)
-    else
-      vsctl('--if-exists', command, 'Port', @resource[:port], column)
-    end
-  end
-
-  def get_port_column(column)
-    value = port_column_command('get', column).strip
+  def get_port_property(key)
+    value = self.class.get_property('Port', @resource[:port], key)
     if value == '[]' then '' else value end
   end
 
-  def set_port_column(column, value)
-    if ! value or value.empty?
-      # columns with maps need special handling, single map entries
-      # can be removed with the remove command
-      column, key = column.split(':')
-      if ! key
-        port_column_command('clear', column)
-      else
-        port_column_command('remove', [column, key])
-      end
-    else
-      port_column_command('set', "#{column}=#{value}")
-    end
+  def set_port_property(key, value)
+    self.class.set_property('Port', @resource[:port], key, value)
   end
 
-  def get_port_interface_column(column)
-    uuids = get_port_column('interfaces').scan(UUID_RE)
-    uuids.map!{|id| vsctl('get', 'Interface', id, column).strip.tr('"', '')}
+  def get_port_interface_property(key)
+    uuids = get_port_property('interfaces').scan(UUID_RE)
+    uuids.map!{|id| self.class.get_property('Interface', id, key).gsub(/^"|"$/, '')}
   end
 end

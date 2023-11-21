@@ -1,8 +1,11 @@
-require 'puppet'
+require File.join(File.dirname(__FILE__), '..','..','..', 'puppet/provider/ovs')
 
-Puppet::Type.type(:vs_bridge).provide(:ovs) do
-  commands :vsctl => 'ovs-vsctl'
+Puppet::Type.type(:vs_bridge).provide(
+  :ovs,
+  :parent => Puppet::Provider::Ovs
+) do
   commands :ip    => 'ip'
+  commands :vsctl => 'ovs-vsctl'
 
   def exists?
     vsctl("br-exists", @resource[:name])
@@ -47,8 +50,7 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
 
   def self.get_external_ids(br)
     value = vsctl('br-get-external-id', br)
-    value = value.split("\n").map{|i| i.strip}
-    return Hash[value.map{|i| i.split('=')}]
+    return parse_hash(value, "\n")
   end
 
   def self.set_external_ids(br, value)
@@ -69,21 +71,11 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
   end
 
   def self.get_mac_table_size(br)
-    value = get_bridge_other_config(br)['mac-table-size']
-    if value
-      Integer(value.gsub(/^"|"$/, ''))
-    else
-      nil
-    end
+    value = get_other_config('Bridge', br, 'mac-table-size')
+    if value.nil? then nil else Integer(value.gsub(/^"|"$/, '')) end
   end
 
   def self.set_mac_table_size(br, value)
-    vsctl('set', 'Bridge', br, "other-config:mac-table-size=#{value}")
-  end
-
-  def self.get_bridge_other_config(br)
-    value = vsctl('get', 'Bridge', br, 'other-config').strip
-    value = value.gsub(/^{|}$/, '').split(',').map{|i| i.strip}
-    return Hash[value.map{|i| i.split('=')}]
+    set_other_config('Bridge', br, 'mac-table-size', value)
   end
 end
