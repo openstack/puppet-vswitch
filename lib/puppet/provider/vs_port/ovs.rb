@@ -19,6 +19,10 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
   end
 
   def create
+    if ! bridge_exists?
+      raise Puppet::Error, "Bridge #{@resource[:bridge]} does not exist"
+    end
+
     # create with first interface, other interfaces will be added later when synchronizing properties
     vsctl('--', '--id=@iface0', 'create', 'Interface', "name=#{@resource[:interface][0]}", '--', 'add-port', @resource[:bridge], @resource[:port], 'interfaces=@iface0')
 
@@ -126,6 +130,15 @@ Puppet::Type.type(:vs_port).provide(:ovs) do
 
   def vlan_trunks=(value)
     set_port_column('trunks', value.join(' '))
+  end
+
+  protected
+
+  def bridge_exists?
+    vsctl('br-exists', @resource[:bridge])
+    return true
+  rescue Puppet::ExecutionFailure
+    return false
   end
 
   private
