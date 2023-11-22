@@ -6,6 +6,7 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
 
   def exists?
     vsctl("br-exists", @resource[:name])
+    return true
   rescue Puppet::ExecutionFailure
     return false
   end
