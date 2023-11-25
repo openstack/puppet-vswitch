@@ -46,13 +46,14 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
   private
 
   def self.get_external_ids(br)
-    result = vsctl('br-get-external-id', br)
-    return result.split("\n").join(',')
+    value = vsctl('br-get-external-id', br)
+    value = value.split("\n").map{|i| i.strip}
+    return Hash[value.map{|i| i.split('=')}]
   end
 
   def self.set_external_ids(br, value)
-    old_ids = _split(get_external_ids(br))
-    new_ids = _split(value)
+    old_ids = get_external_ids(br)
+    new_ids = value
 
     new_ids.each do |k,v|
       if !old_ids.has_key?(k) or old_ids[k] != v
@@ -78,10 +79,6 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
 
   def self.set_mac_table_size(br, value)
     vsctl('set', 'Bridge', br, "other-config:mac-table-size=#{value}")
-  end
-
-  def self._split(string, splitter=',')
-    return Hash[string.split(splitter).map{|i| i.split('=')}]
   end
 
   def self.get_bridge_other_config(br)

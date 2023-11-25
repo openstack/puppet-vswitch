@@ -27,7 +27,7 @@ describe 'basic vswitch' do
 
       vs_bridge { 'br-ci4':
         ensure         => present,
-        external_ids   => 'bridge-id=br-ci4',
+        external_ids   => {'bridge-id' => 'br-ci4'},
         mac_table_size => 50000,
       }
       ~> exec { 'create_loop1_port':
@@ -40,6 +40,12 @@ describe 'basic vswitch' do
       -> vs_port { 'loop1':
         ensure => present,
         bridge => 'br-ci4',
+      }
+
+      vs_bridge { 'br-ci5':
+        ensure         => present,
+        external_ids   => 'bridge-id=br-ci5',
+        mac_table_size => 50000,
       }
 
       vs_config { 'external_ids:ovn-remote':
@@ -110,6 +116,12 @@ describe 'basic vswitch' do
     it 'should have external_ids on br-ci4 bridge' do
       command('ovs-vsctl br-get-external-id br-ci4') do |r|
         expect(r.stdout).to match(/bridge-id=br-ci4/)
+      end
+    end
+
+    it 'should have external_ids on br-ci5 bridge' do
+      command('ovs-vsctl br-get-external-id br-ci5') do |r|
+        expect(r.stdout).to match(/bridge-id=br-ci5/)
       end
     end
 

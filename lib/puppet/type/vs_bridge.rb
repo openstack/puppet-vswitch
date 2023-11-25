@@ -18,12 +18,26 @@ Puppet::Type.newtype(:vs_bridge) do
   newproperty(:external_ids) do
     desc 'External IDs for the bridge: "key1=value2,key2=value2"'
 
-    validate do |value|
-      if !value.is_a?(String)
-        raise ArgumentError, "Invalid external_ids #{value}. Requires a String, not a #{value.class}"
+    munge do |value|
+      return value if value.is_a? Hash
+
+      internal = Hash.new
+      value.split(",").map{|el| el.strip()}.each do |pair|
+        key, value = pair.split("=", 2)
+        internal[key.strip()] = value.strip()
       end
-      if value !~ /^(?>[a-zA-Z]\S*=\S*){1}(?>[,][a-zA-Z]\S*=\S*)*$/
-        raise ArgumentError, "Invalid external_ids #{value}. Must a list of key1=value2,key2=value2"
+      return internal
+    end
+
+    validate do |value|
+      if value.is_a?(Hash)
+        true
+      elsif value.is_a?(String)
+        if value !~ /^(?>[a-zA-Z]\S*=\S*){1}(?>[,][a-zA-Z]\S*=\S*)*$/
+          raise ArgumentError, "Invalid external_ids #{value}. Must a list of key1=value2,key2=value2"
+        end
+      else
+        raise ArgumentError, "Invalid external_ids #{value}. Requires a String or a Hash, not a #{value.class}"
       end
     end
   end

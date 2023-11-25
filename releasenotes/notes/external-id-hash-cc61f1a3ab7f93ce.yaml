@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    The ``external_ids`` property of the ``vs_bridge`` resource now supports
+    a hash value.

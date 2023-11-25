@@ -48,7 +48,7 @@ describe Puppet::Type.type(:vs_bridge).provider(:ovs) do
     context 'with parameters' do
       before :each do
         resource_attrs.merge!(
-          :external_ids   => 'k=v',
+          :external_ids   => {'k' => 'v'},
           :mac_table_size => 60000,
         )
       end
@@ -91,7 +91,7 @@ describe Puppet::Type.type(:vs_bridge).provider(:ovs) do
       ).and_return(
         'k=v'
       )
-      expect(provider.external_ids).to eq('k=v')
+      expect(provider.external_ids).to eq({'k' => 'v'})
     end
   end
 
@@ -103,7 +103,7 @@ describe Puppet::Type.type(:vs_bridge).provider(:ovs) do
       expect(described_class).to receive(:vsctl).with(
         'br-set-external-id', 'testbr', 'k', 'v'
       )
-      provider.external_ids = 'k=v'
+      provider.external_ids = {'k' => 'v'}
     end
 
     it 'configures external ids when ids already exist' do
@@ -118,7 +118,7 @@ k3=v3')
       expect(described_class).to receive(:vsctl).with(
         'br-set-external-id', 'testbr', 'k3'
       )
-      provider.external_ids = 'k1=v1,k2=v2new'
+      provider.external_ids = {'k1' => 'v1', 'k2' => 'v2new'}
     end
   end
 
