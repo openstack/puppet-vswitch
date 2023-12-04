@@ -35,7 +35,7 @@ Puppet::Type.type(:vs_port).provide(
   end
 
   def create
-    if ! bridge_exists?
+    if ! bridge.exists?
       raise Puppet::Error, "Bridge #{@resource[:bridge]} does not exist"
     end
 
@@ -55,22 +55,22 @@ Puppet::Type.type(:vs_port).provide(
         end
       end
 
-      port = IFCFG::Port.new(@resource[:port], @resource[:bridge])
+      port_cfg = IFCFG::Port.new(@resource[:port], @resource[:bridge])
       if vlan?
-        port.set('VLAN' => 'yes')
+        port_cfg.set('VLAN' => 'yes')
       end
 
       if bonding?
-        port.set('BONDING_MASTER' => 'yes')
+        port_cfg.set('BONDING_MASTER' => 'yes')
         config = from_str(File.read(BASE + @resource[:port]))
-        port.set('BONDING_OPTS' => config['BONDING_OPTS']) if config.has_key?('BONDING_OPTS')
+        port_cfg.set('BONDING_OPTS' => config['BONDING_OPTS']) if config.has_key?('BONDING_OPTS')
       end
 
-      port.save(BASE + @resource[:port])
+      port_cfg.save(BASE + @resource[:port])
 
-      bridge = IFCFG::Bridge.new(@resource[:bridge], template)
-      bridge.set(ovs_extra) if ovs_extra
-      bridge.save(BASE + @resource[:bridge])
+      bridge_cfg = IFCFG::Bridge.new(@resource[:bridge], template)
+      bridge_cfg.set(ovs_extra) if ovs_extra
+      bridge_cfg.save(BASE + @resource[:bridge])
 
       ifdown(@resource[:bridge])
       ifdown(@resource[:port])
@@ -101,33 +101,16 @@ Puppet::Type.type(:vs_port).provide(
 
   private
 
-  def get_bridge_external_ids(br)
-    external_ids_raw = vsctl('br-get-external-id', br).split("\n")
-    external_ids_raw.delete('')
-    if external_ids_raw
-      return Hash[external_ids_raw.map{|i| i.split('=')}]
-    else
-      return {}
-    end
-  end
-
-  def get_bridge_other_config(br)
-    value = vsctl('get', 'Bridge', br, 'other-config').strip
-    value = value.gsub(/^{|}$/, '').split(',').map{|i| i.strip}
-    return Hash[value.map{|i| i.split('=')}]
-  end
-
   def get_ovs_extra(opts=[])
-    external_ids = get_bridge_external_ids(@resource[:bridge])
+    external_ids = bridge.external_ids
     # Add commands to set external-id
     external_ids.each do |k, v|
       opts += ["br-set-external-id #{resource[:bridge]} #{k} #{v}"]
     end
 
-    other_config = get_bridge_other_config(@resource[:bridge])
-    mac_table_size = other_config['mac-table-size']
+    mac_table_size = bridge.mac_table_size
     if mac_table_size
-      opts += ["set bridge #{@resource[:bridge]} other-config:mac-table-size=#{mac_table_size.gsub(/^"|"$/, '')}"]
+      opts += ["set bridge #{@resource[:bridge]} other-config:mac-table-size=#{mac_table_size}"]
     end
 
     if opts.empty?

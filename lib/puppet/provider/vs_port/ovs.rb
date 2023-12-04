@@ -20,7 +20,7 @@ Puppet::Type.type(:vs_port).provide(
   end
 
   def create
-    if ! bridge_exists?
+    if ! bridge.exists?
       raise Puppet::Error, "Bridge #{@resource[:bridge]} does not exist"
     end
 
@@ -136,11 +136,10 @@ Puppet::Type.type(:vs_port).provide(
 
   protected
 
-  def bridge_exists?
-    vsctl('br-exists', @resource[:bridge])
-    return true
-  rescue Puppet::ExecutionFailure
-    return false
+  def bridge
+    @bridge ||= Puppet::Type.type(:vs_bridge).provider(:ovs).new(
+      Puppet::Type::Vs_bridge.new(:title => @resource[:bridge])
+    )
   end
 
   private
