@@ -23,7 +23,6 @@ Puppet::Type.type(:vs_port).provide(
   commands :ip     => 'ip'
   commands :ifdown => 'ifdown'
   commands :ifup   => 'ifup'
-  commands :vsctl  => 'ovs-vsctl'
 
   def initialize(value={})
     super(value)
@@ -35,16 +34,11 @@ Puppet::Type.type(:vs_port).provide(
   end
 
   def create
-    if ! bridge.exists?
-      raise Puppet::Error, "Bridge #{@resource[:bridge]} does not exist"
-    end
-
-    unless vsctl('list-ports',
-      @resource[:bridge]).include? @resource[:port]
-      super
-    end
-
     if interface_physical?
+      if ! bridge.exists?
+        raise Puppet::Error, "Bridge #{@resource[:bridge]} does not exist"
+      end
+
       template = DEFAULT
       ovs_extra = get_ovs_extra(["set bridge #{@resource[:bridge]} fail_mode=#{@resource[:fail_mode]}"])
 
@@ -76,6 +70,8 @@ Puppet::Type.type(:vs_port).provide(
       ifdown(@resource[:port])
       ifup(@resource[:port])
       ifup(@resource[:bridge])
+    else
+      super
     end
   end
 
