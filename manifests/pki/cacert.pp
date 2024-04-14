@@ -5,7 +5,7 @@
 class vswitch::pki::cacert {
 
   exec { 'ovs-pki-init-ca-authority':
-    command => 'ovs-pki init --force',
+    command => ['ovs-pki', 'init', '--force'],
     creates => '/var/lib/openvswitch/pki/switchca',
     path    => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
   }

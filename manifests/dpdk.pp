@@ -292,7 +292,7 @@ class vswitch::dpdk (
   # when any vs_config resource with restart => true is enabled.
   exec { 'restart openvswitch':
     path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
-    command     => "systemctl -q restart ${service_name}.service",
+    command     => ['systemctl', '-q', 'restart', "${service_name}.service"],
     refreshonly => true,
   }
 
