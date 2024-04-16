@@ -5,7 +5,7 @@ describe 'vswitch::pki::cacert' do
   shared_examples_for 'vswitch::pki::cacert' do
     it 'shoud initialize ca authority' do
       is_expected.to contain_exec('ovs-pki-init-ca-authority').with(
-        :command => 'ovs-pki init --force',
+        :command => ['ovs-pki', 'init', '--force'],
         :creates => '/var/lib/openvswitch/pki/switchca',
         :path    => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
       )

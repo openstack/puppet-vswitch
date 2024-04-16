@@ -13,7 +13,7 @@ define vswitch::pki::cert(
 ) {
 
   exec { "ovs-req-and-sign-cert-${name}":
-    command => "ovs-pki req+sign ${name}",
+    command => ['ovs-pki', 'req+sign', $name],
     cwd     => $cert_dir,
     creates => "${cert_dir}/${name}-cert.pem",
     path    => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],

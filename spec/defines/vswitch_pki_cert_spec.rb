@@ -7,7 +7,7 @@ describe 'vswitch::pki::cert' do
   shared_examples_for 'vswitch::pki::cert' do
     it 'shoud generate a certificate' do
       is_expected.to contain_exec('ovs-req-and-sign-cert-foo').with(
-        :command => 'ovs-pki req+sign foo',
+        :command => ['ovs-pki', 'req+sign', 'foo'],
         :cwd     => '/etc/openvswitch',
         :creates => '/etc/openvswitch/foo-cert.pem',
         :path    => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],

@@ -73,7 +73,7 @@ describe 'vswitch::dpdk' do
       it 'restarts the service when needed' do
         is_expected.to contain_exec('restart openvswitch').with(
           :path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
-          :command     => "systemctl -q restart %s.service" % platform_params[:ovs_service_name],
+          :command     => ['systemctl', '-q', 'restart', "#{platform_params[:ovs_service_name]}.service"],
           :refreshonly => true
         )
       end
