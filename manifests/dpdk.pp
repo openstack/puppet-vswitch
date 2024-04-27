@@ -106,7 +106,7 @@ class vswitch::dpdk (
   String[1] $package_name,
   String[1] $service_name,
   String $package_ensure                                                          = 'present',
-  Optional[Variant[Integer[0], String]] $memory_channels                          = undef,
+  Optional[Integer[0]] $memory_channels                                           = undef,
   Optional[String] $host_core_list                                                = undef,
   Optional[String] $pmd_core_list                                                 = undef,
   Optional[Variant[String, Integer, Array[String], Array[Integer]]] $socket_mem   = undef,
@@ -140,16 +140,9 @@ class vswitch::dpdk (
   $pmd_core_mask = range_to_mask($pmd_core_list)
   $dpdk_lcore_mask = range_to_mask($host_core_list)
 
-  if $memory_channels =~ String {
-    warning('Support for string by memory_channels is deprecated. Use integer instead')
-  }
   $memory_channels_conf = $memory_channels ? {
-    String  => empty($memory_channels) ? {
-      true    => undef,
-      default => "-n ${memory_channels}",
-    },
-    Integer => "-n ${memory_channels}",
-    default => undef,
+    undef   => undef,
+    default => "-n ${memory_channels}",
   }
 
   $dpdk_configs = {
