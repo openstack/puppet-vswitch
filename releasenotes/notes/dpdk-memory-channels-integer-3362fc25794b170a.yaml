@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    The ``vswitch::dpdk::memory_channels`` parmeter now requires an integer
+    value.
