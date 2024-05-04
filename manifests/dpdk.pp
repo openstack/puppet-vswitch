@@ -119,9 +119,9 @@ class vswitch::dpdk (
   Boolean $enable_tso                                                             = false,
   Boolean $vhost_postcopy_support                                                 = false,
   Boolean $pmd_auto_lb                                                            = false,
-  Optional[Integer[0]] $pmd_auto_lb_rebal_interval                                = undef,
-  Optional[Integer[0]] $pmd_auto_lb_load_threshold                                = undef,
-  Optional[Integer[0]] $pmd_auto_lb_improvement_threshold                         = undef,
+  Optional[Integer[0, 20000]] $pmd_auto_lb_rebal_interval                         = undef,
+  Optional[Integer[0, 100]] $pmd_auto_lb_load_threshold                           = undef,
+  Optional[Integer[0, 100]] $pmd_auto_lb_improvement_threshold                    = undef,
   Hash $vs_config                                                                 = {},
   Boolean $skip_restart                                                           = false,
 ) {
