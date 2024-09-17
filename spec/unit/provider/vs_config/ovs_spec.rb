@@ -73,11 +73,12 @@ key3     : [1001, 399, 240, 1200]')
       expect(described_class).to receive(:vsctl).with(
         "list", "Open_vSwitch", ".").and_return('key1        : {}
 key2     : {"hash21"="value21"}
-key3     : {"hash31"="value31", "hash32"="value32", "hash33"=33}')
+key3     : {"hash31"="value31", "hash32"="value32", "hash33"=33}
+key4     : {"hash41"="value41,key42=value42"}')
       end
 
     it "should return three resources" do
-      expect(described_class.instances.size).to eq(4)
+      expect(described_class.instances.size).to eq(5)
     end
 
     it "should contain valid names and values" do
@@ -85,7 +86,8 @@ key3     : {"hash31"="value31", "hash32"="value32", "hash33"=33}')
         "key2:hash21" => "value21",
         "key3:hash31" => "value31",
         "key3:hash32" => "value32",
-        "key3:hash33" => "33"}
+        "key3:hash33" => "33",
+        "key4:hash41" => "value41,key42=value42"}
       described_class.instances.each do |inst|
         _inst = inst.instance_variable_get("@property_hash")
         expect(expected_values.key?(_inst[:name])).to eq true
