@@ -53,6 +53,11 @@ describe 'basic vswitch' do
         value  => 'tcp:127.0.0.1:2300',
       }
 
+      vs_config { 'external_ids:ovn-cms-options':
+        ensure => present,
+        value  => 'enable-chassis-as-gw,availability-zones=nova',
+      }
+
       vs_config { 'other_config:thisshouldexist':
         ensure => present,
         value  => 'customvalue',
@@ -131,9 +136,15 @@ describe 'basic vswitch' do
       end
     end
 
-    it 'should get remote addr' do
+    it 'should get ovn remote addr' do
       command('ovs-vsctl get Open_vSwitch . external_ids:ovn-remote') do |r|
         expect(r.stdout).to match(/\"tcp:127.0.0.1:2300\"/)
+      end
+    end
+
+    it 'should get ovn cms options' do
+      command('ovs-vsctl get Open_vSwitch . external_ids:ovn-cms-options') do |r|
+        expect(r.stdout).to match(/\"enable-chassis-as-gw,availability-zones=nova\"/)
       end
     end
 

@@ -15,7 +15,7 @@ Puppet::Type.type(:vs_config).provide(:ovs) do
       type = 'hash'
       res = {}
       value[1..-2].gsub('"','').split(', ').map(&:strip).each do |v|
-        k,val = v.split("=")
+        k,val = v.split('=', 2)
         res[k] = val
       end
     elsif value[0] == '['
