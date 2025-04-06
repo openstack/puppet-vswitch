@@ -118,7 +118,7 @@ Puppet::Type.type(:vs_port).provide(
 
   def bonding?
     # To do: replace with iproute2 commands
-    if File.exists?("/proc/net/bonding/#{@resource[:port]}")
+    if File.exist?("/proc/net/bonding/#{@resource[:port]}")
       return true
     else
       return false
