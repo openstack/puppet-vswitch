@@ -25,7 +25,11 @@ Puppet::Type.type(:vs_port).provide(
     end
 
     # create with first interface, other interfaces will be added later when synchronizing properties
-    vsctl('--', '--id=@iface0', 'create', 'Interface', "name=#{@resource[:interface][0]}", '--', 'add-port', @resource[:bridge], @resource[:port], 'interfaces=@iface0')
+    if @resource[:interface_type] == :internal
+       vsctl('add-port', @resource[:bridge], @resource[:port], '--', 'set', 'Interface', @resource[:port], 'type=internal')
+    else
+      vsctl('--', '--id=@iface0', 'create', 'Interface', "name=#{@resource[:interface][0]}", '--', 'add-port', @resource[:bridge], @resource[:port], 'interfaces=@iface0')
+    end
 
     # synchronize properties
     # Only sync those properties actually supported by the provider. This

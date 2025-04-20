@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    vs_port setting interface_type to 'internal' is fixed.
+    see: https://bugs.launchpad.net/puppet-vswitch/+bug/1771134

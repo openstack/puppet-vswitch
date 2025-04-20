@@ -4,6 +4,8 @@ Puppet::Type.newtype(:vs_port) do
   desc 'A Virtual Switch Port'
 
   feature :bonding, "The provider supports bonded interfaces"
+  feature :interface_type, "The provider supports interface types"
+  feature :vlan, "The provider supports vlans"
 
   ensurable
 
