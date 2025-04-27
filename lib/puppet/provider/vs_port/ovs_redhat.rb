@@ -17,8 +17,8 @@ Puppet::Type.type(:vs_port).provide(
     'NOZEROCONF'    => 'yes'
   }
 
-  confine    :osfamily => :redhat
-  defaultfor :osfamily => :redhat
+  confine    'os.family' => :redhat
+  defaultfor 'os.family' => :redhat
 
   commands :ip     => 'ip'
   commands :ifdown => 'ifdown'
