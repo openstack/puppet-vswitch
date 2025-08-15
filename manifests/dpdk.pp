@@ -207,13 +207,13 @@ class vswitch::dpdk (
     vs_config { 'other_config:vhost-postcopy-support':
       value   => true,
       restart => $restart,
-      wait    => false
+      wait    => false,
     }
   } else {
     vs_config { 'other_config:vhost-postcopy-support':
       ensure  => absent,
       restart => $restart,
-      wait    => false
+      wait    => false,
     }
   }
 
@@ -238,24 +238,24 @@ class vswitch::dpdk (
     if $pmd_auto_lb_load_threshold {
       vs_config { 'other_config:pmd-auto-lb-load-threshold':
         value => $pmd_auto_lb_load_threshold,
-        wait  => false
+        wait  => false,
       }
     } else {
       vs_config { 'other_config:pmd-auto-lb-load-threshold':
         ensure => absent,
-        wait   => false
+        wait   => false,
       }
     }
 
     if $pmd_auto_lb_improvement_threshold {
       vs_config { 'other_config:pmd-auto-lb-improvement-threshold':
         value => $pmd_auto_lb_improvement_threshold,
-        wait  => false
+        wait  => false,
       }
     } else {
       vs_config { 'other_config:pmd-auto-lb-improvement-threshold':
         ensure => absent,
-        wait   => false
+        wait   => false,
       }
     }
 
