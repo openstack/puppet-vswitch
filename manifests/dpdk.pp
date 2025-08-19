@@ -125,7 +125,6 @@ class vswitch::dpdk (
   Hash $vs_config                                                                 = {},
   Boolean $skip_restart                                                           = false,
 ) {
-
   $restart = !$skip_restart
 
   kmod::load { 'vfio-pci': }
@@ -147,12 +146,12 @@ class vswitch::dpdk (
 
   $dpdk_configs = {
     'other_config:dpdk-extra'            => { value => $memory_channels_conf, restart => $restart },
-    'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ','), restart => $restart},
-    'other_config:dpdk-socket-limit'     => { value => join(any2array($socket_limit), ','), restart => $restart},
-    'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask, restart => $restart},
-    'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask, restart => $restart},
-    'other_config:n-revalidator-threads' => { value => $revalidator_cores},
-    'other_config:n-handler-threads'     => { value => $handler_cores},
+    'other_config:dpdk-socket-mem'       => { value => join(any2array($socket_mem), ','), restart => $restart },
+    'other_config:dpdk-socket-limit'     => { value => join(any2array($socket_limit), ','), restart => $restart },
+    'other_config:dpdk-lcore-mask'       => { value => $dpdk_lcore_mask, restart => $restart },
+    'other_config:pmd-cpu-mask'          => { value => $pmd_core_mask, restart => $restart },
+    'other_config:n-revalidator-threads' => { value => $revalidator_cores },
+    'other_config:n-handler-threads'     => { value => $handler_cores },
   }
 
   $dpdk_dependencies = {
@@ -258,7 +257,6 @@ class vswitch::dpdk (
         wait   => false,
       }
     }
-
   } else {
     vs_config {
       'other_config:pmd-auto-lb':                       ensure => absent, wait => false;
@@ -291,5 +289,4 @@ class vswitch::dpdk (
 
   create_resources('vs_config', $dpdk_configs, $dpdk_dependencies)
   create_resources('vs_config', $vs_config)
-
 }

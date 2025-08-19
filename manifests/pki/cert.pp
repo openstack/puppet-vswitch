@@ -8,10 +8,9 @@
 #  (Optional) The directory in which the cert files are generated.
 #  Defaults to '/etc/openvswitch'
 #
-define vswitch::pki::cert(
+define vswitch::pki::cert (
   Stdlib::Absolutepath $cert_dir = '/etc/openvswitch',
 ) {
-
   exec { "ovs-req-and-sign-cert-${name}":
     command => ['ovs-pki', 'req+sign', $name],
     cwd     => $cert_dir,

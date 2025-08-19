@@ -42,7 +42,7 @@
 #   immedicate network distuption caused by restarting the ovs daemon.
 #   Defaults to false.
 #
-class vswitch::ovs(
+class vswitch::ovs (
   String[1] $package_name,
   String[1] $service_name,
   String $package_ensure           = 'present',
@@ -52,7 +52,6 @@ class vswitch::ovs(
   Hash $vs_config                  = {},
   Boolean $skip_restart            = false,
 ) {
-
   $restart = !$skip_restart
 
   if $enable_hw_offload {
