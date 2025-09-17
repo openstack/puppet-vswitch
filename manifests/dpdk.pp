@@ -129,11 +129,14 @@ class vswitch::dpdk (
 
   kmod::load { 'vfio-pci': }
 
-  package { 'openvswitch':
-    ensure => $package_ensure,
-    name   => $package_name,
-    before => Service['openvswitch'],
-    tag    => 'openvswitch',
+  class { 'vswitch::ovs':
+    package_name      => $package_name,
+    service_name      => $service_name,
+    enable_hw_offload => $enable_hw_offload,
+    disable_emc       => $disable_emc,
+    vlan_limit        => $vlan_limit,
+    vs_config         => $vs_config,
+    skip_restart      => $skip_restart,
   }
 
   $pmd_core_mask = range_to_mask($pmd_core_list)
@@ -157,37 +160,6 @@ class vswitch::dpdk (
   $dpdk_dependencies = {
     wait   => false,
     notify => Vs_config['other_config:dpdk-init'],
-  }
-
-  if $enable_hw_offload {
-    vs_config { 'other_config:hw-offload':
-      value   => true,
-      restart => $restart,
-      wait    => true,
-    }
-  } else {
-    vs_config { 'other_config:hw-offload':
-      ensure  => absent,
-      restart => $restart,
-      wait    => true,
-    }
-  }
-
-  if $disable_emc {
-    vs_config { 'other_config:emc-insert-inv-prob':
-      value => 0,
-      wait  => false,
-    }
-  } else {
-    vs_config { 'other_config:emc-insert-inv-prob':
-      ensure => absent,
-      wait   => false,
-    }
-  }
-
-  vs_config { 'other_config:vlan-limit':
-    value => $vlan_limit,
-    wait  => true,
   }
 
   if $enable_tso {
@@ -272,21 +244,5 @@ class vswitch::dpdk (
     wait    => true,
   }
 
-  service { 'openvswitch':
-    ensure => true,
-    enable => true,
-    name   => $service_name,
-    tag    => 'openvswitch',
-  }
-
-  # NOTE(tkajinam): This resource is defined to restart the openvswitch services
-  # when any vs_config resource with restart => true is enabled.
-  exec { 'restart openvswitch':
-    path        => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
-    command     => ['systemctl', '-q', 'restart', "${service_name}.service"],
-    refreshonly => true,
-  }
-
   create_resources('vs_config', $dpdk_configs, $dpdk_dependencies)
-  create_resources('vs_config', $vs_config)
 }
