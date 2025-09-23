@@ -105,7 +105,7 @@
 class vswitch::dpdk (
   String[1] $package_name,
   String[1] $service_name,
-  String $package_ensure                                                          = 'present',
+  Stdlib::Ensure::Package $package_ensure                                         = present,
   Optional[Integer[0]] $memory_channels                                           = undef,
   Optional[String] $host_core_list                                                = undef,
   Optional[String] $pmd_core_list                                                 = undef,
