@@ -45,12 +45,12 @@
 class vswitch::ovs (
   String[1] $package_name,
   String[1] $service_name,
-  String $package_ensure           = 'present',
-  Boolean $enable_hw_offload       = false,
-  Boolean $disable_emc             = false,
-  Optional[Integer[0]] $vlan_limit = undef,
-  Hash $vs_config                  = {},
-  Boolean $skip_restart            = false,
+  Stdlib::Ensure::Package $package_ensure = present,
+  Boolean $enable_hw_offload              = false,
+  Boolean $disable_emc                    = false,
+  Optional[Integer[0]] $vlan_limit        = undef,
+  Hash $vs_config                         = {},
+  Boolean $skip_restart                   = false,
 ) {
   $restart = !$skip_restart
 
