@@ -1,9 +1,8 @@
 Facter.add("ovs_uuid") do
   confine :kernel => "Linux"
+  confine Facter::Core::Execution.which('ovs-vsctl')
 
   setcode do
-    if File.exist? '/usr/bin/ovs-vsctl'
-      ovs_ver = Facter::Core::Execution.exec('/usr/bin/ovs-vsctl get Open_vSwitch . _uuid')
-    end
+    ovs_ver = Facter::Core::Execution.execute('ovs-vsctl get Open_vSwitch . _uuid')
   end
 end
